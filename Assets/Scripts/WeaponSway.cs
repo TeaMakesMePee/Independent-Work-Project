@@ -7,18 +7,18 @@ public class WeaponSway : MonoBehaviourPunCallbacks
 {
     public float intensity, smooth;
     private Quaternion initRot;
-    private Transform player;
+    private GameObject player;
 
     private void Start()
     {
-        player = transform.root;
+        player = transform.root.gameObject;
         initRot = transform.localRotation;
     }
 
     // Update is called once per frame
     private void Update()
     {
-        if (!player.gameObject.GetPhotonView().IsMine) return;
+        if (!player.GetPhotonView().IsMine) return;
 
         Sway();
     }
