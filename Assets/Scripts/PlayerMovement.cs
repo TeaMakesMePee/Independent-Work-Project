@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class PlayerMovement : MonoBehaviour
+using Photon.Pun;
+public class PlayerMovement : MonoBehaviourPunCallbacks
 {
     public float speed, sprintMultiplier;
     public Camera playerEye;
@@ -26,6 +27,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (!photonView.IsMine) return;
+
         float horiMove = Input.GetAxisRaw("Horizontal");
         float vertMove = Input.GetAxisRaw("Vertical");
         float bobLerp = 2f;
@@ -52,6 +55,8 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!photonView.IsMine) return;
+
         float horiMove = Input.GetAxisRaw("Horizontal");
         float vertMove = Input.GetAxisRaw("Vertical");
 
