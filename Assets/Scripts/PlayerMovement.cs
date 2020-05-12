@@ -18,8 +18,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     private Vector3 weaponOrigin, newWeaponBobPos;
     private float idleCount, movingCount;
 
+    public GameObject camParent;
+
     private void Start()
     {
+        camParent.SetActive(photonView.IsMine);
+
         //Camera.main.gameObject.SetActive(false);
         playerRig = GetComponent<Rigidbody>();
         weaponOrigin = weaponParent.localPosition;

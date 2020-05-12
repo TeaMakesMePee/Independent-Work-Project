@@ -1,20 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class WeaponSway : MonoBehaviour
+public class WeaponSway : MonoBehaviourPunCallbacks
 {
     public float intensity, smooth;
     private Quaternion initRot;
+    private Transform player;
 
     private void Start()
     {
+        player = transform.root;
         initRot = transform.localRotation;
     }
 
     // Update is called once per frame
     private void Update()
     {
+        if (!player.gameObject.GetPhotonView().IsMine) return;
+
         Sway();
     }
 

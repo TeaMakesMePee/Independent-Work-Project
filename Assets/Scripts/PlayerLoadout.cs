@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
+using Photon.Pun;
 
-public class PlayerLoadout : MonoBehaviour
+public class PlayerLoadout : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
     public Weapon[] weapons;
@@ -23,6 +24,8 @@ public class PlayerLoadout : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!photonView.IsMine) return;
+
         for (int x = 0; x < 3; ++x) //3 slots for loadout
         {
             if (Input.GetKeyDown((KeyCode)(49 + x)))
