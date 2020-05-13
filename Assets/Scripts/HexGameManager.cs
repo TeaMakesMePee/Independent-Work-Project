@@ -8,7 +8,7 @@ using Photon.Pun;
 public class HexGameManager : MonoBehaviour
 {
     public string playerPrefab;
-    public Transform playerTransform;
+    public Transform spawnPoint;
 
     public void Start()
     {
@@ -17,6 +17,6 @@ public class HexGameManager : MonoBehaviour
 
     public void Spawn()
     {
-        PhotonNetwork.Instantiate(playerPrefab, playerTransform.position, playerTransform.rotation);
+        PhotonNetwork.Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
     }
 }

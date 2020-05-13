@@ -20,13 +20,25 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
     public GameObject camParent;
 
+    public int maxHealth;
+    private int currHealth;
+
+    private HexGameManager manager;
+
     private void Start()
     {
+        //All players except yourself will be assigned the 'Player' layer, so that they can be shot, except you.
+        if (!photonView.IsMine) gameObject.layer = 11;
+
         camParent.SetActive(photonView.IsMine);
 
         //Camera.main.gameObject.SetActive(false);
         playerRig = GetComponent<Rigidbody>();
         weaponOrigin = weaponParent.localPosition;
+
+        currHealth = maxHealth;
+
+        manager = GameObject.Find("GameManager").GetComponent<HexGameManager>();
     }
 
     private void Update()
@@ -103,5 +115,21 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     private void HeadBob(float timeFrame, float xIntens, float yIntens)
     {
         newWeaponBobPos = new Vector3(Mathf.Cos(timeFrame) * xIntens, Mathf.Sin(timeFrame * 2f) * yIntens, 0) + weaponOrigin;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (photonView.IsMine)
+        {
+            currHealth -= damage;
+            Debug.LogError("HP: " + currHealth);
+
+            if (currHealth <= 0)
+            {
+                manager.Spawn();
+                PhotonNetwork.Destroy(gameObject);
+                Debug.LogError("DIED");
+            }
+        }
     }
 }

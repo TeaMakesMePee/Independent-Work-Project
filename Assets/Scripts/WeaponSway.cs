@@ -18,8 +18,6 @@ public class WeaponSway : MonoBehaviourPunCallbacks
     // Update is called once per frame
     private void Update()
     {
-        if (!player.GetPhotonView().IsMine) return;
-
         Sway();
     }
 
@@ -27,6 +25,11 @@ public class WeaponSway : MonoBehaviourPunCallbacks
     {
         float mouseInputX = Input.GetAxis("Mouse X");
         float mouseInputY = Input.GetAxis("Mouse Y");
+
+        if (!player.GetPhotonView().IsMine)
+        {
+            mouseInputX = mouseInputY = 0;
+        }
 
         //calculate target rotation
         Quaternion rotDeltaX = Quaternion.AngleAxis(-intensity * mouseInputX, Vector3.up);

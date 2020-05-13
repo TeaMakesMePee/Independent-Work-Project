@@ -126,6 +126,7 @@ MonoBehaviour:
     m_Bits: 256
   weaponParent: {fileID: 6293200105149640062}
   camParent: {fileID: 6293200106184566601}
+  maxHealth: 100
 --- !u!54 &6293200104841510700
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -179,7 +180,7 @@ MonoBehaviour:
     type: 3}
   bulletCollidable:
     serializedVersion: 2
-    m_Bits: 311
+    m_Bits: 2359
 --- !u!114 &4681839410959351941
 MonoBehaviour:
   m_ObjectHideFlags: 0
