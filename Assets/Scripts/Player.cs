@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using Photon.Pun;
-public class PlayerMovement : MonoBehaviourPunCallbacks
+using TMPro;
+
+public class Player : MonoBehaviourPunCallbacks
 {
     public float speed, sprintMultiplier;
     public Camera playerEye;
@@ -23,6 +26,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     public int maxHealth;
     private int currHealth;
 
+    private Transform hpBar;
+    private float currHpScale;
+
     private HexGameManager manager;
 
     private void Start()
@@ -39,6 +45,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         currHealth = maxHealth;
 
         manager = GameObject.Find("GameManager").GetComponent<HexGameManager>();
+
+        hpBar = GameObject.Find("Bar").transform;
+        currHpScale = 1f;
     }
 
     private void Update()
@@ -67,6 +76,10 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
             bobLerp = 14f;
         }
         weaponParent.localPosition = Vector3.Lerp(weaponParent.localPosition, newWeaponBobPos, Time.deltaTime * bobLerp);
+
+        //Lerp HP bar scale
+        currHpScale = Mathf.Lerp(currHpScale, (float)(currHealth) / (float)(maxHealth), Time.deltaTime * 10f);
+        hpBar.localScale = new Vector3(currHpScale, 1f, 1f);
     }
 
     void FixedUpdate()

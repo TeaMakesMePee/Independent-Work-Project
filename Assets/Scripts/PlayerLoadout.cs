@@ -129,6 +129,6 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     [PunRPC]
     private void TakeDamage(int damage)
     {
-        GetComponent<PlayerMovement>().TakeDamage(damage);
+        GetComponent<Player>().TakeDamage(damage);
     }
 }
