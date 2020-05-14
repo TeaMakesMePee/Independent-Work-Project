@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Pun.Demo.Cockpit;
+using UnityEngine.UI;
 
 public class PlayerLoadout : MonoBehaviourPunCallbacks
 {
@@ -16,9 +18,12 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     private int currWeapID = -1;
     private float firerate;
 
-    void Start()
-    {
+    private bool isReloading;
 
+    private void Start()
+    {
+        foreach (Weapon w in weapons) w.InitGun();
+        photonView.RPC("Equip", RpcTarget.AllBuffered, 0);
     }
 
     // Update is called once per frame
@@ -47,8 +52,22 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
 
                 if (Input.GetMouseButton(0) && firerate <= 0f)
                 {
-                    photonView.RPC("Shoot", RpcTarget.All);
+                    if (weapons[currWeapID].FireBullet())
+                    { 
+                        photonView.RPC("Shoot", RpcTarget.All);
+                    }
+                    else
+                    {
+                        if (weapons[currWeapID].ifReloadable() && !isReloading)
+                            StartCoroutine(Reload(weapons[currWeapID].reloadTime));
+                    }
                     //Shoot();
+                }
+
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    if (weapons[currWeapID].ifReloadable() && !isReloading)
+                        StartCoroutine(Reload(weapons[currWeapID].reloadTime));
                 }
 
                 firerate -= Time.deltaTime;
@@ -57,6 +76,16 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         
         if (currWeapID != -1)
             currWeapon.transform.localPosition = Vector3.Lerp(currWeapon.transform.localPosition, Vector3.zero, Time.deltaTime * 4f);
+    }
+
+    IEnumerator Reload(float reloadTime)
+    {
+        isReloading = true;
+        currWeapon.SetActive(false);
+        yield return new WaitForSeconds(reloadTime);
+        weapons[currWeapID].Reload();
+        currWeapon.SetActive(true);
+        isReloading = false;
     }
 
     [PunRPC]
@@ -80,7 +109,10 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     void Equip(int weaponID)
     {
         if (currWeapon != null)
-            Destroy(currWeapon);
+        {
+            if (isReloading) StopCoroutine("Reload");
+            Destroy(currWeapon); 
+        }
 
         GameObject newWeapon = Instantiate(weapons[weaponID].prefab, weaponParent.position, weaponParent.rotation, weaponParent) as GameObject;
         newWeapon.transform.localPosition = Vector3.zero;
@@ -130,5 +162,10 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     private void TakeDamage(int damage)
     {
         GetComponent<Player>().TakeDamage(damage);
+    }
+
+    public void UpdateAmmoUI(Text theUI)
+    {
+        theUI.text = weapons[currWeapID].GetMagAmmo().ToString() + "/" + weapons[currWeapID].GetAmmo().ToString();
     }
 }

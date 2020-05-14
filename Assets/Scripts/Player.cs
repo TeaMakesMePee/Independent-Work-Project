@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 using Photon.Pun;
 using TMPro;
 
@@ -29,7 +29,10 @@ public class Player : MonoBehaviourPunCallbacks
     private Transform hpBar;
     private float currHpScale;
 
+    private Text ammoUI;
+
     private HexGameManager manager;
+    private PlayerLoadout loadout;
 
     private void Start()
     {
@@ -45,8 +48,10 @@ public class Player : MonoBehaviourPunCallbacks
         currHealth = maxHealth;
 
         manager = GameObject.Find("GameManager").GetComponent<HexGameManager>();
+        loadout = GetComponent<PlayerLoadout>();
 
         hpBar = GameObject.Find("Bar").transform;
+        ammoUI = GameObject.Find("AmmoCount").GetComponent<Text>();
         currHpScale = 1f;
     }
 
@@ -80,6 +85,7 @@ public class Player : MonoBehaviourPunCallbacks
         //Lerp HP bar scale
         currHpScale = Mathf.Lerp(currHpScale, (float)(currHealth) / (float)(maxHealth), Time.deltaTime * 10f);
         hpBar.localScale = new Vector3(currHpScale, 1f, 1f);
+        loadout.UpdateAmmoUI(ammoUI);
     }
 
     void FixedUpdate()
