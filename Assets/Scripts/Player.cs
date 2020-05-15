@@ -34,6 +34,8 @@ public class Player : MonoBehaviourPunCallbacks
     private HexGameManager manager;
     private PlayerLoadout loadout;
 
+    private int playerKills, playerDeaths;
+
     private void Start()
     {
         //All players except yourself will be assigned the 'Player' layer, so that they can be shot, except you.
@@ -57,6 +59,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     private void Update()
     {
+        Debug.LogError(photonView.ViewID);
         if (!photonView.IsMine) return;
 
         float horiMove = Input.GetAxisRaw("Horizontal");
@@ -147,7 +150,7 @@ public class Player : MonoBehaviourPunCallbacks
             {
                 manager.Spawn();
                 PhotonNetwork.Destroy(gameObject);
-                Debug.LogError("DIED");
+                playerDeaths++;
             }
         }
     }

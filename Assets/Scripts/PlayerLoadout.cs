@@ -133,8 +133,8 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             + rand2 * playerEye.right;
         bloom.Normalize();
 
-        Debug.LogError("player eye pos: " + playerEye.position + ", forward: " + playerEye.forward
-            + ", rand: " + rand + ", up: " + playerEye.up + ", rand2: " + rand2 + ", rigt: " + playerEye.right);
+        //Debug.LogError("player eye pos: " + playerEye.position + ", forward: " + playerEye.forward
+            //+ ", rand: " + rand + ", up: " + playerEye.up + ", rand2: " + rand2 + ", rigt: " + playerEye.right);
 
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(playerEye.position, bloom, out hit, 1000f, bulletCollidable))
@@ -142,7 +142,6 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             GameObject newBullethole = Instantiate(bulletholePrefab, hit.point + hit.normal * 0.001f, Quaternion.identity) as GameObject;
             newBullethole.transform.LookAt(hit.point + hit.normal);
             Destroy(newBullethole, 5f);
-            Debug.LogError("Soot");
             if (photonView.IsMine)
             {
                 if (hit.collider.gameObject.layer == 11)
