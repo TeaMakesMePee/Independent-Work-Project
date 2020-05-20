@@ -10,12 +10,14 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
     public void Awake()
     {
+        //On awake, connects
         PhotonNetwork.AutomaticallySyncScene = true;
         Connect();
     }
 
     public override void OnConnectedToMaster()
     {
+        //Once connected, join
         Join();
 
         base.OnConnectedToMaster();
@@ -23,6 +25,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        //Start game once joined
         StartGame();
 
         base.OnJoinedRoom();
@@ -38,11 +41,13 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public void Connect()
     {
         PhotonNetwork.GameVersion = "0.0.0";
+        //Connects
         PhotonNetwork.ConnectUsingSettings();
     }
 
     public void Join()
     {
+        //Join random room
         PhotonNetwork.JoinRandomRoom();
     }
 

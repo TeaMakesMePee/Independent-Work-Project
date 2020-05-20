@@ -74,6 +74,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             }
         }
         
+        //Lerp weapon back to default position, resets kickback, for all players
         if (currWeapID != -1)
             currWeapon.transform.localPosition = Vector3.Lerp(currWeapon.transform.localPosition, Vector3.zero, Time.deltaTime * 4f);
     }

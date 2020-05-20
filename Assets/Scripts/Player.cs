@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using TMPro;
 
-public class Player : MonoBehaviourPunCallbacks
+public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
     public float speed, sprintMultiplier;
     public Camera playerEye;
@@ -36,17 +36,39 @@ public class Player : MonoBehaviourPunCallbacks
 
     private int playerKills, playerDeaths;
 
+    private float lookRotation;
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo message) //Sends data if your photonview, receives data if it isnt yours
+    {
+        //Example: 
+        //Set up: You are player A and player B needs your rotation
+        //You send to all players who observe this player A script's your rotation
+        //Players who have player A script on them but isnt player A will read the data and update accordingly
+        
+        //Note: Not to send data that needs to be precise, as it is unreliable
+        if (stream.IsWriting)
+        {
+            stream.SendNext((int)weaponParent.transform.eulerAngles.x * 100f);
+        }
+        else
+        {
+            lookRotation = (int)stream.ReceiveNext() / 100f;
+        }
+    }
+
     private void Start()
     {
         //All players except yourself will be assigned the 'Player' layer, so that they can be shot, except you.
         if (!photonView.IsMine) gameObject.layer = 11;
 
+        //Set my player camera to true
         camParent.SetActive(photonView.IsMine);
 
         //Camera.main.gameObject.SetActive(false);
         playerRig = GetComponent<Rigidbody>();
         weaponOrigin = weaponParent.localPosition;
 
+        //Set health
         currHealth = maxHealth;
 
         manager = GameObject.Find("GameManager").GetComponent<HexGameManager>();
@@ -60,29 +82,35 @@ public class Player : MonoBehaviourPunCallbacks
     private void Update()
     {
         Debug.LogError(photonView.ViewID);
-        if (!photonView.IsMine) return;
+        if (!photonView.IsMine) 
+        {
+            UpdateNonClientPlayers();
+            return; 
+        }
 
         float horiMove = Input.GetAxisRaw("Horizontal");
         float vertMove = Input.GetAxisRaw("Vertical");
         float bobLerp = 2f;
 
-        if (horiMove == 0 && vertMove == 0)
+        if (horiMove == 0 && vertMove == 0) //if not moving
         {
-            HeadBob(idleCount, 0.01f, 0.01f);
+            HeadBob(idleCount, 0.01f, 0.01f); //Slight bob
             idleCount += Time.deltaTime;
         }
-        else if (!isSprint)
+        else if (!isSprint) //if walking
         { 
-            HeadBob(movingCount, 0.035f, 0.035f);
+            HeadBob(movingCount, 0.035f, 0.035f); //increase bob
             movingCount += Time.deltaTime * 2f;
             bobLerp = 8f;
         }
-        else if (isSprint)
+        else if (isSprint) //if sprinting
         {
-            HeadBob(movingCount, 0.07f, 0.05f);
+            HeadBob(movingCount, 0.07f, 0.05f); //increase bob
             movingCount += Time.deltaTime * 4f;
             bobLerp = 14f;
         }
+
+        //Lerps the weapon smoothly to show bob effect
         weaponParent.localPosition = Vector3.Lerp(weaponParent.localPosition, newWeaponBobPos, Time.deltaTime * bobLerp);
 
         //Lerp HP bar scale
@@ -132,6 +160,17 @@ public class Player : MonoBehaviourPunCallbacks
         Vector3 newVel = transform.TransformDirection(dir) * newSpeed * Time.deltaTime;
         newVel.y = playerRig.velocity.y;
         playerRig.velocity = newVel;
+    }
+
+    private void UpdateNonClientPlayers()
+    {
+        float temp = weaponParent.localEulerAngles.y;
+        Quaternion targetRot = Quaternion.identity * Quaternion.AngleAxis(lookRotation, Vector3.right);
+        weaponParent.rotation = Quaternion.Slerp(weaponParent.rotation, targetRot, Time.deltaTime * 10f);
+
+        Vector3 newRot = weaponParent.eulerAngles;
+        newRot.y = temp;
+        weaponParent.localEulerAngles = newRot;
     }
 
     private void HeadBob(float timeFrame, float xIntens, float yIntens)
