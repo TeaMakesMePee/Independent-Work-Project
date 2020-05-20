@@ -38,6 +38,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     private float lookRotation;
 
+    private GenerateHexGrid theHexGrids;
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo message) //Sends data if your photonview, receives data if it isnt yours
     {
         //Example: 
@@ -77,11 +79,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         hpBar = GameObject.Find("Bar").transform;
         ammoUI = GameObject.Find("AmmoCount").GetComponent<Text>();
         currHpScale = 1f;
+
+        theHexGrids = GameObject.Find("Grids2").GetComponent<GenerateHexGrid>();
     }
 
     private void Update()
     {
-        Debug.LogError(photonView.ViewID);
+        //Debug.LogError(photonView.ViewID);
         if (!photonView.IsMine) 
         {
             UpdateNonClientPlayers();
@@ -161,6 +165,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         Vector3 newVel = transform.TransformDirection(dir) * newSpeed * Time.deltaTime;
         newVel.y = playerRig.velocity.y;
         playerRig.velocity = newVel;
+
+        //TEMP
+        theHexGrids.ChangeHexColor(transform.position);
+        //Debug.LogError("Player Pos: " + transform.position);
     }
 
     private void UpdateNonClientPlayers()
