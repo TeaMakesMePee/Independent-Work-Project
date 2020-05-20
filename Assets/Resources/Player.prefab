@@ -115,11 +115,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ceea33039c7f7e4cab6982126214aa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 200
-  sprintMultiplier: 2
+  speed: 400
+  sprintMultiplier: 0.5
   playerEye: {fileID: 6293200105259471350}
   baseFOV: 60
-  sprintFOV: 90
+  sprintFOV: 50
   jumpForce: 120
   ground:
     serializedVersion: 2

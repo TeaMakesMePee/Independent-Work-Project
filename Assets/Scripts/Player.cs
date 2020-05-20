@@ -17,7 +17,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     private float targetFOV;
     private Rigidbody playerRig;
-    private bool isSprint, inAir;
+    private bool isSlowWalk, inAir;
     private Vector3 weaponOrigin, newWeaponBobPos;
     private float idleCount, movingCount;
 
@@ -97,17 +97,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             HeadBob(idleCount, 0.01f, 0.01f); //Slight bob
             idleCount += Time.deltaTime;
         }
-        else if (!isSprint) //if walking
-        { 
+        else if (!isSlowWalk) //if walking
+        {
+            HeadBob(movingCount, 0.07f, 0.05f);
+            //HeadBob(movingCount, 0.035f, 0.035f); //increase bob
+            movingCount += Time.deltaTime * 4f;
+            bobLerp = 14f;
+        }
+        else if (isSlowWalk) //if slow walking
+        {
             HeadBob(movingCount, 0.035f, 0.035f); //increase bob
             movingCount += Time.deltaTime * 2f;
             bobLerp = 8f;
-        }
-        else if (isSprint) //if sprinting
-        {
-            HeadBob(movingCount, 0.07f, 0.05f); //increase bob
-            movingCount += Time.deltaTime * 4f;
-            bobLerp = 14f;
         }
 
         //Lerps the weapon smoothly to show bob effect
@@ -127,8 +128,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         float vertMove = Input.GetAxisRaw("Vertical");
 
         float newSpeed = speed;
-        targetFOV = baseFOV;
-        isSprint = false;
+        //targetFOV = baseFOV;
+        isSlowWalk = false;
         inAir = true;
 
         //In air check
@@ -144,15 +145,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         //Sprint check
-        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && vertMove > 0 && !inAir)
+        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && vertMove > 0/* && !inAir*/)
         {
             newSpeed *= sprintMultiplier;
-            targetFOV = sprintFOV;
-            isSprint = true;
+            //targetFOV = sprintFOV;
+            isSlowWalk = true;
         }
 
         //FOV Adjustment
-        playerEye.fieldOfView = Mathf.Lerp(playerEye.fieldOfView, targetFOV, Time.deltaTime * 8f);
+        //playerEye.fieldOfView = Mathf.Lerp(playerEye.fieldOfView, targetFOV, Time.deltaTime * 8f);
 
         Vector3 dir = new Vector3(horiMove, 0, vertMove);
         dir.Normalize();
