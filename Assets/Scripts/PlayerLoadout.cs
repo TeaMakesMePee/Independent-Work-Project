@@ -141,6 +141,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         if (Physics.Raycast(playerEye.position, bloom, out hit, 1000f, bulletCollidable))
         {
             GameObject newBullethole = Instantiate(bulletholePrefab, hit.point + hit.normal * 0.001f, Quaternion.identity) as GameObject;
+            newBullethole.transform.SetParent(hit.transform);
             newBullethole.transform.LookAt(hit.point + hit.normal);
             Destroy(newBullethole, 5f);
             if (photonView.IsMine)
