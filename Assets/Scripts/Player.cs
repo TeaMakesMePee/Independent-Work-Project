@@ -50,7 +50,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //Note: Not to send data that needs to be precise, as it is unreliable
         if (stream.IsWriting)
         {
-            stream.SendNext((int)weaponParent.transform.eulerAngles.x * 100f);
+            stream.SendNext((int)(weaponParent.transform.eulerAngles.x * 100f));
         }
         else
         {
@@ -80,7 +80,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         ammoUI = GameObject.Find("AmmoCount").GetComponent<Text>();
         currHpScale = 1f;
 
-        theHexGrids = GameObject.Find("Grids2").GetComponent<GenerateHexGrid>();
+        //theHexGrids = GameObject.Find("Grids2").GetComponent<GenerateHexGrid>();
+        theHexGrids = FindObjectOfType<GenerateHexGrid>();
     }
 
     private void Update()
@@ -167,8 +168,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         playerRig.velocity = newVel;
 
         //TEMP
-        theHexGrids.ChangeHexColor(transform.position);
-        //Debug.LogError("Player Pos: " + transform.position);
+        if (!inAir)
+            theHexGrids.ChangeHexColor(transform.position);
     }
 
     private void UpdateNonClientPlayers()

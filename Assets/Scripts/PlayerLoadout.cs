@@ -167,6 +167,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
 
     public void UpdateAmmoUI(Text theUI)
     {
-        theUI.text = weapons[currWeapID].GetMagAmmo().ToString() + "/" + weapons[currWeapID].GetAmmo().ToString();
+        if (currWeapID != -1)
+            theUI.text = weapons[currWeapID].GetMagAmmo().ToString() + "/" + weapons[currWeapID].GetAmmo().ToString();
     }
 }

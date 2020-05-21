@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
-public class GenerateHexGrid : MonoBehaviour
+public class GenerateHexGrid : MonoBehaviourPunCallbacks
 {
     public GameObject theTilePrefab;
     public Material theTileMat;
@@ -49,6 +50,7 @@ public class GenerateHexGrid : MonoBehaviour
         float width = Mathf.Sqrt(3f) * tileScale;
         float halfWidth = width * .5f;
         Vector3 centerOffset = new Vector3((gridWidth - 1) * height - (gridWidth - 1) * height * .25f, 0f, (gridHeight - 1) * width + width / 2f);
+        //This makes sure the top left of the grid is set to 0,0,0.
         Vector3 newPlayerPos = playerPos + centerOffset * 0.5f + new Vector3(height * .5f, 0f, width * .5f); //Added the offset to the player position that i initially subtracted from the grids
         int row = (int)(newPlayerPos.x / gHeight);
         int column;
@@ -90,7 +92,17 @@ public class GenerateHexGrid : MonoBehaviour
             }
             row--;
         }
+
         int index = row * gridHeight + column;
+        photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index);
+    }
+
+    [PunRPC]
+    private void ApplyMaterialToHex(int index)
+    {
+        Material theMat = Resources.Load("Material/Blue", typeof(Material)) as Material;
+        Transform theMesh = hexGrids[index].transform.GetChild(0);
+        theMesh.GetComponent<MeshRenderer>().material = theMat;
     }
 
     private void GetClosestTile(Vector3 playerPos)
