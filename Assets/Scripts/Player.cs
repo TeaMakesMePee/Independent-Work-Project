@@ -93,6 +93,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             return; 
         }
 
+        //Debug.LogError(PhotonNetwork.LocalPlayer.ActorNumber);
+
         float horiMove = Input.GetAxisRaw("Horizontal");
         float vertMove = Input.GetAxisRaw("Vertical");
         float bobLerp = 2f;

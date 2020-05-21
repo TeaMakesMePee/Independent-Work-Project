@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using System.Runtime.CompilerServices;
 
 public class GenerateHexGrid : MonoBehaviourPunCallbacks
 {
@@ -13,6 +14,8 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
     public int gridWidth, gridHeight;
     public float tileScale;
     public List<GameObject> hexGrids = new List<GameObject>();
+    private List<int> toColor = new List<int>();
+    private List<bool> visited = new List<bool>();
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +38,14 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
         //}
 
         //PrefabUtility.SaveAsPrefabAsset(gameObject, "Assets/Prefabs/Grids2.prefab");
+        if (visited.Count != hexGrids.Count)
+        {
+            visited = new List<bool>();
+            for (int x = 0; x < hexGrids.Count; ++x)
+            {
+                visited.Add(false);
+            }
+        }
     }
 
     public void ChangeHexColor(Vector3 playerPos)
@@ -92,9 +103,23 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
             }
             row--;
         }
-
+        Debug.LogError("Row: " + row);
+        Debug.LogError("Column: " + column);
         int index = row * gridHeight + column;
         photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index);
+    }
+
+    private void FloodFill(int row, int col, int count)
+    {
+        if (count == 0) //root
+        {
+            for (int x = 0; x < visited.Count; ++x)
+                visited[x] = false;
+        }
+        if (row - 1 >= 0 && col < gridHeight)
+        {
+
+        }
     }
 
     [PunRPC]
