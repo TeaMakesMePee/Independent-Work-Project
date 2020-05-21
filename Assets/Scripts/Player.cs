@@ -171,7 +171,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         //TEMP
         if (!inAir)
-            theHexGrids.ChangeHexColor(transform.position);
+        {
+            Debug.LogError(transform.position);
+            if (theHexGrids == null)
+                Debug.LogError("null");
+            else
+                theHexGrids.ChangeHexColor(transform.position);
+        }
     }
 
     private void UpdateNonClientPlayers()

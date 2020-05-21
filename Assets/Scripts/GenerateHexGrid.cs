@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using System.Runtime.CompilerServices;
+using UnityEngine.Events;
+using System.Linq;
 
 public class GenerateHexGrid : MonoBehaviourPunCallbacks
 {
@@ -15,7 +17,12 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
     public float tileScale;
     public List<GameObject> hexGrids = new List<GameObject>();
     private List<int> toColor = new List<int>();
+    private List<List<int>> toColorList = new List<List<int>>();
     private List<bool> visited = new List<bool>();
+    private List<int> counts;
+    private int stepCounter;
+    private int prevIndex = -1;
+    private bool overShot;
     // Start is called before the first frame update
     void Start()
     {
@@ -46,6 +53,7 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
                 visited.Add(false);
             }
         }
+        
     }
 
     public void ChangeHexColor(Vector3 playerPos)
@@ -103,22 +111,156 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
             }
             row--;
         }
-        Debug.LogError("Row: " + row);
-        Debug.LogError("Column: " + column);
+
         int index = row * gridHeight + column;
-        photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index);
+        if (prevIndex == -1)
+        {
+            photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index);
+            prevIndex = index;
+        }
+        else if (prevIndex != index)
+        {
+            prevIndex = index;
+            photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index);
+            if (row >= 0 && row < gridWidth)
+            {
+                if (column >= 0 && column < gridHeight)
+                {
+                    List<Vector2> adjTiles = new List<Vector2>();
+                    adjTiles.Add(new Vector2(row - 1, column));
+                    adjTiles.Add(new Vector2(row, column - 1));
+                    adjTiles.Add(new Vector2(row + 1, column));
+                    adjTiles.Add(new Vector2(row, column + 1));
+                    if (row % 2 == 1)
+                    {
+                        adjTiles.Add(new Vector2(row - 1, column + 1));
+                        adjTiles.Add(new Vector2(row + 1, column + 1));
+                    }
+                    else
+                    {
+                        adjTiles.Add(new Vector2(row - 1, column - 1));
+                        adjTiles.Add(new Vector2(row + 1, column - 1));
+                    }
+                    toColorList = new List<List<int>>();
+                    counts = new List<int>();
+
+                    for (int x = 0; x < adjTiles.Count; ++x)
+                    {
+                        overShot = false;
+                        visited = Enumerable.Repeat(false, hexGrids.Count).ToList();
+                        toColor = new List<int>();
+                        stepCounter = 0;
+
+                        Transform theMatMesh = hexGrids[row * gridHeight + column].transform.GetChild(0);
+                        Material theMat = theMatMesh.GetComponent<MeshRenderer>().material;
+                        Transform theMesh = hexGrids[(int)(adjTiles[x].x) * gridHeight + (int)(adjTiles[x].y)].transform.GetChild(0);
+                        Material nextMat = theMesh.GetComponent<MeshRenderer>().material;
+                        if ((int)(adjTiles[x].x) >= 0 && (int)(adjTiles[x].x) < gridWidth)
+                        {
+                            if ((int)(adjTiles[x].y) >= 0 && (int)(adjTiles[x].y) < gridHeight)
+                            {
+                                int i = (int)(adjTiles[x].x) * gridHeight + (int)(adjTiles[x].y);
+                                if (nextMat.name != theMat.name)
+                                {
+                                    toColor.Add(i);
+                                    stepCounter++;
+                                    visited[index] = true;
+                                    visited[i] = true;
+                                    FloodFill((int)(adjTiles[x].x), (int)(adjTiles[x].y), theMat);
+                                    if (!overShot)
+                                    {
+                                        toColorList.Add(toColor);
+                                        counts.Add(stepCounter);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    int temp = 999;
+                    int tempind = -1;
+                    for (int abc = 0; abc < counts.Count; ++abc)
+                    {
+                        if (counts[abc] < temp)
+                        {
+                            //Debug.LogError("lesser: " + counts[abc]);
+                            temp = counts[abc];
+                            tempind = abc;
+                        }
+                    }
+                    //Debug.LogError("here");
+                    //Debug.LogError(counts.Count);
+
+                    if (counts.Count > 0)
+                    {
+                        List<int> tempIntList = toColorList[tempind];
+                        for (int xx = 0; xx < tempIntList.Count; ++xx)
+                            photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, tempIntList[xx]);
+                        //photonView.RPC("ApplyFloodFill", RpcTarget.AllBuffered, tempIntList);
+                    }
+
+                    //for (int f = 0; f < toColorList[tempind].Count; ++f)
+                    //{
+                    //    Debug.LogError("filling..: " + toColorList[tempind][f]);
+                    //}
+                    //List<int> tempIntList = toColorList[tempind];
+                    //for (int xx = 0; xx < tempIntList.Count; ++xx)
+                    //{
+                    //    Debug.LogError("list ind: " + tempIntList[xx]);
+                    //}
+                        //photonView.RPC("ApplyFloodFill", RpcTarget.AllBuffered, index, toColorList[tempind]);
+                    //photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index);
+                }
+            }
+            
+        }
     }
 
-    private void FloodFill(int row, int col, int count)
+    private void FloodFill(int row, int col, Material theMat)
     {
-        if (count == 0) //root
+        List<Vector2> adjTiles = new List<Vector2>();
+        adjTiles.Add(new Vector2(row - 1, col));
+        adjTiles.Add(new Vector2(row, col - 1));
+        adjTiles.Add(new Vector2(row + 1, col));
+        adjTiles.Add(new Vector2(row, col + 1));
+        if (row % 2 == 1)
         {
-            for (int x = 0; x < visited.Count; ++x)
-                visited[x] = false;
+            adjTiles.Add(new Vector2(row - 1, col + 1));
+            adjTiles.Add(new Vector2(row + 1, col + 1));
         }
-        if (row - 1 >= 0 && col < gridHeight)
+        else
         {
+            adjTiles.Add(new Vector2(row - 1, col - 1));
+            adjTiles.Add(new Vector2(row + 1, col - 1));
+        }
 
+        for (int x = 0; x < adjTiles.Count; ++x)
+        {
+            if (stepCounter > gridWidth * gridHeight / 2 - Math.Min(gridWidth, gridHeight))
+            {
+                overShot = true;
+                return;
+            }
+            if ((int)(adjTiles[x].x) >= 0 && (int)(adjTiles[x].x) < gridWidth)
+            {
+                if ((int)(adjTiles[x].y) >= 0 && (int)(adjTiles[x].y) < gridHeight)
+                {
+                    int index = (int)(adjTiles[x].x) * gridHeight + (int)(adjTiles[x].y);
+                    Transform theMesh = hexGrids[index].transform.GetChild(0);
+                    Material nextMat = theMesh.GetComponent<MeshRenderer>().material;
+
+                    if (!visited[index])
+                    {
+                        if (nextMat.name != theMat.name)
+                        {
+                            visited[index] = true;
+                            toColor.Add(index);
+                            stepCounter++;
+                            FloodFill((int)(adjTiles[x].x), (int)(adjTiles[x].y), theMat);
+                        }
+                    }
+                }
+            }
         }
     }
 
