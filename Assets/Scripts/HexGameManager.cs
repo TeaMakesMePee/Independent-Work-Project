@@ -4,19 +4,52 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Photon.Pun;
+using ExitGames.Client.Photon;
+using Photon.Realtime;
 
-public class HexGameManager : MonoBehaviour
+public struct PlayerInfo
+{
+    public string team;
+    public int actorNum;
+
+    public PlayerInfo(string teamColor, int actorNo)
+    {
+        team = teamColor;
+        actorNum = actorNo;
+    }
+}
+
+public class HexGameManager : MonoBehaviour, IOnEventCallback
 {
     public string playerPrefab;
     public Transform spawnPoint;
     public string mapPrefab;
     public bool isMapSpawned;
     //public Transform mapTransform;
+    public int myInd;
+    public List<PlayerInfo> playerInfo = new List<PlayerInfo>();
+    public PlayerInfo myInfo;
+
+    public enum EventCodes : byte
+    {
+        NewPlayer,
+        UpdatePlayers
+    }
 
     public void Start()
     {
         isMapSpawned = false;
+        SendNewPlayer();
         Spawn();
+    }
+
+    private void OnEnable()
+    {
+        PhotonNetwork.AddCallbackTarget(this);
+    }
+    private void OnDisable()
+    {
+        PhotonNetwork.RemoveCallbackTarget(this);
     }
 
     public void Spawn()
@@ -26,6 +59,117 @@ public class HexGameManager : MonoBehaviour
             PhotonNetwork.InstantiateSceneObject(mapPrefab, Vector3.zero, Quaternion.identity);
             isMapSpawned = true;
         }
-        PhotonNetwork.Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+        GenerateHexGrid theLevel = GameObject.FindGameObjectWithTag("Level").GetComponent<GenerateHexGrid>();
+        Vector3 spawn = theLevel.GetRandomSpawn(myInfo.team);
+        spawn.y = spawnPoint.position.y;
+        PhotonNetwork.Instantiate(playerPrefab, spawn, spawnPoint.rotation);
+    }
+
+    private string AssignTeam()
+    {
+        if (PhotonNetwork.CurrentRoom.PlayerCount % 2 == 0)
+        {
+            return "Blue";
+        }
+        else
+        {
+            return "Red";
+        }
+    }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code >= 200) return;
+
+        EventCodes evCode = (EventCodes)photonEvent.Code;
+        object[] obj = (object[])photonEvent.CustomData;
+
+        switch (evCode)
+        {
+            case EventCodes.NewPlayer:
+                ReceiveNewPlayer(obj);
+                break;
+            case EventCodes.UpdatePlayers:
+                ReceiveUpdatePlayers(obj);
+                break;
+        }
+    }
+
+    public void SendNewPlayer()
+    {
+        object[] package = new object[2];
+
+        myInfo = new PlayerInfo();
+
+        package[0] = myInfo.team = AssignTeam();
+        package[1] = myInfo.actorNum = PhotonNetwork.LocalPlayer.ActorNumber;
+
+        PhotonNetwork.RaiseEvent(
+            (byte)EventCodes.NewPlayer,
+            package,
+            new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient },
+            new SendOptions { Reliability = true }
+        );
+    }
+
+    public void ReceiveNewPlayer(object[] data)
+    {
+        PlayerInfo newPlayer = new PlayerInfo(
+            (string)data[0],
+            (int)data[1]
+        );
+
+        playerInfo.Add(newPlayer);
+
+        SendUpdatePlayers(playerInfo);
+    }
+
+    public void SendUpdatePlayers(List<PlayerInfo> info)
+    {
+        object[] package = new object[info.Count];
+
+        for (int i = 0; i < info.Count; i++)
+        {
+            object[] packet = new object[2];
+
+            packet[0] = info[i].team;
+            packet[1] = info[i].actorNum;
+
+            package[i] = packet;
+        }
+
+        PhotonNetwork.RaiseEvent(
+            (byte)EventCodes.UpdatePlayers,
+            package,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All },
+            new SendOptions { Reliability = true }
+        );
+    }
+
+    public void ReceiveUpdatePlayers(object[] data)
+    {
+        playerInfo = new List<PlayerInfo>();
+
+        for (int i = 0; i < data.Length; i++)
+        {
+            object[] packet = (object[])data[i];
+
+            PlayerInfo p = new PlayerInfo(
+                (string)packet[0],
+                (int)packet[1]
+            );
+
+            playerInfo.Add(p);
+
+            if (PhotonNetwork.LocalPlayer.ActorNumber == p.actorNum)
+            {
+                myInd = i;
+            }
+        }
+    }
+
+    public string GetLocalPlayerTeam()
+    {
+        return myInfo.team;
     }
 }

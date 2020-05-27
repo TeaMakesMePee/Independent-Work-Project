@@ -38,7 +38,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     private float lookRotation;
 
-    private GenerateHexGrid theHexGrids;
+    private GenerateHexGrid theHexGrids = new GenerateHexGrid();
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo message) //Sends data if your photonview, receives data if it isnt yours
     {
@@ -61,7 +61,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private void Start()
     {
         //All players except yourself will be assigned the 'Player' layer, so that they can be shot, except you.
-        if (!photonView.IsMine) gameObject.layer = 11;
+        if (!photonView.IsMine)
+        {
+            gameObject.layer = 11;
+            gameObject.tag = "Player";
+            //Debug.LogError(gameObject.tag);
+        }
 
         //Set my player camera to true
         camParent.SetActive(photonView.IsMine);
@@ -79,9 +84,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         hpBar = GameObject.Find("Bar").transform;
         ammoUI = GameObject.Find("AmmoCount").GetComponent<Text>();
         currHpScale = 1f;
-
-        //theHexGrids = GameObject.Find("Grids2").GetComponent<GenerateHexGrid>();
-        theHexGrids = FindObjectOfType<GenerateHexGrid>();
     }
 
     private void Update()
@@ -172,11 +174,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //TEMP
         if (!inAir)
         {
-            Debug.LogError(transform.position);
-            if (theHexGrids == null)
-                Debug.LogError("null");
-            else
-                theHexGrids.ChangeHexColor(transform.position);
+            //theHexGrids.ChangeHexColor(transform.position);
         }
     }
 

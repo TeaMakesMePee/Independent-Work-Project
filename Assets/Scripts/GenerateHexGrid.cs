@@ -8,6 +8,7 @@ using Photon.Pun;
 using System.Runtime.CompilerServices;
 using UnityEngine.Events;
 using System.Linq;
+using UnityEngine.SocialPlatforms;
 
 public class GenerateHexGrid : MonoBehaviourPunCallbacks
 {
@@ -23,6 +24,8 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
     private int stepCounter;
     private int prevIndex = -1;
     private bool overShot;
+
+    private HexGameManager manager;
     // Start is called before the first frame update
     void Start()
     {
@@ -53,7 +56,8 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
                 visited.Add(false);
             }
         }
-        
+
+        manager = GameObject.Find("GameManager").GetComponent<HexGameManager>();
     }
 
     public void ChangeHexColor(Vector3 playerPos)
@@ -113,15 +117,17 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
         }
 
         int index = row * gridHeight + column;
+        Transform myMat = hexGrids[index].transform.GetChild(0);
+        Material myMatMesh = myMat.GetComponent<MeshRenderer>().material;
         if (prevIndex == -1)
         {
-            photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index);
+            photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index, manager.GetLocalPlayerTeam());
             prevIndex = index;
         }
-        else if (prevIndex != index)
+        else if (prevIndex != index || (manager.GetLocalPlayerTeam() + " (Instance)") != myMatMesh.name)
         {
             prevIndex = index;
-            photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index);
+            photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index, manager.GetLocalPlayerTeam());
             if (row >= 0 && row < gridWidth)
             {
                 if (column >= 0 && column < gridHeight)
@@ -195,7 +201,7 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
                     {
                         List<int> tempIntList = toColorList[tempind];
                         for (int xx = 0; xx < tempIntList.Count; ++xx)
-                            photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, tempIntList[xx]);
+                            photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, tempIntList[xx], manager.GetLocalPlayerTeam());
                         //photonView.RPC("ApplyFloodFill", RpcTarget.AllBuffered, tempIntList);
                     }
 
@@ -265,13 +271,16 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void ApplyMaterialToHex(int index)
+    private void ApplyMaterialToHex(int index, string teamColor)
     {
-        Material theMat = Resources.Load("Material/Blue", typeof(Material)) as Material;
+        string path = "Material/" + teamColor;
+        Material theMat = Resources.Load(path, typeof(Material)) as Material;
         Transform theMesh = hexGrids[index].transform.GetChild(0);
         theMesh.GetComponent<MeshRenderer>().material = theMat;
+        Debug.LogError(theMesh.GetComponent<MeshRenderer>().material.name);
     }
 
+    //Not in use
     private void GetClosestTile(Vector3 playerPos)
     {
         float dist = 999999f;
@@ -287,5 +296,43 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
         }
 
         Debug.LogError("For loop index: " + index);
+    }
+
+    private void Update()
+    {
+        GameObject thePlayer = GameObject.FindGameObjectWithTag("LocalPlayer");
+        ChangeHexColor(thePlayer.transform.position);
+    }
+
+    public Vector3 GetRandomSpawn(string teamColor)
+    {
+        List<int> possInds = new List<int>();
+        for (int x = 0; x < hexGrids.Count; ++x)
+        {
+            Transform myMat = hexGrids[x].transform.GetChild(0);
+            Material myMatMesh = myMat.GetComponent<MeshRenderer>().material;
+            if (teamColor == "Red")
+            {
+                if (myMatMesh.name != "Blue (Instance)")
+                {
+                    possInds.Add(x);
+                }
+            }
+            else if (teamColor == "Blue")
+            {
+                if (myMatMesh.name != "Red (Instance)")
+                {
+                    possInds.Add(x);
+                }
+            }
+        }
+
+        if (possInds.Count > 0)
+        {
+            int rand = UnityEngine.Random.Range(0, possInds.Count);
+            return hexGrids[possInds[rand]].transform.position;
+        }
+
+        return Vector3.zero;
     }
 }
