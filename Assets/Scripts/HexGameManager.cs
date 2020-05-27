@@ -29,6 +29,7 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
     public int myInd;
     public List<PlayerInfo> playerInfo = new List<PlayerInfo>();
     public PlayerInfo myInfo;
+    private List<GameObject> hexGrids = new List<GameObject>();
 
     public enum EventCodes : byte
     {
@@ -59,8 +60,7 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
             PhotonNetwork.InstantiateSceneObject(mapPrefab, Vector3.zero, Quaternion.identity);
             isMapSpawned = true;
         }
-        GenerateHexGrid theLevel = GameObject.FindGameObjectWithTag("Level").GetComponent<GenerateHexGrid>();
-        Vector3 spawn = theLevel.GetRandomSpawn(myInfo.team);
+        Vector3 spawn = GetRandomSpawn(myInfo.team);
         spawn.y = spawnPoint.position.y;
         PhotonNetwork.Instantiate(playerPrefab, spawn, spawnPoint.rotation);
     }
@@ -171,5 +171,42 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
     public string GetLocalPlayerTeam()
     {
         return myInfo.team;
+    }
+
+    public void UpdateGridInfo(List<GameObject> hGrids)
+    {
+        hexGrids = hGrids;
+    }
+
+    public Vector3 GetRandomSpawn(string teamColor)
+    {
+        List<int> possInds = new List<int>();
+        for (int x = 0; x < hexGrids.Count; ++x)
+        {
+            Transform myMat = hexGrids[x].transform.GetChild(0);
+            Material myMatMesh = myMat.GetComponent<MeshRenderer>().material;
+            if (teamColor == "Red")
+            {
+                if (myMatMesh.name != "Blue (Instance)")
+                {
+                    possInds.Add(x);
+                }
+            }
+            else if (teamColor == "Blue")
+            {
+                if (myMatMesh.name != "Red (Instance)")
+                {
+                    possInds.Add(x);
+                }
+            }
+        }
+
+        if (possInds.Count > 0)
+        {
+            int rand = UnityEngine.Random.Range(0, possInds.Count);
+            return hexGrids[possInds[rand]].transform.position;
+        }
+
+        return Vector3.zero;
     }
 }
