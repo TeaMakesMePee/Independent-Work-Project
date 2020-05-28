@@ -7,7 +7,6 @@ using Photon.Pun;
 
 public class HexGameLauncher : MonoBehaviourPunCallbacks
 {
-
     public void Awake()
     {
         //On awake, connects
@@ -18,7 +17,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         //Once connected, join
-        Join();
+        //Join();
 
         base.OnConnectedToMaster();
     }
