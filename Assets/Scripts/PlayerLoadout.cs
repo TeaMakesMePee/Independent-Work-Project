@@ -169,8 +169,8 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     {
         Transform playerEye = transform.Find("Cameras/EyeCam");
 
-        float rand = Random.Range(-weapons[currWeapID].bloom, weapons[currWeapID].bloom);
-        float rand2 = Random.Range(-weapons[currWeapID].bloom, weapons[currWeapID].bloom);
+        float rand = Random.Range(-weapons[currWeapID].bloom, weapons[currWeapID].bloom/*-0.1f, 0.1f*/);
+        float rand2 = Random.Range(-weapons[currWeapID].bloom, weapons[currWeapID].bloom/*-0.1f, 0.1f*/);
         Vector3 bloom = playerEye.forward + rand * playerEye.up
             + rand2 * playerEye.right;
         bloom.Normalize();
