@@ -31,9 +31,9 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     void Update()
     {
         //if (!photonView.IsMine) return;
-
         if (photonView.IsMine)
         {
+            #region weapon wheel
             if (mouseScroll > 0f && Input.GetAxis("Mouse ScrollWheel") > 0f)
             {
                 mouseScroll += Input.GetAxis("Mouse ScrollWheel");
@@ -73,17 +73,22 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                 photonView.RPC("Equip", RpcTarget.AllBuffered, currWeapID);
                 mouseScroll = 0f;
             }
-            //for (int x = 0; x < 3; ++x) //3 slots for loadout
-            //{
-            //    if (Input.GetKeyDown((KeyCode)(49 + x)))
-            //    {
-            //        if (x != currWeapID && x < weapons.Length)
-            //        {
-            //            photonView.RPC("Equip", RpcTarget.AllBuffered, x);
-            //            //Equip(x);
-            //        }
-            //    }
-            //}
+            #endregion
+
+            #region weapon keys
+            for (int x = 0; x < weapons.Length; ++x) //3 slots for loadout
+            {
+                if (Input.GetKeyDown((KeyCode)(49 + x)))
+                {
+                    if (x != currWeapID/* && x < weapons.Length*/)
+                    {
+                        currWeapID = x;
+                        photonView.RPC("Equip", RpcTarget.AllBuffered, currWeapID);
+                        //Equip(x);
+                    }
+                }
+            }
+            #endregion
 
             if (currWeapID != -1)
             {
