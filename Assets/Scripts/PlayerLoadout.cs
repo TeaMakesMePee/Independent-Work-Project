@@ -15,15 +15,16 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     public LayerMask bulletCollidable;
 
     private GameObject currWeapon;
-    private int currWeapID = -1;
+    private int currWeapID = 0;
     private float firerate;
 
     private bool isReloading;
-
+    private float mouseScroll;
     private void Start()
     {
         foreach (Weapon w in weapons) w.InitGun();
-        photonView.RPC("Equip", RpcTarget.AllBuffered, 0);
+        photonView.RPC("Equip", RpcTarget.AllBuffered, currWeapID);
+        mouseScroll = 0f;
     }
 
     // Update is called once per frame
@@ -33,17 +34,56 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
 
         if (photonView.IsMine)
         {
-            for (int x = 0; x < 3; ++x) //3 slots for loadout
+            if (mouseScroll > 0f && Input.GetAxis("Mouse ScrollWheel") > 0f)
             {
-                if (Input.GetKeyDown((KeyCode)(49 + x)))
-                {
-                    if (x != currWeapID && x < weapons.Length)
-                    {
-                        photonView.RPC("Equip", RpcTarget.AllBuffered, x);
-                        //Equip(x);
-                    }
-                }
+                mouseScroll += Input.GetAxis("Mouse ScrollWheel");
             }
+            else if (mouseScroll < 0f && Input.GetAxis("Mouse ScrollWheel") < 0f)
+            {
+                mouseScroll += Input.GetAxis("Mouse ScrollWheel");
+            }
+            else if (Input.GetAxis("Mouse ScrollWheel") != 0f)
+            {
+                mouseScroll += Input.GetAxis("Mouse ScrollWheel");
+            }
+
+            if (mouseScroll <= -0.3f)
+            {
+                if (currWeapID < weapons.Length - 1)
+                {
+                    currWeapID += 1;
+                }
+                else if (currWeapID == weapons.Length - 1)
+                {
+                    currWeapID = 0;
+                }
+                photonView.RPC("Equip", RpcTarget.AllBuffered, currWeapID);
+                mouseScroll = 0f;
+            }
+            else if (mouseScroll >= 0.3f)
+            {
+                if (currWeapID > 0)
+                {
+                    currWeapID -= 1;
+                }
+                else if (currWeapID == 0)
+                {
+                    currWeapID = weapons.Length - 1;
+                }
+                photonView.RPC("Equip", RpcTarget.AllBuffered, currWeapID);
+                mouseScroll = 0f;
+            }
+            //for (int x = 0; x < 3; ++x) //3 slots for loadout
+            //{
+            //    if (Input.GetKeyDown((KeyCode)(49 + x)))
+            //    {
+            //        if (x != currWeapID && x < weapons.Length)
+            //        {
+            //            photonView.RPC("Equip", RpcTarget.AllBuffered, x);
+            //            //Equip(x);
+            //        }
+            //    }
+            //}
 
             if (currWeapID != -1)
             {
@@ -121,7 +161,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         newWeapon.transform.localEulerAngles = Vector3.zero;
 
         currWeapon = newWeapon;
-        currWeapID = weaponID;
+        //currWeapID = weaponID;
     }
 
     [PunRPC]
@@ -154,12 +194,16 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             }    
         }
 
-        float adsDamp = 1f;
+        float recDamp = 1f;
+        float kbDamp = 1f;
         if (isAds)
-            adsDamp = 0.5f;
+        {
+            recDamp = 0.5f;
+            kbDamp = 0.1f;
+        }
 
-        currWeapon.transform.Rotate(-weapons[currWeapID].recoil * adsDamp, 0, 0);
-        currWeapon.transform.position -= currWeapon.transform.forward * weapons[currWeapID].kickback * adsDamp;
+        currWeapon.transform.Rotate(-weapons[currWeapID].recoil * recDamp, 0, 0);
+        currWeapon.transform.position -= currWeapon.transform.forward * weapons[currWeapID].kickback * kbDamp;
 
         firerate = weapons[currWeapID].firerate;
     }

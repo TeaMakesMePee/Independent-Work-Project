@@ -175,6 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapons:
   - {fileID: 11400000, guid: b8308dfd95dcea340a0f4481ee41d96a, type: 2}
+  - {fileID: 11400000, guid: b516a33d89e4dcb4598972ecebe2add0, type: 2}
   weaponParent: {fileID: 6293200105149640062}
   bulletholePrefab: {fileID: 8885059213651409482, guid: ff0913c101b13f44c9555d61bb4bfe8e,
     type: 3}
@@ -243,7 +244,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6293200105149640061}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: -0.089}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0.177}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6293200104841510698}
@@ -275,7 +276,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6293200105259471347}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: -0.089}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0.177}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6293200106184566602}
@@ -304,7 +305,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -457,7 +458,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6293200106184566602
 Transform:
   m_ObjectHideFlags: 0

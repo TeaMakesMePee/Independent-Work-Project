@@ -70,6 +70,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             gameObject.tag = "Player";
             //Debug.LogError(gameObject.tag);
         }
+        else
+        {
+            GetComponent<MeshRenderer>().enabled = false;
+        }
 
         //Set my player camera to true
         camParent.SetActive(photonView.IsMine);
