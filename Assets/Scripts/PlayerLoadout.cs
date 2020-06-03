@@ -49,12 +49,13 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             {
                 //AimDownSight(Input.GetMouseButton(1));
                 photonView.RPC("AimDownSight", RpcTarget.All, Input.GetMouseButton(1));
+                GetComponent<Player>().SetADS(Input.GetMouseButton(1));
 
                 if (Input.GetMouseButton(0) && firerate <= 0f)
                 {
                     if (weapons[currWeapID].FireBullet())
                     { 
-                        photonView.RPC("Shoot", RpcTarget.All);
+                        photonView.RPC("Shoot", RpcTarget.All, Input.GetMouseButton(1));
                     }
                     else
                     {
@@ -124,7 +125,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void Shoot()
+    private void Shoot(bool isAds)
     {
         Transform playerEye = transform.Find("Cameras/EyeCam");
 
@@ -153,8 +154,12 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             }    
         }
 
-        currWeapon.transform.Rotate(-weapons[currWeapID].recoil, 0, 0);
-        currWeapon.transform.position -= currWeapon.transform.forward * weapons[currWeapID].kickback;
+        float adsDamp = 1f;
+        if (isAds)
+            adsDamp = 0.5f;
+
+        currWeapon.transform.Rotate(-weapons[currWeapID].recoil * adsDamp, 0, 0);
+        currWeapon.transform.position -= currWeapon.transform.forward * weapons[currWeapID].kickback * adsDamp;
 
         firerate = weapons[currWeapID].firerate;
     }

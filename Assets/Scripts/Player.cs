@@ -40,6 +40,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     private GenerateHexGrid theHexGrids = new GenerateHexGrid();
 
+    private bool isADS;
+    private float adsDamp;
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo message) //Sends data if your photonview, receives data if it isnt yours
     {
         //Example: 
@@ -84,6 +87,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         hpBar = GameObject.Find("Bar").transform;
         ammoUI = GameObject.Find("AmmoCount").GetComponent<Text>();
         currHpScale = 1f;
+
+        isADS = false;
+        adsDamp = 1f;
     }
 
     private void Update()
@@ -101,21 +107,26 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         float vertMove = Input.GetAxisRaw("Vertical");
         float bobLerp = 2f;
 
+        //Dampen if player is ads-ing
+        adsDamp = 1f;
+        if (isADS)
+            adsDamp = 0.5f;
+
         if (horiMove == 0 && vertMove == 0) //if not moving
         {
-            HeadBob(idleCount, 0.01f, 0.01f); //Slight bob
+            HeadBob(idleCount, 0.01f * adsDamp, 0.01f * adsDamp); //Slight bob
             idleCount += Time.deltaTime;
         }
         else if (!isSlowWalk) //if walking
         {
-            HeadBob(movingCount, 0.07f, 0.05f);
+            HeadBob(movingCount, 0.07f * adsDamp, 0.05f * adsDamp);
             //HeadBob(movingCount, 0.035f, 0.035f); //increase bob
             movingCount += Time.deltaTime * 4f;
             bobLerp = 14f;
         }
         else if (isSlowWalk) //if slow walking
         {
-            HeadBob(movingCount, 0.035f, 0.035f); //increase bob
+            HeadBob(movingCount, 0.035f * adsDamp, 0.035f * adsDamp); //increase bob
             movingCount += Time.deltaTime * 2f;
             bobLerp = 8f;
         }
@@ -208,5 +219,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 playerDeaths++;
             }
         }
+    }
+
+    public void SetADS(bool adsState)
+    {
+        isADS = adsState;
     }
 }
