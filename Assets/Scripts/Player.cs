@@ -111,6 +111,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private void Update()
     {
         //Debug.LogError(photonView.ViewID);
+        if (!manager.gameStart) return;
+
         if (!photonView.IsMine) 
         {
             UpdateNonClientPlayers();
@@ -163,6 +165,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     void FixedUpdate()
     {
         if (!photonView.IsMine) return;
+
+        if (!manager.gameStart) return;
 
         float horiMove = Input.GetAxisRaw("Horizontal");
         float vertMove = Input.GetAxisRaw("Vertical");
@@ -256,5 +260,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public bool GetMoving()
     {
         return isMoving;
+    }
+
+    public bool GetGameStart()
+    {
+        return manager.gameStart;
     }
 }

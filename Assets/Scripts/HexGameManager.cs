@@ -7,6 +7,7 @@ using Photon.Pun;
 using ExitGames.Client.Photon;
 using Photon.Realtime;
 using System.Threading;
+using UnityEngine.UI;
 
 public struct PlayerInfo
 {
@@ -32,6 +33,9 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
     public PlayerInfo myInfo;
     private List<GameObject> hexGrids = new List<GameObject>();
     private bool firstSpawn;
+    private float loadTime, matchTime;
+    public Text gameTimer;
+    private bool gameOver;
 
     public enum EventCodes : byte
     {
@@ -41,11 +45,47 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
 
     public void Start()
     {
+        loadTime = 5f;
+        matchTime = 20f;
+        gameTimer.text = fToS(loadTime);
         myInd = -1;
         firstSpawn = true;
         isMapSpawned = false;
+        gameStart = false;
         SendNewPlayer();
         Spawn();
+    }
+
+    public void Update()
+    {
+        if (!gameStart)
+        {
+            if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
+            {
+                if (loadTime > 0f)
+                {
+                    loadTime -= Time.deltaTime;
+                    if (loadTime < 0f)
+                    {
+                        loadTime = 0f;
+                        gameStart = true;
+                    }
+                    gameTimer.text = fToS(loadTime);
+                }
+            }
+        }
+        else
+        {
+            if (matchTime > 0f)
+            {
+                matchTime -= Time.deltaTime;
+                if (matchTime < 0f)
+                {
+                    matchTime = 0f;
+                }
+                gameTimer.text = fToS(matchTime);
+            }
+        }
     }
 
     private void OnEnable()
@@ -233,5 +273,25 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
         }
 
         return Vector3.zero;
+    }
+
+    public bool gameStart
+    {
+        get;
+        set;
+    }
+
+    private string fToS(float time)
+    {
+        int front = (int)time;
+        float back = time - front;
+        string tempB = back.ToString("F2");
+        string newB = "";
+        for (int x = 0; x < tempB.Length; ++x)
+        {
+            if (x > 1)
+                newB += tempB[x];
+        }
+        return front + ":" + newB;
     }
 }

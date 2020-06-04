@@ -91,7 +91,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             }
             #endregion
 
-            if (currWeapID != -1)
+            if (currWeapID != -1 && GetComponent<Player>().GetGameStart())
             {
                 //AimDownSight(Input.GetMouseButton(1));
                 if (weapons[currWeapID].weapName == "Pistol") //Only pistols can ads
