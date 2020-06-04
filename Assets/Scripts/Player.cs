@@ -80,7 +80,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         else
         {
             sceneCam = GameObject.Find("SceneCam");
-            sceneCam.SetActive(false);
+            if (sceneCam != null)
+                sceneCam.SetActive(false);
         }
 
         //Set my player camera to true
@@ -237,7 +238,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (photonView.IsMine)
         {
             currHealth -= damage;
-            Debug.LogError("HP: " + currHealth);
 
             if (currHealth <= 0)
             {

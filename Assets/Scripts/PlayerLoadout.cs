@@ -5,6 +5,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Pun.Demo.Cockpit;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class PlayerLoadout : MonoBehaviourPunCallbacks
 {
@@ -179,7 +180,9 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             anchor.position = Vector3.Lerp(anchor.position, hip.position, Time.deltaTime * weapons[currWeapID].adsSpeed);
             weapons[currWeapID].adsDampVal = weapons[currWeapID].initAdsDamp;
         }
-        weapons[currWeapID].isAds = isAim;
+
+        if (photonView.IsMine)
+            weapons[currWeapID].isAds = isAim;
     }
 
     [PunRPC]

@@ -46,7 +46,6 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
         isMapSpawned = false;
         SendNewPlayer();
         Spawn();
-        Debug.LogError(PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     private void OnEnable()
