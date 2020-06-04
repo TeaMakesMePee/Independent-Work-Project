@@ -178,7 +178,6 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             anchor.position = Vector3.Lerp(anchor.position, hip.position, Time.deltaTime * weapons[currWeapID].adsSpeed);
         }
         weapons[currWeapID].isAds = isAim;
-        Debug.LogError(weapons[currWeapID].isAds);
     }
 
     [PunRPC]
@@ -201,6 +200,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     [PunRPC]
     private void Shoot()
     {
+        //Temp code
         float recDamp = 1f;
         float kbDamp = 1f;
         float bDamp = 1f;
