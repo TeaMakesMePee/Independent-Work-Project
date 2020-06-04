@@ -48,6 +48,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private Weapon thePlayerWeap;
 
     private GameObject crosshair;
+    private GameObject sceneCam;
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo message) //Sends data if your photonview, receives data if it isnt yours
     {
@@ -75,6 +76,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             gameObject.layer = 11;
             gameObject.tag = "Player";
             //Debug.LogError(gameObject.tag);
+        }
+        else
+        {
+            sceneCam = GameObject.Find("SceneCam");
+            sceneCam.SetActive(false);
         }
 
         //Set my player camera to true

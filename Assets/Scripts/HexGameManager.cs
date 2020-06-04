@@ -6,6 +6,7 @@ using UnityEngine;
 using Photon.Pun;
 using ExitGames.Client.Photon;
 using Photon.Realtime;
+using System.Threading;
 
 public struct PlayerInfo
 {
@@ -30,6 +31,7 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
     public List<PlayerInfo> playerInfo = new List<PlayerInfo>();
     public PlayerInfo myInfo;
     private List<GameObject> hexGrids = new List<GameObject>();
+    private bool firstSpawn;
 
     public enum EventCodes : byte
     {
@@ -39,9 +41,12 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
 
     public void Start()
     {
+        myInd = -1;
+        firstSpawn = true;
         isMapSpawned = false;
         SendNewPlayer();
         Spawn();
+        Debug.LogError(PhotonNetwork.LocalPlayer.ActorNumber);
     }
 
     private void OnEnable()
@@ -60,9 +65,12 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
             PhotonNetwork.InstantiateSceneObject(mapPrefab, Vector3.zero, Quaternion.identity);
             isMapSpawned = true;
         }
-        Vector3 spawn = GetRandomSpawn(myInfo.team);
-        spawn.y = spawnPoint.position.y;
-        PhotonNetwork.Instantiate(playerPrefab, spawn, spawnPoint.rotation);
+        if (!firstSpawn)
+        {
+            Vector3 spawn = GetRandomSpawn(myInfo.team);
+            spawn.y = spawnPoint.position.y;
+            PhotonNetwork.Instantiate(playerPrefab, spawn, spawnPoint.rotation);
+        }
     }
 
     private string AssignTeam()
@@ -176,6 +184,24 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
     public void UpdateGridInfo(List<GameObject> hGrids)
     {
         hexGrids = hGrids;
+        if (firstSpawn)
+        {
+            int index = -1;
+            if (PhotonNetwork.CurrentRoom.PlayerCount % 2 == 1)
+                index = (PhotonNetwork.CurrentRoom.PlayerCount - 1) / 2;
+            else
+                index = hexGrids.Count - PhotonNetwork.CurrentRoom.PlayerCount / 2;
+
+            Vector3 spawn = IndexToHexVec3(index);
+            spawn.y = spawnPoint.position.y;
+            PhotonNetwork.Instantiate(playerPrefab, spawn, spawnPoint.rotation);
+            firstSpawn = false;
+        }
+    }
+
+    public Vector3 IndexToHexVec3(int index)
+    {
+        return hexGrids[index].transform.position;
     }
 
     public Vector3 GetRandomSpawn(string teamColor)

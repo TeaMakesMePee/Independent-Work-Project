@@ -29,6 +29,7 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+        #region generation
         //float width = 2f * tileScale;
         //float height = Mathf.Sqrt(3f) * tileScale;
         //float downShift = 0.08f;
@@ -48,6 +49,7 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
         //}
 
         //PrefabUtility.SaveAsPrefabAsset(gameObject, "Assets/Prefabs/Grids2.prefab");
+        #endregion
         if (visited.Count != hexGrids.Count)
         {
             visited = new List<bool>();
@@ -56,7 +58,6 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
                 visited.Add(false);
             }
         }
-
         manager = GameObject.Find("GameManager").GetComponent<HexGameManager>();
         UpdateGameManager();
     }
@@ -177,14 +178,18 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
         if (prevIndex == -1)
         {
             if (!CheckIfOccupied(index))
+            {
                 photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index, manager.GetLocalPlayerTeam());
+            }
             prevIndex = index;
         }
         else if (prevIndex != index || (manager.GetLocalPlayerTeam() + " (Instance)") != myMatMesh.name)
         {
             prevIndex = index;
             if (!CheckIfOccupied(index))
+            {
                 photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index, manager.GetLocalPlayerTeam());
+            }
             if (row >= 0 && row < gridWidth)
             {
                 if (column >= 0 && column < gridHeight)
@@ -260,7 +265,9 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
                         for (int xx = 0; xx < tempIntList.Count; ++xx)
                         {
                             if (!CheckIfOccupied(tempIntList[xx]))
+                            {
                                 photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, tempIntList[xx], manager.GetLocalPlayerTeam());
+                            }
                         }
                         //photonView.RPC("ApplyFloodFill", RpcTarget.AllBuffered, tempIntList);
                     }
@@ -378,6 +385,7 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
 
     private void UpdateGameManager()
     {
-        manager.UpdateGridInfo(hexGrids);
+        if (manager != null)
+            manager.UpdateGridInfo(hexGrids);
     }
 }

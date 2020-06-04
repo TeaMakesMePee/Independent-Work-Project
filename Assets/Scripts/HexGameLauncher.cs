@@ -24,7 +24,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         //Once connected, join
         //Join();
-        PhotonNetwork.JoinLobby(); //
+        PhotonNetwork.JoinLobby();
         base.OnConnectedToMaster();
     }
 
@@ -58,10 +58,10 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
     public void Create()
     {
-        RoomOptions options = new RoomOptions();//
-        options.MaxPlayers = 6;//
+        RoomOptions options = new RoomOptions();
+        options.MaxPlayers = 6;
 
-        PhotonNetwork.CreateRoom(roomName.text, options);//
+        PhotonNetwork.CreateRoom(roomName.text, options);
     }
 
     private void CloseAllTabs()
@@ -71,13 +71,13 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         RoomsTab.SetActive(false);
     }
 
-    public void OpenRoomsTab() //
+    public void OpenRoomsTab()
     {
         CloseAllTabs();
         RoomsTab.SetActive(true);
     }
 
-    public void OpenMainMenuTab() //
+    public void OpenMainMenuTab()
     {
         CloseAllTabs();
         MainMenuTab.SetActive(true);
