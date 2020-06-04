@@ -6,8 +6,8 @@ using UnityEngine;
 public class Weapon : ScriptableObject
 {
     public int damage;
-    public string name;
-    public float firerate, adsSpeed, bloom, recoil, kickback;
+    public string weapName;
+    public float firerate, adsSpeed, recoil, kickback;
     public float reloadTime;
     public GameObject prefab;
 
@@ -17,10 +17,14 @@ public class Weapon : ScriptableObject
     [SerializeField]
     public int maxMagSize;
 
+    public float bloom, maxBloom, initBloom;
+
     public void InitGun() //Init weapon if it hasnt yet been initted
     {
         ammo = staticAmmo;
         currMagSize = maxMagSize;
+        bloom = initBloom;
+        isAds = false;
     }
 
     public bool FireBullet()
@@ -65,4 +69,6 @@ public class Weapon : ScriptableObject
     public int GetAmmo() { return ammo; }
 
     public int GetMagAmmo() { return currMagSize; }
+
+    public bool isAds { get; set; }
 }

@@ -43,6 +43,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private bool isADS;
     private float adsDamp;
 
+    private bool isMoving;
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo message) //Sends data if your photonview, receives data if it isnt yours
     {
         //Example: 
@@ -90,6 +92,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         isADS = false;
         adsDamp = 1f;
+        isMoving = false;
     }
 
     private void Update()
@@ -177,6 +180,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         Vector3 dir = new Vector3(horiMove, 0, vertMove);
         dir.Normalize();
+        if (dir == Vector3.zero)
+        {
+            isMoving = false;
+        }
+        else
+        {
+            isMoving = true;
+        }
 
         Vector3 newVel = transform.TransformDirection(dir) * newSpeed * Time.deltaTime;
         newVel.y = playerRig.velocity.y;
@@ -224,5 +235,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public void SetADS(bool adsState)
     {
         isADS = adsState;
+    }
+
+    public bool GetMoving()
+    {
+        return isMoving;
     }
 }

@@ -13,13 +13,15 @@ MonoBehaviour:
   m_Name: Pistol
   m_EditorClassIdentifier: 
   damage: 10
-  name: Pistol
+  weapName: Pistol
   firerate: 0.2
   adsSpeed: 20
-  bloom: 0.025
   recoil: 10
   kickback: 0.2
   reloadTime: 1
   prefab: {fileID: 988495284321458729, guid: b0b1225f22e86564aa9e8a4f6b544bcd, type: 3}
   staticAmmo: 20
   maxMagSize: 10
+  bloom: 0.025
+  maxBloom: 0
+  initBloom: 0.025

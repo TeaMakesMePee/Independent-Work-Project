@@ -93,24 +93,51 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             if (currWeapID != -1)
             {
                 //AimDownSight(Input.GetMouseButton(1));
-                photonView.RPC("AimDownSight", RpcTarget.All, Input.GetMouseButton(1));
-                GetComponent<Player>().SetADS(Input.GetMouseButton(1));
+                if (weapons[currWeapID].weapName == "Pistol") //Only pistols can ads
+                {
+                    photonView.RPC("AimDownSight", RpcTarget.All, Input.GetMouseButton(1));
+                    GetComponent<Player>().SetADS(Input.GetMouseButton(1));
+                }
 
                 if (Input.GetMouseButton(0) && firerate <= 0f)
                 {
                     if (weapons[currWeapID].FireBullet())
                     { 
-                        photonView.RPC("Shoot", RpcTarget.All, Input.GetMouseButton(1));
+                        photonView.RPC("Shoot", RpcTarget.All);
                     }
                     else
                     {
                         if (weapons[currWeapID].ifReloadable() && !isReloading)
                             StartCoroutine(Reload(weapons[currWeapID].reloadTime));
                     }
-                    //Shoot();
                 }
 
-                if (Input.GetKeyDown(KeyCode.R))
+                //Apply increasing bloom to all weapons except pistol
+                if (weapons[currWeapID].weapName != "Pistol")
+                {
+                    if (Input.GetMouseButton(0))
+                    {
+                        if (weapons[currWeapID].bloom < weapons[currWeapID].maxBloom)
+                        {
+                            float multiply = 0.03f;
+                            if (GetComponent<Player>().GetMoving()) //if moving, increase bloom even more
+                            {
+                                multiply = 0.05f;
+                            }
+                            weapons[currWeapID].bloom += Time.deltaTime * multiply;
+                        }
+                    }
+                    else
+                    {
+                        if (weapons[currWeapID].bloom > 0f)
+                            weapons[currWeapID].bloom -= Time.deltaTime * 0.1f;
+                    }
+
+                    //Clamp
+                    weapons[currWeapID].bloom = Mathf.Clamp(weapons[currWeapID].bloom, 0f, weapons[currWeapID].maxBloom);
+                }
+
+                if (Input.GetKeyDown(KeyCode.R)) //Reload
                 {
                     if (weapons[currWeapID].ifReloadable() && !isReloading)
                         StartCoroutine(Reload(weapons[currWeapID].reloadTime));
@@ -150,6 +177,8 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         {
             anchor.position = Vector3.Lerp(anchor.position, hip.position, Time.deltaTime * weapons[currWeapID].adsSpeed);
         }
+        weapons[currWeapID].isAds = isAim;
+        Debug.LogError(weapons[currWeapID].isAds);
     }
 
     [PunRPC]
@@ -170,12 +199,22 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void Shoot(bool isAds)
+    private void Shoot()
     {
+        float recDamp = 1f;
+        float kbDamp = 1f;
+        float bDamp = 1f;
+        if (weapons[currWeapID].isAds)
+        {
+            recDamp = 0.5f;
+            kbDamp = 0.1f;
+            bDamp = 0.2f;
+        }
+
         Transform playerEye = transform.Find("Cameras/EyeCam");
 
-        float rand = Random.Range(-weapons[currWeapID].bloom, weapons[currWeapID].bloom/*-0.1f, 0.1f*/);
-        float rand2 = Random.Range(-weapons[currWeapID].bloom, weapons[currWeapID].bloom/*-0.1f, 0.1f*/);
+        float rand = Random.Range(-weapons[currWeapID].bloom * bDamp, weapons[currWeapID].bloom * bDamp/*-0.1f, 0.1f*/);
+        float rand2 = Random.Range(-weapons[currWeapID].bloom * bDamp, weapons[currWeapID].bloom * bDamp/*-0.1f, 0.1f*/);
         Vector3 bloom = playerEye.forward + rand * playerEye.up
             + rand2 * playerEye.right;
         bloom.Normalize();
@@ -197,14 +236,6 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                     hit.collider.gameObject.GetPhotonView().RPC("TakeDamage", RpcTarget.All, weapons[currWeapID].damage);
                 }
             }    
-        }
-
-        float recDamp = 1f;
-        float kbDamp = 1f;
-        if (isAds)
-        {
-            recDamp = 0.5f;
-            kbDamp = 0.1f;
         }
 
         currWeapon.transform.Rotate(-weapons[currWeapID].recoil * recDamp, 0, 0);
