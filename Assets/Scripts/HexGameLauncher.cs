@@ -3,10 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Photon.Pun;
-
+using Photon.Realtime;
+using UnityEngine.UI;
 
 public class HexGameLauncher : MonoBehaviourPunCallbacks
 {
+    public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab;
+    private List<RoomInfo> roomList;
+
+    public InputField roomName;
+
     public void Awake()
     {
         //On awake, connects
@@ -18,7 +24,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         //Once connected, join
         //Join();
-
+        PhotonNetwork.JoinLobby(); //
         base.OnConnectedToMaster();
     }
 
@@ -52,7 +58,66 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
     public void Create()
     {
-        PhotonNetwork.CreateRoom("");
+        RoomOptions options = new RoomOptions();//
+        options.MaxPlayers = 6;//
+
+        PhotonNetwork.CreateRoom(roomName.text, options);//
+    }
+
+    private void CloseAllTabs()
+    {
+        MainMenuTab.SetActive(false);
+        CreateTab.SetActive(false);
+        RoomsTab.SetActive(false);
+    }
+
+    public void OpenRoomsTab() //
+    {
+        CloseAllTabs();
+        RoomsTab.SetActive(true);
+    }
+
+    public void OpenMainMenuTab() //
+    {
+        CloseAllTabs();
+        MainMenuTab.SetActive(true);
+    }
+
+    public void OpenCreateTab()
+    {
+        CloseAllTabs();
+        CreateTab.SetActive(true);
+    }
+
+    private void ClearRoomList() //Clears all the room list in prep for updating the list
+    {
+        Transform content = RoomsTab.transform.Find("Scroll View/Viewport/Content");
+        foreach (Transform roomButt in content) Destroy(roomButt.gameObject);
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> list)
+    {
+        roomList = list;
+        ClearRoomList();
+
+        Transform content = RoomsTab.transform.Find("Scroll View/Viewport/Content");
+
+        foreach (RoomInfo room in roomList)
+        {
+            GameObject newRoomButton = Instantiate(RoomsButton, content) as GameObject;
+
+            newRoomButton.transform.Find("RoomName").GetComponent<Text>().text = room.Name;
+            newRoomButton.transform.Find("RoomCount").GetComponent<Text>().text = room.PlayerCount + " / " + room.MaxPlayers;
+
+            newRoomButton.GetComponent<Button>().onClick.AddListener(delegate { JoinRoom(newRoomButton.transform); });
+        }
+
+        base.OnRoomListUpdate(roomList);
+    }
+
+    public void JoinRoom(Transform button)
+    {
+        PhotonNetwork.JoinRoom(button.transform.Find("RoomName").GetComponent<Text>().text);
     }
 
     public void StartGame()
