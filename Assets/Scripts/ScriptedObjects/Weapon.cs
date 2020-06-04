@@ -18,6 +18,11 @@ public class Weapon : ScriptableObject
     public int maxMagSize;
 
     public float bloom, maxBloom, initBloom;
+    public float adsDamp, initAdsDamp;
+
+    public float staticBobX, staticBobY;
+    public float walkBobX, walkBobY;
+    public float sWalkBobX, sWalkBobY;
 
     public void InitGun() //Init weapon if it hasnt yet been initted
     {
@@ -25,6 +30,7 @@ public class Weapon : ScriptableObject
         currMagSize = maxMagSize;
         bloom = initBloom;
         isAds = false;
+        adsDampVal = initAdsDamp;
     }
 
     public bool FireBullet()
@@ -71,4 +77,6 @@ public class Weapon : ScriptableObject
     public int GetMagAmmo() { return currMagSize; }
 
     public bool isAds { get; set; }
+
+    public float adsDampVal { get; set; }
 }

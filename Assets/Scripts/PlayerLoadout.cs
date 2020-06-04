@@ -172,10 +172,12 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         if (isAim)
         {
             anchor.position = Vector3.Lerp(anchor.position, ads.position, Time.deltaTime * weapons[currWeapID].adsSpeed);
+            weapons[currWeapID].adsDampVal = weapons[currWeapID].adsDamp;
         }
         else
         {
             anchor.position = Vector3.Lerp(anchor.position, hip.position, Time.deltaTime * weapons[currWeapID].adsSpeed);
+            weapons[currWeapID].adsDampVal = weapons[currWeapID].initAdsDamp;
         }
         weapons[currWeapID].isAds = isAim;
     }
@@ -254,5 +256,10 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     {
         if (currWeapID != -1)
             theUI.text = weapons[currWeapID].GetMagAmmo().ToString() + "/" + weapons[currWeapID].GetAmmo().ToString();
+    }
+
+    public Weapon GetWeapon()
+    {
+        return weapons[currWeapID];
     }
 }

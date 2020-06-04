@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 10
   weapName: Pistol
-  firerate: 0.2
+  firerate: 0.15
   adsSpeed: 20
   recoil: 10
   kickback: 0.2
@@ -25,3 +25,11 @@ MonoBehaviour:
   bloom: 0.025
   maxBloom: 0
   initBloom: 0.025
+  adsDamp: 0.1
+  initAdsDamp: 1
+  staticBobX: 0.01
+  staticBobY: 0.01
+  walkBobX: 0.07
+  walkBobY: 0.05
+  sWalkBobX: 0.035
+  sWalkBobY: 0.035

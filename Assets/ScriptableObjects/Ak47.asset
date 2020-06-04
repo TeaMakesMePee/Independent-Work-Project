@@ -16,8 +16,8 @@ MonoBehaviour:
   weapName: Ak47
   firerate: 0.1
   adsSpeed: 30
-  recoil: 5
-  kickback: 0.1
+  recoil: 1
+  kickback: 0.05
   reloadTime: 1.5
   prefab: {fileID: 988495284321458729, guid: 2039a86b8e430f449aaa4966cd3265d6, type: 3}
   staticAmmo: 60
@@ -25,3 +25,11 @@ MonoBehaviour:
   bloom: 0
   maxBloom: 0.1
   initBloom: 0
+  adsDamp: 1
+  initAdsDamp: 1
+  staticBobX: 0.01
+  staticBobY: 0.01
+  walkBobX: 0.03
+  walkBobY: 0.03
+  sWalkBobX: 0.02
+  sWalkBobY: 0.02

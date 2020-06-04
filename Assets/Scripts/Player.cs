@@ -45,6 +45,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     private bool isMoving;
 
+    private Weapon thePlayerWeap;
+
+    private GameObject crosshair;
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo message) //Sends data if your photonview, receives data if it isnt yours
     {
         //Example: 
@@ -90,6 +94,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         ammoUI = GameObject.Find("AmmoCount").GetComponent<Text>();
         currHpScale = 1f;
 
+        crosshair = GameObject.Find("Crosshair");
+
         isADS = false;
         adsDamp = 1f;
         isMoving = false;
@@ -104,32 +110,36 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             return; 
         }
 
+        //Get player weapon in that frame
+        thePlayerWeap = GetComponent<PlayerLoadout>().GetWeapon();
+
+        //Set active of crosshair
+        crosshair.SetActive(!thePlayerWeap.isAds);
+
         //Debug.LogError(PhotonNetwork.LocalPlayer.ActorNumber);
 
         float horiMove = Input.GetAxisRaw("Horizontal");
         float vertMove = Input.GetAxisRaw("Vertical");
         float bobLerp = 2f;
 
-        //Dampen if player is ads-ing
-        adsDamp = 1f;
-        if (isADS)
-            adsDamp = 0.5f;
-
         if (horiMove == 0 && vertMove == 0) //if not moving
         {
-            HeadBob(idleCount, 0.01f * adsDamp, 0.01f * adsDamp); //Slight bob
+            //HeadBob(idleCount, 0.01f * adsDamp, 0.01f * adsDamp); //Slight bob
+            HeadBob(idleCount, thePlayerWeap.staticBobX * thePlayerWeap.adsDampVal, thePlayerWeap.staticBobY * thePlayerWeap.adsDampVal);
             idleCount += Time.deltaTime;
         }
         else if (!isSlowWalk) //if walking
         {
-            HeadBob(movingCount, 0.07f * adsDamp, 0.05f * adsDamp);
+            HeadBob(movingCount, thePlayerWeap.walkBobX * thePlayerWeap.adsDampVal, thePlayerWeap.walkBobY * thePlayerWeap.adsDampVal);
+            //HeadBob(movingCount, 0.07f * adsDamp, 0.05f * adsDamp);
             //HeadBob(movingCount, 0.035f, 0.035f); //increase bob
             movingCount += Time.deltaTime * 4f;
             bobLerp = 14f;
         }
         else if (isSlowWalk) //if slow walking
         {
-            HeadBob(movingCount, 0.035f * adsDamp, 0.035f * adsDamp); //increase bob
+            HeadBob(movingCount, thePlayerWeap.sWalkBobX * thePlayerWeap.adsDampVal, thePlayerWeap.sWalkBobY * thePlayerWeap.adsDampVal);
+            //HeadBob(movingCount, 0.035f * adsDamp, 0.035f * adsDamp); //increase bob
             movingCount += Time.deltaTime * 2f;
             bobLerp = 8f;
         }
@@ -168,7 +178,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         //Sprint check
-        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && vertMove > 0/* && !inAir*/)
+        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) /*&& (vertMove != 0 || horiMove != 0) && !inAir*/)
         {
             newSpeed *= sprintMultiplier;
             //targetFOV = sprintFOV;
