@@ -9,6 +9,7 @@ using Photon.Realtime;
 using System.Threading;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public struct PlayerInfo
 {
@@ -276,6 +277,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         //mapcam.SetActive(true);
         PhotonNetwork.AutomaticallySyncScene = false;
         PhotonNetwork.LeaveRoom();
+        Debug.LogError("GameOver. " + CheckWinLose());
     }
 
     public string GetLocalPlayerTeam()
@@ -336,6 +338,37 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
 
         return Vector3.zero;
+    }
+
+    private string CheckWinLose()
+    {
+        int red, blue;
+        red = blue = 0;
+        for (int x = 0; x < hexGrids.Count; ++x)
+        {
+            Transform myMat = hexGrids[x].transform.GetChild(0);
+            Material myMatMesh = myMat.GetComponent<MeshRenderer>().material;
+            
+            if (myMatMesh.name != "Blue (Instance)")
+            {
+                blue++;
+            }
+            else if (myMatMesh.name != "Red (Instance)")
+            {
+                red++;
+            }
+        }
+        
+        if (red > blue)
+        {
+            return "Red";
+        }
+        else if (blue > red)
+        {
+            return "Blue";
+        }
+
+        return "Draw";
     }
 
     public bool gameStart
