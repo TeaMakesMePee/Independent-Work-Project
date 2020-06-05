@@ -8,6 +8,7 @@ using ExitGames.Client.Photon;
 using Photon.Realtime;
 using System.Threading;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public struct PlayerInfo
 {
@@ -21,7 +22,7 @@ public struct PlayerInfo
     }
 }
 
-public class HexGameManager : MonoBehaviour, IOnEventCallback
+public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
     public string playerPrefab;
     public Transform spawnPoint;
@@ -36,6 +37,7 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
     private float loadTime, matchTime;
     public Text gameTimer;
     private bool countdownStart, gameOver;
+    private double loadStartTime, gameStartTime;
 
     public enum EventCodes : byte
     {
@@ -46,13 +48,14 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
 
     public void Start()
     {
-        loadTime = 10f;
-        matchTime = 20f;
+        loadStartTime = gameStartTime = -1.0;
+        loadTime = 5f;
+        matchTime = 10f;
         gameTimer.text = fToS(loadTime);
         myInd = -1;
         firstSpawn = true;
         isMapSpawned = false;
-        gameStart = countdownStart = false;
+        gameStart = countdownStart = gameOver = false;
         SendNewPlayer();
         Spawn();
     }
@@ -63,6 +66,10 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
         {
             if (countdownStart)
             {
+                if (loadStartTime < 0.0)
+                {
+                    loadStartTime = PhotonNetwork.Time;
+                }
                 if (loadTime > 0f)
                 {
                     loadTime -= Time.deltaTime;
@@ -77,6 +84,10 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
         }
         else
         {
+            if (gameStartTime < 0.0)
+            {
+                gameStartTime = PhotonNetwork.Time;
+            }
             if (matchTime > 0f)
             {
                 matchTime -= Time.deltaTime;
@@ -86,6 +97,12 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
                 }
                 gameTimer.text = fToS(matchTime);
             }
+        }
+
+        if (matchTime <= 0f && !gameOver)
+        {
+            gameOver = true;
+            EndGame();
         }
     }
 
@@ -144,6 +161,12 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
                 ReceiveStartMatch();
                 break;
         }
+    }
+
+    public override void OnLeftRoom()
+    {
+        base.OnLeftRoom();
+        SceneManager.LoadScene(0); //bring back to mainmenu
     }
 
     public void SendNewPlayer()
@@ -239,6 +262,20 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
     public void ReceiveStartMatch()
     {
         countdownStart = true;
+    }
+
+    private void EndGame()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.DestroyAll();
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+        }
+
+        //mapcam.SetActive(true);
+        PhotonNetwork.AutomaticallySyncScene = false;
+        PhotonNetwork.LeaveRoom();
     }
 
     public string GetLocalPlayerTeam()
