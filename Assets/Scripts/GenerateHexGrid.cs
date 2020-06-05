@@ -221,12 +221,12 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
 
                         Transform theMatMesh = hexGrids[row * gridHeight + column].transform.GetChild(0);
                         Material theMat = theMatMesh.GetComponent<MeshRenderer>().material;
-                        Transform theMesh = hexGrids[(int)(adjTiles[x].x) * gridHeight + (int)(adjTiles[x].y)].transform.GetChild(0);
-                        Material nextMat = theMesh.GetComponent<MeshRenderer>().material;
                         if ((int)(adjTiles[x].x) >= 0 && (int)(adjTiles[x].x) < gridWidth)
                         {
                             if ((int)(adjTiles[x].y) >= 0 && (int)(adjTiles[x].y) < gridHeight)
                             {
+                                Transform theMesh = hexGrids[(int)(adjTiles[x].x) * gridHeight + (int)(adjTiles[x].y)].transform.GetChild(0);
+                                Material nextMat = theMesh.GetComponent<MeshRenderer>().material;
                                 int i = (int)(adjTiles[x].x) * gridHeight + (int)(adjTiles[x].y);
                                 if (nextMat.name != theMat.name)
                                 {
