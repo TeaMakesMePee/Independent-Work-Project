@@ -97,6 +97,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         manager = GameObject.Find("GameManager").GetComponent<HexGameManager>();
         loadout = GetComponent<PlayerLoadout>();
 
+        if (photonView.IsMine)
+        {
+            teamName = manager.GetLocalPlayerTeam();
+            photonView.RPC("SyncTeamName", RpcTarget.AllBuffered, teamName);
+        }
+
         hpBar = GameObject.Find("Bar").transform;
         ammoUI = GameObject.Find("AmmoCount").GetComponent<Text>();
         currHpScale = 1f;
@@ -252,6 +258,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
+    [PunRPC]
+    private void SyncTeamName(string tN)
+    {
+        teamName = tN;
+    }
+
     public void SetADS(bool adsState)
     {
         isADS = adsState;
@@ -265,5 +277,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public bool GetGameStart()
     {
         return manager.gameStart;
+    }
+
+    public string teamName
+    {
+        get;
+        set;
     }
 }

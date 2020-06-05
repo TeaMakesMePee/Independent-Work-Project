@@ -236,9 +236,10 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             Destroy(newBullethole, 5f);
             if (photonView.IsMine)
             {
-                if (hit.collider.gameObject.layer == 11)
+                GameObject theHit = hit.collider.gameObject;
+                if (theHit.layer == 11 && theHit.GetComponent<Player>().teamName != GetComponent<Player>().teamName)
                 {
-                    hit.collider.gameObject.GetPhotonView().RPC("TakeDamage", RpcTarget.All, weapons[currWeapID].damage);
+                    theHit.GetPhotonView().RPC("TakeDamage", RpcTarget.All, weapons[currWeapID].damage);
                 }
             }    
         }
