@@ -35,23 +35,24 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
     private bool firstSpawn;
     private float loadTime, matchTime;
     public Text gameTimer;
-    private bool gameOver;
+    private bool countdownStart, gameOver;
 
     public enum EventCodes : byte
     {
         NewPlayer,
-        UpdatePlayers
+        UpdatePlayers,
+        StartMatch,
     }
 
     public void Start()
     {
-        loadTime = 5f;
+        loadTime = 10f;
         matchTime = 20f;
         gameTimer.text = fToS(loadTime);
         myInd = -1;
         firstSpawn = true;
         isMapSpawned = false;
-        gameStart = false;
+        gameStart = countdownStart = false;
         SendNewPlayer();
         Spawn();
     }
@@ -60,7 +61,7 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
     {
         if (!gameStart)
         {
-            if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
+            if (countdownStart)
             {
                 if (loadTime > 0f)
                 {
@@ -139,6 +140,9 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
             case EventCodes.UpdatePlayers:
                 ReceiveUpdatePlayers(obj);
                 break;
+            case EventCodes.StartMatch:
+                ReceiveStartMatch();
+                break;
         }
     }
 
@@ -213,6 +217,28 @@ public class HexGameManager : MonoBehaviour, IOnEventCallback
                 myInd = i;
             }
         }
+
+        //If master client receives the last player data, send a start match to everyone
+        if (PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
+        {
+            //Raise event, send to master
+            SendStartMatch();
+        }
+    }
+
+    public void SendStartMatch()
+    {
+        PhotonNetwork.RaiseEvent(
+            (byte)EventCodes.StartMatch,
+            null,
+            new RaiseEventOptions { Receivers = ReceiverGroup.All },
+            new SendOptions { Reliability = true }
+        );
+    }
+
+    public void ReceiveStartMatch()
+    {
+        countdownStart = true;
     }
 
     public string GetLocalPlayerTeam()
