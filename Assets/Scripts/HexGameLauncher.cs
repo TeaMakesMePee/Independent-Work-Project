@@ -59,7 +59,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public void Create()
     {
         RoomOptions options = new RoomOptions();
-        options.MaxPlayers = 2;
+        options.MaxPlayers = 6;
 
         PhotonNetwork.CreateRoom(roomName.text, options);
     }
