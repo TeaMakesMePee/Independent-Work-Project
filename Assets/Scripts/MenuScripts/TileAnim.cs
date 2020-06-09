@@ -6,58 +6,70 @@ using UnityEngineInternal;
 public class TileAnim : MonoBehaviour
 {
     private float nextAngle,currAngle;
-    private float coolDown;
-    private Vector3 camtohex, hextocam;
+    private float coolDown, flipcoolDown;
+    private Vector3 camtohex;
     private GameObject cam;
-    private bool ifAnim;
-    private bool ifChanged = false;
-    private float initAngle;
+    private bool ifChanged;
+    public int row;
+    private float hue;
+    public float interval;
 
     private void Start()
     {
         nextAngle = 0f;
         currAngle = 0f;
-        Debug.LogError(nextAngle);
-        Debug.LogError(transform.rotation);
-        coolDown = Random.Range(15f, 30f);
         cam = GameObject.Find("Main Camera");
         camtohex = (transform.position - cam.transform.position).normalized;
-        float angle = Vector3.Angle(transform.up, camtohex);
-        initAngle = angle;
-        //Debug.LogError(angle);
+        hue = 0.1f;
+        ifChanged = false;
     }
 
     private void Update()
     {
-        ////transform.Rotate(Vector3.forward * Time.deltaTime * 36f);
-        //camtohex.y = 0;
-        //currAngle = Mathf.Lerp(currAngle, nextAngle, Time.deltaTime * 2f);
-        //transform.eulerAngles = new Vector3(-90f, 0f, currAngle);
+        //transform.Rotate(Vector3.forward * Time.deltaTime * 36f);
+        if (coolDown < 0f)
+        {
+            camtohex.y = 0;
+            currAngle = Mathf.Lerp(currAngle, nextAngle, Time.deltaTime * 4f);
+            transform.eulerAngles = new Vector3(-90f, 0f, currAngle);
 
-        //if (coolDown < 0f)
-        //{
-        //    Debug.LogError(true);
-        //    nextAngle += 180f;
-        //    coolDown = Random.Range(15f, 30f);
-        //}
-        ////transform.localRotation = nextAngle;
+            if (flipcoolDown < 0f)
+            {
+                nextAngle += 180f;
+                flipcoolDown = 10f;
+            }
 
-        //if (Mathf.Abs(Vector3.Cross(transform.up, camtohex).y) > 0.9f)
-        //{
-        //    if (!ifChanged)
-        //    {
-        //        GameObject mesh = transform.GetChild(0).gameObject;
-        //        //mesh.GetComponent<MeshRenderer>().material.color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1f);
-        //        mesh.GetComponent<MeshRenderer>().material.color = Color.HSVToRGB(Random.Range(0f, 1f), Random.Range(0f, 0.7f), Random.Range(0f, 1f));
-        //        //Debug.LogError(Vector3.Cross(transform.up, camtohex).y);
-        //        ifChanged = true;
-        //    }
-        //}
-        //else
-        //{
-        //    ifChanged = false;
-        //}
+            if (Vector3.Angle(transform.up, camtohex) > 85f && Vector3.Angle(transform.up, camtohex) < 95f)
+            {
+                if (!ifChanged)
+                {
+                    GameObject mesh = transform.GetChild(0).gameObject;
+                    mesh.GetComponent<MeshRenderer>().material.color = Color.HSVToRGB(hue, Random.Range(0f, 1f), Random.Range(0f, 1f));
+                    ifChanged = true;
+                    if (hue < 1f)
+                    {
+                        hue += 0.05f;
+                    }
+                    else if (hue == 1f)
+                    {
+                        hue = 0.05f;
+                    }
+                }
+            }
+            else
+            {
+                ifChanged = false;
+            }
+            flipcoolDown -= Time.deltaTime;
+        }
 
-        //coolDown -= Time.deltaTime;
+        coolDown -= Time.deltaTime;
+    }
+
+    public void Init(int _row, float _interval)
+    {
+        row = _row;
+        interval = _interval;
+        coolDown = row * interval + 1f;
     }
 }
