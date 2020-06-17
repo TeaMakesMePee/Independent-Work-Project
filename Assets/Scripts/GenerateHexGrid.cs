@@ -64,11 +64,14 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
 
     public void ChangeHexColor(Vector3 playerPos)
     {
-        Vector3ToHexGrid(playerPos);
-        //GetClosestTile(playerPos);
+        Vector2 tempPos = Vec3ToVec2(playerPos);
+        if ((int)(tempPos.x) != -1)
+        {
+            Vec2ToHexGrid(tempPos);
+        }
     }
 
-    private int Vec3ToIndex(Vector3 playerPos)
+    private Vector2 Vec3ToVec2(Vector3 playerPos)
     {
         float height = 2f * tileScale;
         float gHeight = height * .75f;
@@ -118,60 +121,69 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
             row--;
         }
 
-        int index = row * gridHeight + column;
-        return index;
+        if (!(row >= 0 && row < gridWidth && column >= 0 && column < gridHeight))
+        {
+            return new Vector2(-1, -1);
+        }
+
+        return new Vector2(row, column);
+        //int index = row * gridHeight + column;
+        //return index;
     }
 
-    private void Vector3ToHexGrid(Vector3 playerPos)
+    private void Vec2ToHexGrid(Vector2 playerPos)
     {
-        float height = 2f * tileScale;
-        float gHeight = height * .75f;
-        float width = Mathf.Sqrt(3f) * tileScale;
-        float halfWidth = width * .5f;
-        Vector3 centerOffset = new Vector3((gridWidth - 1) * height - (gridWidth - 1) * height * .25f, 0f, (gridHeight - 1) * width + width / 2f);
-        //This makes sure the top left of the grid is set to 0,0,0.
-        Vector3 newPlayerPos = playerPos + centerOffset * 0.5f + new Vector3(height * .5f, 0f, width * .5f); //Added the offset to the player position that i initially subtracted from the grids
-        int row = (int)(newPlayerPos.x / gHeight);
-        int column;
+        #region not in use
+        //float height = 2f * tileScale;
+        //float gHeight = height * .75f;
+        //float width = Mathf.Sqrt(3f) * tileScale;
+        //float halfWidth = width * .5f;
+        //Vector3 centerOffset = new Vector3((gridWidth - 1) * height - (gridWidth - 1) * height * .25f, 0f, (gridHeight - 1) * width + width / 2f);
+        ////This makes sure the top left of the grid is set to 0,0,0.
+        //Vector3 newPlayerPos = playerPos + centerOffset * 0.5f + new Vector3(height * .5f, 0f, width * .5f); //Added the offset to the player position that i initially subtracted from the grids
+        //int row = (int)(newPlayerPos.x / gHeight);
+        //int column;
 
-        if (row % 2 == 1)
-        {
-            column = (int)((newPlayerPos.z - halfWidth) / width);
-        }
-        else
-        {
-            column = (int)(newPlayerPos.z / width);
-        }
+        //if (row % 2 == 1)
+        //{
+        //    column = (int)((newPlayerPos.z - halfWidth) / width);
+        //}
+        //else
+        //{
+        //    column = (int)(newPlayerPos.z / width);
+        //}
 
-        double relVertBox = newPlayerPos.x - (row * gHeight);
-        
-        double relHoriBox;
+        //double relVertBox = newPlayerPos.x - (row * gHeight);
 
-        if (row % 2 == 1)
-            relHoriBox = (newPlayerPos.z - (column * width)) - halfWidth;
-        else
-            relHoriBox = newPlayerPos.z - (column * width);
+        //double relHoriBox;
 
-        float c = height * .25f;
-        float m = c / halfWidth;
+        //if (row % 2 == 1)
+        //    relHoriBox = (newPlayerPos.z - (column * width)) - halfWidth;
+        //else
+        //    relHoriBox = newPlayerPos.z - (column * width);
 
-        if (relVertBox < (-m * relHoriBox) + c)
-        {
-            if (row % 2 == 0)
-            { 
-                column--;
-            }
-            row--;
-        }
-        else if (relVertBox < (m * relHoriBox) - c)
-        {
-            if (row % 2 == 1)
-            {
-                column++;
-            }
-            row--;
-        }
+        //float c = height * .25f;
+        //float m = c / halfWidth;
 
+        //if (relVertBox < (-m * relHoriBox) + c)
+        //{
+        //    if (row % 2 == 0)
+        //    { 
+        //        column--;
+        //    }
+        //    row--;
+        //}
+        //else if (relVertBox < (m * relHoriBox) - c)
+        //{
+        //    if (row % 2 == 1)
+        //    {
+        //        column++;
+        //    }
+        //    row--;
+        //}
+        #endregion
+        int row = (int)playerPos.x;
+        int column = (int)playerPos.y;
         int index = row * gridHeight + column;
         Transform myMat = hexGrids[index].transform.GetChild(0);
         Material myMatMesh = myMat.GetComponent<MeshRenderer>().material;
@@ -272,6 +284,7 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
                         //photonView.RPC("ApplyFloodFill", RpcTarget.AllBuffered, tempIntList);
                     }
 
+                    #region not in use 2
                     //for (int f = 0; f < toColorList[tempind].Count; ++f)
                     //{
                     //    Debug.LogError("filling..: " + toColorList[tempind][f]);
@@ -281,8 +294,9 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
                     //{
                     //    Debug.LogError("list ind: " + tempIntList[xx]);
                     //}
-                        //photonView.RPC("ApplyFloodFill", RpcTarget.AllBuffered, index, toColorList[tempind]);
+                    //photonView.RPC("ApplyFloodFill", RpcTarget.AllBuffered, index, toColorList[tempind]);
                     //photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index);
+                    #endregion
                 }
             }
             
@@ -291,6 +305,11 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
 
     private void FloodFill(int row, int col, Material theMat)
     {
+        if (row == 0 || row == gridWidth - 1 || col == 0 || col == gridHeight - 1)
+        {
+            overShot = true;
+            return;
+        }
         List<Vector2> adjTiles = new List<Vector2>();
         adjTiles.Add(new Vector2(row - 1, col));
         adjTiles.Add(new Vector2(row, col - 1));
@@ -376,7 +395,9 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         for (int x = 0; x < players.Length; ++x)
         {
-            if (index == Vec3ToIndex(players[x].transform.position))
+            Vector2 temp = Vec3ToVec2(players[x].transform.position);
+            int tempInd = (int)(temp.x) * gridHeight + (int)(temp.y);
+            if (index == tempInd)
                 return true;
         }
 
