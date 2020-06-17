@@ -10,6 +10,7 @@ using System.Threading;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using System;
 
 public struct PlayerInfo
 {
@@ -126,8 +127,11 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         if (!firstSpawn)
         {
             Vector3 spawn = GetRandomSpawn(myInfo.team);
-            spawn.y = spawnPoint.position.y;
-            PhotonNetwork.Instantiate(playerPrefab, spawn, spawnPoint.rotation);
+            string stringValue = Enum.GetName(typeof(GameData.Division), GameData.GetDivision());
+            GameObject thePlayer = PhotonNetwork.Instantiate("PlayerDivisions/" + stringValue, spawn, spawnPoint.rotation);
+            Vector3 pos = thePlayer.transform.position;
+            pos.y = thePlayer.transform.localScale.y + 0.1f;
+            thePlayer.transform.position = pos;
         }
     }
 
@@ -297,9 +301,13 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
                 index = hexGrids.Count - PhotonNetwork.CurrentRoom.PlayerCount / 2;
 
             Vector3 spawn = IndexToHexVec3(index);
-            spawn.y = spawnPoint.position.y;
-            PhotonNetwork.Instantiate(playerPrefab, spawn, spawnPoint.rotation);
+            string stringValue = Enum.GetName(typeof(GameData.Division), GameData.GetDivision());
+            GameObject thePlayer = PhotonNetwork.Instantiate("PlayerDivisions/" + stringValue, spawn, spawnPoint.rotation);
+            Vector3 pos = thePlayer.transform.position;
+            pos.y = thePlayer.transform.localScale.y + 0.1f;
+            thePlayer.transform.position = pos;
             firstSpawn = false;
+
         }
     }
 
