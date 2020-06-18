@@ -84,12 +84,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 case GameData.Division.P_Damage:
                     p_Division = gameObject.AddComponent<Damage>();
+                    p_Division.Init(7.5f);
                     break;
                 case GameData.Division.P_Flank:
                     p_Division = gameObject.AddComponent<Flank>();
+                    p_Division.Init(10f);
                     break;
                 case GameData.Division.P_Tank:
                     p_Division = gameObject.AddComponent<Tank>();
+                    p_Division.Init(5f);
                     break;
             }
             p_Division.UseAbility();
@@ -193,15 +196,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         inAir = true;
 
         //In air check
-        if (Physics.Raycast(transform.position, Vector3.down, 1.1f, ground))
+        if (Physics.Raycast(transform.position, Vector3.down, transform.localScale.y + 0.1f, ground))
         {
             inAir = false;
         }
 
         //Jump check
-        if (Input.GetKey(KeyCode.Space) && !inAir)
+        //if (Input.GetKey(KeyCode.Space) && !inAir)
+        //{
+        //    playerRig.AddForce(Vector3.up * jumpForce);
+        //}
+        if (Input.GetKey(KeyCode.Space))
         {
-            playerRig.AddForce(Vector3.up * jumpForce);
+            p_Division.Jump(inAir, playerRig);
         }
 
         //Sprint check
