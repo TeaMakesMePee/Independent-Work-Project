@@ -50,6 +50,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private GameObject crosshair;
     private GameObject sceneCam;
 
+    private Division p_Division;
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo message) //Sends data if your photonview, receives data if it isnt yours
     {
         //Example: 
@@ -78,6 +80,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
+            switch (GameData.GetDivision())
+            {
+                case GameData.Division.P_Damage:
+                    p_Division = gameObject.AddComponent<Damage>();
+                    break;
+                case GameData.Division.P_Flank:
+                    p_Division = gameObject.AddComponent<Flank>();
+                    break;
+                case GameData.Division.P_Tank:
+                    p_Division = gameObject.AddComponent<Tank>();
+                    break;
+            }
+            p_Division.UseAbility();
+
             sceneCam = GameObject.Find("SceneCam");
             if (sceneCam != null)
                 sceneCam.SetActive(false);
