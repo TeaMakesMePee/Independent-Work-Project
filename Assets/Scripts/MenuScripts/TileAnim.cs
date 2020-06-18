@@ -54,8 +54,6 @@ public class TileAnim : MonoBehaviour
                     {
                         hue = 0.05f;
                     }
-                    if (row == 1)
-                        Debug.LogError(Vector3.Angle(transform.up, camtohex));
                 }
             }
             else
