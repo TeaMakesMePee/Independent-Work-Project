@@ -5,12 +5,12 @@ public class Flank : Division
 {
     public Flank() { }
 
-    public new void UseAbility()
+    public override void UseAbility()
     {
         Debug.LogError("Flank");
     }
 
-    public new void UpdateDivisionStats()
+    public override void UpdateDivisionStats()
     {
 
     }

@@ -5,12 +5,12 @@ public class Damage : Division
 {
     public Damage() { }
 
-    public new void UseAbility()
+    public override void UseAbility()
     {
         Debug.LogError("Dmg");
     }
 
-    public new void UpdateDivisionStats()
+    public override void UpdateDivisionStats()
     {
 
     }
