@@ -5,16 +5,26 @@ using UnityEngine.UI;
 
 public class ButtonText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    float startScale, targetScale, currScale;
 
-    public Text theText;
+    private void Awake()
+    {
+        startScale = currScale = targetScale = GetComponent<RectTransform>().localScale.x;
+    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        theText.color = Color.black; 
+        targetScale = 2.2f;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        theText.color = Color.white; 
+        targetScale = 2f;
+    }
+
+    private void Update()
+    {
+        currScale = Mathf.Lerp(currScale, targetScale, Time.deltaTime * 10f);
+        GetComponent<RectTransform>().localScale = new Vector3(currScale, currScale, currScale);
     }
 }

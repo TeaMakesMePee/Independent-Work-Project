@@ -75,7 +75,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             gameObject.layer = 11;
             gameObject.tag = "Player";
-            //Debug.LogError(gameObject.tag);
         }
         else
         {
@@ -139,22 +138,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (horiMove == 0 && vertMove == 0) //if not moving
         {
-            //HeadBob(idleCount, 0.01f * adsDamp, 0.01f * adsDamp); //Slight bob
             HeadBob(idleCount, thePlayerWeap.staticBobX * thePlayerWeap.adsDampVal, thePlayerWeap.staticBobY * thePlayerWeap.adsDampVal);
             idleCount += Time.deltaTime;
         }
         else if (!isSlowWalk) //if walking
         {
             HeadBob(movingCount, thePlayerWeap.walkBobX * thePlayerWeap.adsDampVal, thePlayerWeap.walkBobY * thePlayerWeap.adsDampVal);
-            //HeadBob(movingCount, 0.07f * adsDamp, 0.05f * adsDamp);
-            //HeadBob(movingCount, 0.035f, 0.035f); //increase bob
             movingCount += Time.deltaTime * 4f;
             bobLerp = 14f;
         }
         else if (isSlowWalk) //if slow walking
         {
             HeadBob(movingCount, thePlayerWeap.sWalkBobX * thePlayerWeap.adsDampVal, thePlayerWeap.sWalkBobY * thePlayerWeap.adsDampVal);
-            //HeadBob(movingCount, 0.035f * adsDamp, 0.035f * adsDamp); //increase bob
             movingCount += Time.deltaTime * 2f;
             bobLerp = 8f;
         }
@@ -178,7 +173,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         float vertMove = Input.GetAxisRaw("Vertical");
 
         float newSpeed = speed;
-        //targetFOV = baseFOV;
         isSlowWalk = false;
         inAir = true;
 
@@ -195,15 +189,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         //Sprint check
-        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) /*&& (vertMove != 0 || horiMove != 0) && !inAir*/)
+        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
         {
             newSpeed *= sprintMultiplier;
-            //targetFOV = sprintFOV;
             isSlowWalk = true;
         }
-
-        //FOV Adjustment
-        //playerEye.fieldOfView = Mathf.Lerp(playerEye.fieldOfView, targetFOV, Time.deltaTime * 8f);
 
         Vector3 dir = new Vector3(horiMove, 0, vertMove);
         dir.Normalize();
