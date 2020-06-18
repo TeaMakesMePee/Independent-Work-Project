@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class HexGameLauncher : MonoBehaviourPunCallbacks
 {
-    public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab;
+    public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab, DivisionsTab;
     private List<RoomInfo> roomList;
 
     public InputField roomName;
@@ -69,6 +69,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         MainMenuTab.SetActive(false);
         CreateTab.SetActive(false);
         RoomsTab.SetActive(false);
+        DivisionsTab.SetActive(false);
     }
 
     public void OpenRoomsTab()
@@ -87,6 +88,12 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         CloseAllTabs();
         CreateTab.SetActive(true);
+    }
+
+    public void OpenDivisionsTab()
+    {
+        CloseAllTabs();
+        DivisionsTab.SetActive(true);
     }
 
     private void ClearRoomList() //Clears all the room list in prep for updating the list
