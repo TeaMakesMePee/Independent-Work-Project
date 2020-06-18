@@ -84,18 +84,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 case GameData.Division.P_Damage:
                     p_Division = gameObject.AddComponent<Damage>();
-                    p_Division.Init(7.5f);
+                    p_Division.Init(7.5f, 10f);
                     break;
                 case GameData.Division.P_Flank:
                     p_Division = gameObject.AddComponent<Flank>();
-                    p_Division.Init(10f);
+                    p_Division.Init(10f, 5f);
                     break;
                 case GameData.Division.P_Tank:
                     p_Division = gameObject.AddComponent<Tank>();
-                    p_Division.Init(5f);
+                    p_Division.Init(5f, 8f);
                     break;
             }
-            p_Division.UseAbility();
 
             sceneCam = GameObject.Find("SceneCam");
             if (sceneCam != null)
@@ -180,6 +179,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         currHpScale = Mathf.Lerp(currHpScale, (float)(currHealth) / (float)(maxHealth), Time.deltaTime * 10f);
         hpBar.localScale = new Vector3(currHpScale, 1f, 1f);
         loadout.UpdateAmmoUI(ammoUI);
+
+        //Update division
+        p_Division.UpdateDivisionStats();
     }
 
     void FixedUpdate()
@@ -208,7 +210,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //}
         if (Input.GetKey(KeyCode.Space))
         {
-            p_Division.Jump(inAir, playerRig);
+            p_Division.Jump(inAir);
+        }
+
+        if (Input.GetKey(KeyCode.Q))
+        {
+            p_Division.UseAbility();
         }
 
         //Sprint check
