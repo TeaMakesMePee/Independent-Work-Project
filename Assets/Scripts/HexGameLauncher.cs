@@ -5,6 +5,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using System;
 
 public class HexGameLauncher : MonoBehaviourPunCallbacks
 {
@@ -133,5 +134,28 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.LoadLevel(1);
         }
+    }
+
+    public void SetTank()
+    {
+        GameData.SetDivision(GameData.Division.P_Tank);
+        OpenMainMenuTab();
+    }
+
+    public void SetDamage()
+    {
+        GameData.SetDivision(GameData.Division.P_Damage);
+        OpenMainMenuTab();
+    }
+
+    public void SetFlank()
+    {
+        GameData.SetDivision(GameData.Division.P_Flank);
+        OpenMainMenuTab();
+    }
+
+    private void Update()
+    {
+        
     }
 }
