@@ -20,7 +20,7 @@ public class TileAnim : MonoBehaviour
         currAngle = 0f;
         cam = GameObject.Find("Main Camera");
         camtohex = (transform.position - cam.transform.position).normalized;
-        hue = 0.1f;
+        hue = 0.05f;
         ifChanged = false;
     }
 
@@ -30,13 +30,13 @@ public class TileAnim : MonoBehaviour
         if (coolDown < 0f)
         {
             camtohex.y = 0;
-            currAngle = Mathf.Lerp(currAngle, nextAngle, Time.deltaTime * 4f);
+            currAngle = Mathf.Lerp(currAngle, nextAngle, Time.deltaTime * 8f);
             transform.eulerAngles = new Vector3(-90f, 0f, currAngle);
 
             if (flipcoolDown < 0f)
             {
                 nextAngle += 180f;
-                flipcoolDown = 10f;
+                flipcoolDown = 5f;
             }
 
             if (Vector3.Angle(transform.up, camtohex) > 85f && Vector3.Angle(transform.up, camtohex) < 95f)
@@ -54,6 +54,8 @@ public class TileAnim : MonoBehaviour
                     {
                         hue = 0.05f;
                     }
+                    if (row == 1)
+                        Debug.LogError(Vector3.Angle(transform.up, camtohex));
                 }
             }
             else

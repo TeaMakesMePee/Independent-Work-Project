@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MainMenuAnim : MonoBehaviour
 {
-    public float interval = 0.25f;
+    public float interval = 0.01f;
     //private void OnValidate()
     //{
     //    foreach (Transform child in transform)
