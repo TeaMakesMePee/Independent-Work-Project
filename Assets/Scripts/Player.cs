@@ -23,8 +23,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public GameObject camParent;
 
-    public int maxHealth;
-    private int currHealth;
+    public float maxHealth;
+    private float currHealth;
 
     private Transform hpBar;
     private float currHpScale;
@@ -267,15 +267,25 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonView.IsMine)
         {
-            currHealth -= damage;
-
-            if (currHealth <= 0)
+            //currHealth -= damage;
+            p_Division.TakeDamage(damage);
+            if (currHealth <= 0f)
             {
                 manager.Spawn();
                 PhotonNetwork.Destroy(gameObject);
                 playerDeaths++;
             }
         }
+    }
+
+    public float GetHealth()
+    {
+        return currHealth;
+    }
+
+    public void SetHealth(float health)
+    {
+        currHealth = health;
     }
 
     [PunRPC]

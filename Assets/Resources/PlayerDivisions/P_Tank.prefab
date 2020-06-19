@@ -126,7 +126,7 @@ MonoBehaviour:
     m_Bits: 256
   weaponParent: {fileID: 6293200105149640062}
   camParent: {fileID: 6293200106184566601}
-  maxHealth: 100
+  maxHealth: 200
 --- !u!54 &6293200104841510700
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -3,42 +3,81 @@ using System.Collections;
 
 public class Tank : Division
 {
-    private float jumpForce;
-    private float i_abilityCooldown, abilityCooldown;
-    private Rigidbody playerRig;
+    private bool b_abilityActive;
+    private float f_abilityActive;
+    private float absorbed;
+    private float currentTime;
+    private float timeToBurst = 2f;
 
     public Tank() { }
 
     public override void Init(float _jumpForce, float _abilityCooldown)
     {
-        jumpForce = _jumpForce;
-        i_abilityCooldown = _abilityCooldown;
-        abilityCooldown = 0f;
-        playerRig = GetComponent<Rigidbody>();
+        b_abilityActive = false;
+        f_abilityActive = 0f;
+        absorbed = 0f;
+        currentTime = 0f;
+        base.Init(_jumpForce, _abilityCooldown);
     }
 
     public override void UpdateDivisionStats()
     {
-        if (abilityCooldown >= 0f)
-            abilityCooldown -= Time.deltaTime;
+        if (f_abilityActive > 0f)
+        {
+            f_abilityActive -= Time.deltaTime;
+            if (f_abilityActive <= 0f)
+            {
+                Debug.LogError("Absorbed damage: " + absorbed);
+                Debug.LogError("Inactive");
+                b_abilityActive = false;
+            }
+        }
+        if (!b_abilityActive && absorbed > 0f)
+        {
+            if (currentTime <= timeToBurst)
+            {
+                currentTime += Time.deltaTime;
+                absorbed = Mathf.Lerp(0f, absorbed, currentTime / timeToBurst);
+                Debug.LogError("Resetting absorbed: " + absorbed);
+            }
+            else
+            {
+                Debug.LogError("Hard reset: " + absorbed);
+                absorbed = 0f;
+                currentTime = 0f;
+            }
+        }
+        base.UpdateDivisionStats();
     }
 
     public override void UseAbility()
     {
-        if (abilityCooldown < 0f)
+        if (abilityCooldown <= 0f)
         {
             //Do ability
+            b_abilityActive = true;
+            f_abilityActive = 1.5f;
+            currentTime = 0f;
             abilityCooldown = i_abilityCooldown;
+            Debug.LogError("Active");
         }
     }
 
     public override void Jump(bool inAir)
     {
-        if (!inAir)
+        base.Jump(inAir);
+    }
+
+    public override void TakeDamage(float damage)
+    {
+        if (b_abilityActive)
         {
-            Vector3 vel = playerRig.velocity;
-            vel.y = 0f;
-            playerRig.velocity = vel + Vector3.up * jumpForce;
+            absorbed += damage * 0.9f;
+            base.TakeDamage(damage * 0.1f); //Takes 10 percent damage when ability active
+        }
+        else
+        {
+            base.TakeDamage(damage);
         }
     }
 }

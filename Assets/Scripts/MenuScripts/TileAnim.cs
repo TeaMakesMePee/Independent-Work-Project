@@ -39,7 +39,7 @@ public class TileAnim : MonoBehaviour
                 flipcoolDown = 5f;
             }
 
-            if (Vector3.Angle(transform.up, camtohex) > 85f && Vector3.Angle(transform.up, camtohex) < 95f)
+            if (Vector3.Angle(transform.up, camtohex) > 80f && Vector3.Angle(transform.up, camtohex) < 100f)
             {
                 if (!ifChanged)
                 {
