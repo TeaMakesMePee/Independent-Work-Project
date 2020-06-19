@@ -26,23 +26,22 @@ MonoBehaviour:
     EnableLobbyStatistics: 0
     NetworkLogging: 1
   DevRegion: asia
-  PunLogging: 2
+  PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - AimDownSight
+  - ApplyMaterialToHex
   - ClickRpc
   - DestroyRpc
   - DestroySpaceship
+  - Equip
   - Fire
   - RespawnSpaceship
-  - Equip
   - Shoot
-  - AimDownSight
-  - TakeDamage
-  - ApplyMaterialToHex
-  - ApplyFloodFill
   - SyncTeamName
+  - TakeDamage
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
