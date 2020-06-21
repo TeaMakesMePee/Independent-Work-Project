@@ -7,9 +7,9 @@ public class Flank : Division
 
     public Flank() { }
 
-    public override void Init(float _jumpForce, float _abilityCooldown)
+    public override void Init(float _jumpForce, float _abilityCooldown, float _moveSpeed)
     {
-        base.Init(_jumpForce, _abilityCooldown);
+        base.Init(_jumpForce, _abilityCooldown, _moveSpeed);
         isDoubleJump = false;
     }
 

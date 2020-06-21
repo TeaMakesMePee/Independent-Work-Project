@@ -12,13 +12,13 @@ public class Tank : Division
 
     public Tank() { }
 
-    public override void Init(float _jumpForce, float _abilityCooldown)
+    public override void Init(float _jumpForce, float _abilityCooldown, float _moveSpeed)
     {
         b_abilityActive = false;
         f_abilityActive = 0f;
         absorbed = 0f;
         currentTime = 0f;
-        base.Init(_jumpForce, _abilityCooldown);
+        base.Init(_jumpForce, _abilityCooldown, _moveSpeed);
     }
 
     public override void UpdateDivisionStats()

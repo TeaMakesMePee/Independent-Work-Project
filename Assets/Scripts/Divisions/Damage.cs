@@ -7,9 +7,9 @@ public class Damage : Division
     private float f_abilityActive;
     public Damage() { }
 
-    public override void Init(float _jumpForce, float _abilityCooldown)
+    public override void Init(float _jumpForce, float _abilityCooldown, float _moveSpeed)
     {
-        base.Init(_jumpForce, _abilityCooldown);
+        base.Init(_jumpForce, _abilityCooldown, _moveSpeed);
     }
 
     public override void UpdateDivisionStats()

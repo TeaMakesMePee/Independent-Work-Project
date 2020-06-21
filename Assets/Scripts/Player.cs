@@ -84,15 +84,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 case GameData.Division.P_Damage:
                     p_Division = gameObject.AddComponent<Damage>();
-                    p_Division.Init(7.5f, 10f);
+                    p_Division.Init(7.5f, 10f, 500f);
                     break;
                 case GameData.Division.P_Flank:
                     p_Division = gameObject.AddComponent<Flank>();
-                    p_Division.Init(10f, 5f);
+                    p_Division.Init(10f, 5f, 600f);
                     break;
                 case GameData.Division.P_Tank:
                     p_Division = gameObject.AddComponent<Tank>();
-                    p_Division.Init(5f, 8f);
+                    p_Division.Init(5f, 8f, 400f);
                     break;
             }
 
@@ -180,6 +180,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         hpBar.localScale = new Vector3(currHpScale, 1f, 1f);
         loadout.UpdateAmmoUI(ammoUI);
 
+        //Use division ability
+        if (Input.GetKey(KeyCode.Q))
+        {
+            p_Division.UseAbility();
+        }
         //Update division
         p_Division.UpdateDivisionStats();
     }
@@ -193,7 +198,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         float horiMove = Input.GetAxisRaw("Horizontal");
         float vertMove = Input.GetAxisRaw("Vertical");
 
-        float newSpeed = speed;
+        float newSpeed = p_Division.GetMoveSpeed();
         isSlowWalk = false;
         inAir = true;
 
@@ -211,11 +216,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (Input.GetKey(KeyCode.Space))
         {
             p_Division.Jump(inAir);
-        }
-
-        if (Input.GetKey(KeyCode.Q))
-        {
-            p_Division.UseAbility();
         }
 
         //Sprint check

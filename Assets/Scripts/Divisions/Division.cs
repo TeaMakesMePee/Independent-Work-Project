@@ -4,19 +4,21 @@ using System.Collections;
 
 public class Division : MonoBehaviourPunCallbacks
 {
+    protected float moveSpeed;
     protected float jumpForce;
     protected float i_abilityCooldown, abilityCooldown;
     protected Rigidbody playerRig;
     protected PlayerLoadout theLoadout;
     public Division() { }
 
-    public virtual void Init(float _jumpForce, float _abilityCooldown) 
+    public virtual void Init(float _jumpForce, float _abilityCooldown, float _moveSpeed) 
     {
         jumpForce = _jumpForce;
         i_abilityCooldown = _abilityCooldown;
         abilityCooldown = 0f;
         playerRig = GetComponent<Rigidbody>();
         theLoadout = GetComponent<PlayerLoadout>();
+        moveSpeed = _moveSpeed;
     }
 
     public virtual void UseAbility() { }
@@ -53,5 +55,10 @@ public class Division : MonoBehaviourPunCallbacks
         {
             theLoadout.CheckReload();
         }
+    }
+
+    public virtual float GetMoveSpeed()
+    {
+        return moveSpeed;
     }
 }
