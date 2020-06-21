@@ -154,18 +154,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         float vertMove = Input.GetAxisRaw("Vertical");
         float bobLerp = 2f;
 
-        if (horiMove == 0 && vertMove == 0) //if not moving
+        if ((horiMove == 0 && vertMove == 0)) //if not moving
         {
             HeadBob(idleCount, thePlayerWeap.staticBobX * thePlayerWeap.adsDampVal, thePlayerWeap.staticBobY * thePlayerWeap.adsDampVal);
             idleCount += Time.deltaTime;
         }
-        else if (!isSlowWalk) //if walking
+        else if (!isSlowWalk && Physics.Raycast(transform.position, Vector3.down, transform.localScale.y + 0.1f, ground)) //if walking
         {
             HeadBob(movingCount, thePlayerWeap.walkBobX * thePlayerWeap.adsDampVal, thePlayerWeap.walkBobY * thePlayerWeap.adsDampVal);
             movingCount += Time.deltaTime * 4f;
             bobLerp = 14f;
         }
-        else if (isSlowWalk) //if slow walking
+        else if (isSlowWalk || !Physics.Raycast(transform.position, Vector3.down, transform.localScale.y + 0.1f, ground)) //if slow walking
         {
             HeadBob(movingCount, thePlayerWeap.sWalkBobX * thePlayerWeap.adsDampVal, thePlayerWeap.sWalkBobY * thePlayerWeap.adsDampVal);
             movingCount += Time.deltaTime * 2f;
