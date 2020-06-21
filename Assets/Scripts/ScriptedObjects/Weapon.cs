@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Weapon", menuName = "Weapon")]
 public class Weapon : ScriptableObject
 {
-    public int damage;
+    public float damage;
     public string weapName;
     public float firerate, adsSpeed, recoil, kickback;
     public float reloadTime;

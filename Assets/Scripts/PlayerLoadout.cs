@@ -100,18 +100,18 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                     GetComponent<Player>().SetADS(Input.GetMouseButton(1));
                 }
 
-                if (Input.GetMouseButton(0) && firerate <= 0f)
-                {
-                    if (weapons[currWeapID].FireBullet())
-                    { 
-                        photonView.RPC("Shoot", RpcTarget.All);
-                    }
-                    else
-                    {
-                        if (weapons[currWeapID].ifReloadable() && !isReloading)
-                            StartCoroutine(Reload(weapons[currWeapID].reloadTime));
-                    }
-                }
+                //if (Input.GetMouseButton(0) && firerate <= 0f)
+                //{
+                //    if (weapons[currWeapID].FireBullet())
+                //    { 
+                //        photonView.RPC("Shoot", RpcTarget.All);
+                //    }
+                //    else
+                //    {
+                //        if (weapons[currWeapID].ifReloadable() && !isReloading)
+                //            StartCoroutine(Reload(weapons[currWeapID].reloadTime));
+                //    }
+                //}
 
                 //Apply increasing bloom to all weapons except pistol
                 if (weapons[currWeapID].weapName != "Pistol")
@@ -203,7 +203,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void Shoot()
+    private void Shoot(float damage)
     {
         //Temp code
         float recDamp = 1f;
@@ -239,7 +239,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                 GameObject theHit = hit.collider.gameObject;
                 if (theHit.layer == 11 && theHit.GetComponent<Player>().teamName != GetComponent<Player>().teamName)
                 {
-                    theHit.GetPhotonView().RPC("TakeDamage", RpcTarget.All, weapons[currWeapID].damage);
+                    theHit.GetPhotonView().RPC("TakeDamage", RpcTarget.All, /*weapons[currWeapID].damage*/damage);
                 }
             }    
         }
@@ -251,7 +251,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void TakeDamage(int damage)
+    private void TakeDamage(float damage)
     {
         GetComponent<Player>().TakeDamage(damage);
     }
@@ -265,5 +265,16 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     public Weapon GetWeapon()
     {
         return weapons[currWeapID];
+    }
+
+    public bool readyFire()
+    {
+        return firerate <= 0f;
+    }
+
+    public void CheckReload()
+    {
+        if (weapons[currWeapID].ifReloadable() && !isReloading)
+            StartCoroutine(Reload(weapons[currWeapID].reloadTime));
     }
 }

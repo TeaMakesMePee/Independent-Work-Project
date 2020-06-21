@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
+using Photon.Pun;
 using System.Collections;
 
-public class Division : MonoBehaviour
+public class Division : MonoBehaviourPunCallbacks
 {
     protected float jumpForce;
     protected float i_abilityCooldown, abilityCooldown;
     protected Rigidbody playerRig;
+    protected PlayerLoadout theLoadout;
     public Division() { }
 
     public virtual void Init(float _jumpForce, float _abilityCooldown) 
@@ -14,6 +16,7 @@ public class Division : MonoBehaviour
         i_abilityCooldown = _abilityCooldown;
         abilityCooldown = 0f;
         playerRig = GetComponent<Rigidbody>();
+        theLoadout = GetComponent<PlayerLoadout>();
     }
 
     public virtual void UseAbility() { }
@@ -38,5 +41,17 @@ public class Division : MonoBehaviour
     {
         Player thePlayer = GetComponent<Player>();
         thePlayer.SetHealth(thePlayer.GetHealth() - damage);
+    }
+
+    public virtual void Shoot()
+    {
+        if (theLoadout.GetWeapon().FireBullet())
+        {
+            photonView.RPC("Shoot", RpcTarget.All, theLoadout.GetWeapon().damage);
+        }
+        else
+        {
+            theLoadout.CheckReload();
+        }
     }
 }

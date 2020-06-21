@@ -263,7 +263,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         newWeaponBobPos = new Vector3(Mathf.Cos(timeFrame) * xIntens, Mathf.Sin(timeFrame * 2f) * yIntens, 0) + weaponOrigin;
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         if (photonView.IsMine)
         {
@@ -304,6 +304,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         return isMoving;
     }
 
+    //returns whether the game has started
     public bool GetGameStart()
     {
         return manager.gameStart;

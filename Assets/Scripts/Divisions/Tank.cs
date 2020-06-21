@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Photon.Pun;
 
 public class Tank : Division
 {
@@ -47,6 +48,11 @@ public class Tank : Division
                 currentTime = 0f;
             }
         }
+
+        if (Input.GetMouseButton(0) && theLoadout.readyFire())
+        {
+            Shoot();
+        }
         base.UpdateDivisionStats();
     }
 
@@ -78,6 +84,17 @@ public class Tank : Division
         else
         {
             base.TakeDamage(damage);
+        }
+    }
+    public override void Shoot()
+    {
+        if (theLoadout.GetWeapon().FireBullet())
+        {
+            photonView.RPC("Shoot", RpcTarget.All, theLoadout.GetWeapon().damage + absorbed * 0.2f); 
+        }
+        else
+        {
+            theLoadout.CheckReload();
         }
     }
 }

@@ -12,6 +12,10 @@ public class Damage : Division
 
     public override void UpdateDivisionStats()
     {
+        if (Input.GetMouseButton(0) && theLoadout.readyFire())
+        {
+            base.Shoot();
+        }
         base.UpdateDivisionStats();
     }
 

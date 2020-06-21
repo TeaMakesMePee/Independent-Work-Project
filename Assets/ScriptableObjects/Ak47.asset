@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee4aaee203c60994b9b1e21ed5571d97, type: 3}
   m_Name: Ak47
   m_EditorClassIdentifier: 
+  initDamage: 25
   damage: 25
   weapName: Ak47
   firerate: 0.1
