@@ -208,11 +208,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             inAir = false;
         }
 
+        #region old jump check
         //Jump check
         //if (Input.GetKey(KeyCode.Space) && !inAir)
         //{
         //    playerRig.AddForce(Vector3.up * jumpForce);
         //}
+        #endregion
+
         if (Input.GetKey(KeyCode.Space))
         {
             p_Division.Jump(inAir);

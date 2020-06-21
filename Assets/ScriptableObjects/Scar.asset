@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee4aaee203c60994b9b1e21ed5571d97, type: 3}
-  m_Name: Ak47
+  m_Name: Scar
   m_EditorClassIdentifier: 
-  damage: 25
-  weapName: Ak47
-  firerate: 0.1
+  damage: 20
+  weapName: Scar
+  firerate: 0.15
   adsSpeed: 30
-  recoil: 1
+  recoil: 0.8
   kickback: 0.05
-  reloadTime: 1.5
-  prefab: {fileID: 988495284321458729, guid: 04e381d6ee6c7954e9536bc439e0562d, type: 3}
+  reloadTime: 1
+  prefab: {fileID: 8665530566574171254, guid: edb658750fff69746bf2ef48b18a25fd, type: 3}
   staticAmmo: 60
   maxMagSize: 30
   bloom: 0

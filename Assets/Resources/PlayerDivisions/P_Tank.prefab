@@ -175,7 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapons:
   - {fileID: 11400000, guid: b8308dfd95dcea340a0f4481ee41d96a, type: 2}
-  - {fileID: 11400000, guid: b516a33d89e4dcb4598972ecebe2add0, type: 2}
+  - {fileID: 11400000, guid: 94ed75538dd368f40942fe7aa2c289ac, type: 2}
   weaponParent: {fileID: 6293200105149640062}
   bulletholePrefab: {fileID: 8885059213651409482, guid: ff0913c101b13f44c9555d61bb4bfe8e,
     type: 3}

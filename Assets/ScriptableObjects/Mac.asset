@@ -10,26 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee4aaee203c60994b9b1e21ed5571d97, type: 3}
-  m_Name: Ak47
+  m_Name: Mac
   m_EditorClassIdentifier: 
-  damage: 25
-  weapName: Ak47
-  firerate: 0.1
+  damage: 15
+  weapName: Mac
+  firerate: 0.075
   adsSpeed: 30
-  recoil: 1
-  kickback: 0.05
-  reloadTime: 1.5
-  prefab: {fileID: 988495284321458729, guid: 04e381d6ee6c7954e9536bc439e0562d, type: 3}
+  recoil: 0.75
+  kickback: 0.025
+  reloadTime: 0.75
+  prefab: {fileID: 2916913435495587277, guid: 1394f5b9d29480f43ac022d806ac3c2c, type: 3}
   staticAmmo: 60
   maxMagSize: 30
   bloom: 0
-  maxBloom: 0.1
+  maxBloom: 0.125
   initBloom: 0
   adsDamp: 1
   initAdsDamp: 1
-  staticBobX: 0.01
-  staticBobY: 0.01
-  walkBobX: 0.03
-  walkBobY: 0.03
-  sWalkBobX: 0.02
-  sWalkBobY: 0.02
+  staticBobX: 0.0075
+  staticBobY: 0.0075
+  walkBobX: 0.0225
+  walkBobY: 0.0225
+  sWalkBobX: 0.015
+  sWalkBobY: 0.015
