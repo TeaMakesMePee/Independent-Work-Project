@@ -90,7 +90,7 @@ public class Tank : Division
     {
         if (theLoadout.GetWeapon().FireBullet())
         {
-            photonView.RPC("Shoot", RpcTarget.All, theLoadout.GetWeapon().damage + absorbed * 0.2f); 
+            photonView.RPC("Shoot", RpcTarget.All, theLoadout.GetWeapon().damage + absorbed * 0.2f, theLoadout.GetWeapon().firerate);
         }
         else
         {

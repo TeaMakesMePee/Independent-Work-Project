@@ -47,7 +47,7 @@ public class Division : MonoBehaviourPunCallbacks
     {
         if (theLoadout.GetWeapon().FireBullet())
         {
-            photonView.RPC("Shoot", RpcTarget.All, theLoadout.GetWeapon().damage);
+            photonView.RPC("Shoot", RpcTarget.All, theLoadout.GetWeapon().damage, theLoadout.GetWeapon().firerate);
         }
         else
         {

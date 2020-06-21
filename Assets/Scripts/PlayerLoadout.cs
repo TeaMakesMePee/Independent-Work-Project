@@ -205,7 +205,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void Shoot(float damage)
+    private void Shoot(float _damage, float _firerate)
     {
         //Temp code
         float recDamp = 1f;
@@ -241,7 +241,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                 GameObject theHit = hit.collider.gameObject;
                 if (theHit.layer == 11 && theHit.GetComponent<Player>().teamName != GetComponent<Player>().teamName)
                 {
-                    theHit.GetPhotonView().RPC("TakeDamage", RpcTarget.All, /*weapons[currWeapID].damage*/damage);
+                    theHit.GetPhotonView().RPC("TakeDamage", RpcTarget.All, /*weapons[currWeapID].damage*/_damage);
                 }
             }    
         }
@@ -249,7 +249,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         currWeapon.transform.Rotate(-weapons[currWeapID].recoil * recDamp, 0, 0);
         currWeapon.transform.position -= currWeapon.transform.forward * weapons[currWeapID].kickback * kbDamp;
 
-        firerate = weapons[currWeapID].firerate;
+        firerate = /*weapons[currWeapID].firerate*/_firerate;
     }
 
     [PunRPC]
