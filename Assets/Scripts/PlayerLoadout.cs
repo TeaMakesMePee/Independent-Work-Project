@@ -100,6 +100,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                     GetComponent<Player>().SetADS(Input.GetMouseButton(1));
                 }
 
+                #region old shoot call
                 //if (Input.GetMouseButton(0) && firerate <= 0f)
                 //{
                 //    if (weapons[currWeapID].FireBullet())
@@ -112,6 +113,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                 //            StartCoroutine(Reload(weapons[currWeapID].reloadTime));
                 //    }
                 //}
+                #endregion
 
                 //Apply increasing bloom to all weapons except pistol
                 if (weapons[currWeapID].weapName != "Pistol")
