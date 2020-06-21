@@ -5,26 +5,27 @@ using UnityEngine.UI;
 
 public class ButtonText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    float startScale, targetScale, currScale;
+    float startPos, targetPos, currPos;
 
     private void Awake()
     {
-        startScale = currScale = targetScale = GetComponent<RectTransform>().localScale.x;
+        startPos = currPos = targetPos = GetComponent<RectTransform>().anchoredPosition.x;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        targetScale = 2.2f;
+        targetPos = 0f;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        targetScale = 2f;
+        targetPos = -350f;
     }
 
     private void Update()
     {
-        currScale = Mathf.Lerp(currScale, targetScale, Time.deltaTime * 10f);
-        GetComponent<RectTransform>().localScale = new Vector3(currScale, currScale, currScale);
+        currPos = Mathf.Lerp(currPos, targetPos, Time.deltaTime * 10f);
+        Vector3 pos = GetComponent<RectTransform>().anchoredPosition;
+        GetComponent<RectTransform>().anchoredPosition = new Vector3(currPos, pos.y, pos.z);
     }
 }
