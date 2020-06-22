@@ -12,7 +12,8 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab, DivisionsTab, theTitle;
     private List<RoomInfo> roomList;
 
-    public InputField roomName;
+    public TextMeshProUGUI roomName;
+    private string selectedRoom = null;
 
     public void Awake()
     {
@@ -60,7 +61,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public void Create()
     {
         RoomOptions options = new RoomOptions();
-        options.MaxPlayers = 1;
+        options.MaxPlayers = 2;
 
         PhotonNetwork.CreateRoom(roomName.text, options);
     }
@@ -127,15 +128,21 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
             newRoomButton.transform.Find("RoomName").GetComponent<TextMeshProUGUI>().text = room.Name;
             newRoomButton.transform.Find("RoomCount").GetComponent<TextMeshProUGUI>().text = room.PlayerCount + " / " + room.MaxPlayers;
 
-            newRoomButton.GetComponent<Button>().onClick.AddListener(delegate { JoinRoom(newRoomButton.transform); });
+            newRoomButton.GetComponent<Button>().onClick.AddListener(delegate { SetRoom(newRoomButton.transform); });
         }
 
         base.OnRoomListUpdate(roomList);
     }
 
-    public void JoinRoom(Transform button)
+    public void SetRoom(Transform button)
     {
-        PhotonNetwork.JoinRoom(button.transform.Find("RoomName").GetComponent<Text>().text);
+        selectedRoom = button.transform.Find("RoomName").GetComponent<TextMeshProUGUI>().text;
+    }
+
+    public void JoinRoom()
+    {
+        if (selectedRoom != null)
+            PhotonNetwork.JoinRoom(selectedRoom);
     }
 
     public void StartGame()
