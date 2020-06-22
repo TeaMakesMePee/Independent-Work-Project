@@ -66,4 +66,9 @@ public class TitleAnimation : MonoBehaviour
 
         lightCooldown -= Time.deltaTime;
     }
+
+    public void OnApplicationQuit()
+    {
+        gameTitle.fontSharedMaterial.SetFloat(ShaderUtilities.ID_LightAngle, 0f);
+    }
 }
