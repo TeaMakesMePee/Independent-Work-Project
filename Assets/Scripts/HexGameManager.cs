@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-using Photon.Pun;
 using ExitGames.Client.Photon;
 using Photon.Realtime;
 using System.Threading;

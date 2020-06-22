@@ -97,7 +97,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                 if (weapons[currWeapID].weapName == "Pistol") //Only pistols can ads
                 {
                     photonView.RPC("AimDownSight", RpcTarget.All, Input.GetMouseButton(1));
-                    GetComponent<Player>().SetADS(Input.GetMouseButton(1));
+                    //GetComponent<Player>().SetADS(Input.GetMouseButton(1));
                 }
 
                 #region old shoot call

@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public class ButtonText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {

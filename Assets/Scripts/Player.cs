@@ -40,8 +40,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     private GenerateHexGrid theHexGrids = new GenerateHexGrid();
 
-    private bool isADS;
-    private float adsDamp;
+    //private bool isADS;
+    //private float adsDamp;
 
     private bool isMoving;
 
@@ -126,8 +126,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         crosshair = GameObject.Find("Crosshair");
 
-        isADS = false;
-        adsDamp = 1f;
+        //isADS = false;
+        //adsDamp = 1f;
         isMoving = false;
     }
 
@@ -297,10 +297,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         teamName = tN;
     }
 
-    public void SetADS(bool adsState)
-    {
-        isADS = adsState;
-    }
+    //public void SetADS(bool adsState)
+    //{
+    //    isADS = adsState;
+    //}
 
     public bool GetMoving()
     {
