@@ -13,7 +13,7 @@ public class TitleAnimation : MonoBehaviour
     private void Awake()
     {
         gameTitle = GetComponent<TextMeshProUGUI>();
-        startLighting = currLighting = targetLighting = gameTitle.fontSharedMaterial.GetFloat(ShaderUtilities.ID_LightAngle);
+        startLighting = currLighting = targetLighting = 0f;
         lightCooldown = 2f;
         curranimTime = 0f;
         timetoAnim = 10f;

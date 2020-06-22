@@ -5,11 +5,11 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
-using System;
+using TMPro;
 
 public class HexGameLauncher : MonoBehaviourPunCallbacks
 {
-    public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab, DivisionsTab;
+    public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab, DivisionsTab, theTitle;
     private List<RoomInfo> roomList;
 
     public InputField roomName;
@@ -67,10 +67,12 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
     private void CloseAllTabs()
     {
+        ResetMainMenu();
         MainMenuTab.SetActive(false);
         CreateTab.SetActive(false);
         RoomsTab.SetActive(false);
         DivisionsTab.SetActive(false);
+        theTitle.SetActive(false);
     }
 
     public void OpenRoomsTab()
@@ -82,6 +84,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public void OpenMainMenuTab()
     {
         CloseAllTabs();
+        theTitle.SetActive(true);
         MainMenuTab.SetActive(true);
     }
 
@@ -95,6 +98,13 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         CloseAllTabs();
         DivisionsTab.SetActive(true);
+    }
+
+    public void ResetMainMenu()
+    {
+        GameObject theAnchor = MainMenuTab.transform.GetChild(0).gameObject;
+        for (int x = 0; x < theAnchor.transform.childCount; ++x)
+            theAnchor.transform.GetChild(x).GetComponent<ButtonText>().ResetButton();
     }
 
     private void ClearRoomList() //Clears all the room list in prep for updating the list
@@ -114,8 +124,8 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         {
             GameObject newRoomButton = Instantiate(RoomsButton, content) as GameObject;
 
-            newRoomButton.transform.Find("RoomName").GetComponent<Text>().text = room.Name;
-            newRoomButton.transform.Find("RoomCount").GetComponent<Text>().text = room.PlayerCount + " / " + room.MaxPlayers;
+            newRoomButton.transform.Find("RoomName").GetComponent<TextMeshProUGUI>().text = room.Name;
+            newRoomButton.transform.Find("RoomCount").GetComponent<TextMeshProUGUI>().text = room.PlayerCount + " / " + room.MaxPlayers;
 
             newRoomButton.GetComponent<Button>().onClick.AddListener(delegate { JoinRoom(newRoomButton.transform); });
         }

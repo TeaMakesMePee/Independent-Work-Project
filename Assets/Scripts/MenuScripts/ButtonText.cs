@@ -29,4 +29,9 @@ public class ButtonText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         Vector3 pos = GetComponent<RectTransform>().anchoredPosition;
         GetComponent<RectTransform>().anchoredPosition = new Vector3(currPos, pos.y, pos.z);
     }
+
+    public void ResetButton()
+    {
+        targetPos = -350f;
+    }
 }
