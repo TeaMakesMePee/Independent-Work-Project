@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using System;
+using TMPro;
 
 public struct PlayerInfo
 {
@@ -35,7 +36,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     private List<GameObject> hexGrids = new List<GameObject>();
     private bool firstSpawn;
     private float loadTime, matchTime;
-    public Text gameTimer;
+    public TextMeshProUGUI gameTimer;
     private bool countdownStart, gameOver;
     private double loadStartTime, gameStartTime;
 

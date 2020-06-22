@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Photon.Pun;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Division : MonoBehaviourPunCallbacks
 {
@@ -9,6 +10,7 @@ public class Division : MonoBehaviourPunCallbacks
     protected float i_abilityCooldown, abilityCooldown;
     protected Rigidbody playerRig;
     protected PlayerLoadout theLoadout;
+    protected GameObject divisionUI;
     public Division() { }
 
     public virtual void Init(float _jumpForce, float _abilityCooldown, float _moveSpeed) 
@@ -26,7 +28,12 @@ public class Division : MonoBehaviourPunCallbacks
     public virtual void UpdateDivisionStats() 
     {
         if (abilityCooldown > 0f)
+        {
             abilityCooldown -= Time.deltaTime;
+            if (abilityCooldown < 0f)
+                abilityCooldown = 0f;
+            divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = abilityCooldown / i_abilityCooldown;
+        }
     }
 
     public virtual void Jump(bool inAir) 

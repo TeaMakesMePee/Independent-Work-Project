@@ -6,6 +6,7 @@ using Photon.Pun;
 using Photon.Pun.Demo.Cockpit;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using TMPro;
 
 public class PlayerLoadout : MonoBehaviourPunCallbacks
 {
@@ -258,7 +259,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         GetComponent<Player>().TakeDamage(damage);
     }
 
-    public void UpdateAmmoUI(Text theUI)
+    public void UpdateAmmoUI(TextMeshProUGUI theUI)
     {
         if (currWeapID != -1)
             theUI.text = weapons[currWeapID].GetMagAmmo().ToString() + "/" + weapons[currWeapID].GetAmmo().ToString();

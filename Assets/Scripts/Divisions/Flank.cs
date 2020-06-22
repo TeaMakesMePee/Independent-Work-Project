@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Flank : Division
 {
     private bool isDoubleJump;
-
     public Flank() { }
 
     public override void Init(float _jumpForce, float _abilityCooldown, float _moveSpeed)
     {
-        base.Init(_jumpForce, _abilityCooldown, _moveSpeed);
         isDoubleJump = false;
+        divisionUI = GameObject.Find("FlankUI");
+        base.Init(_jumpForce, _abilityCooldown, _moveSpeed);
     }
 
     public override void UpdateDivisionStats()
@@ -30,6 +31,7 @@ public class Flank : Division
             dir.y = 0f;
             playerRig.AddForce(dir * 500f, ForceMode.Impulse);
             abilityCooldown = i_abilityCooldown;
+            divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = abilityCooldown / i_abilityCooldown;
         }
     }
 

@@ -29,7 +29,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private Transform hpBar;
     private float currHpScale;
 
-    private Text ammoUI;
+    private TextMeshProUGUI ammoUI;
+
+    private GameObject divisionUIParent;
 
     private HexGameManager manager;
     private PlayerLoadout loadout;
@@ -80,18 +82,22 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
+            divisionUIParent = GameObject.Find("DivisionUI");
             switch (GameData.GetDivision())
             {
                 case GameData.Division.P_Damage:
                     p_Division = gameObject.AddComponent<Damage>();
+                    divisionUIParent.transform.Find("DamageUI").gameObject.SetActive(true);
                     p_Division.Init(7.5f, 10f, 500f);
                     break;
                 case GameData.Division.P_Flank:
                     p_Division = gameObject.AddComponent<Flank>();
+                    divisionUIParent.transform.Find("FlankUI").gameObject.SetActive(true);
                     p_Division.Init(10f, 5f, 600f);
                     break;
                 case GameData.Division.P_Tank:
                     p_Division = gameObject.AddComponent<Tank>();
+                    divisionUIParent.transform.Find("TankUI").gameObject.SetActive(true);
                     p_Division.Init(5f, 8f, 400f);
                     break;
             }
@@ -121,7 +127,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         hpBar = GameObject.Find("Bar").transform;
-        ammoUI = GameObject.Find("AmmoCount").GetComponent<Text>();
+        ammoUI = GameObject.Find("AmmoCount").GetComponent<TextMeshProUGUI>();
         currHpScale = 1f;
 
         crosshair = GameObject.Find("Crosshair");
