@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Photon.Pun;
+using UnityEngine.UI;
 
 public class Damage : Division
 {
@@ -9,6 +10,7 @@ public class Damage : Division
 
     public override void Init(float _jumpForce, float _abilityCooldown, float _moveSpeed)
     {
+        divisionUI = GameObject.Find("DamageUI");
         base.Init(_jumpForce, _abilityCooldown, _moveSpeed);
     }
 
@@ -21,6 +23,12 @@ public class Damage : Division
         if (f_abilityActive > 0f)
         {
             f_abilityActive -= Time.deltaTime;
+            if (f_abilityActive <= 0f)
+            {
+                f_abilityActive = 0f;
+                abilityCooldown = i_abilityCooldown;
+            }
+            divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = (1f - f_abilityActive / 1.5f);
         }
         base.UpdateDivisionStats();
     }
@@ -29,7 +37,6 @@ public class Damage : Division
     {
         if (abilityCooldown <= 0f)
         {
-            abilityCooldown = i_abilityCooldown;
             f_abilityActive = 1.5f;
         }
     }

@@ -88,7 +88,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 case GameData.Division.P_Damage:
                     p_Division = gameObject.AddComponent<Damage>();
                     divisionUIParent.transform.Find("DamageUI").gameObject.SetActive(true);
-                    p_Division.Init(7.5f, 10f, 500f);
+                    p_Division.Init(7.5f, 8.5f, 500f);
                     break;
                 case GameData.Division.P_Flank:
                     p_Division = gameObject.AddComponent<Flank>();
