@@ -32,35 +32,52 @@ public class Tank : Division
             f_abilityActive -= Time.deltaTime;
             if (f_abilityActive <= 0f)
             {
-                Debug.LogError("Absorbed damage: " + absorbed);
-                Debug.LogError("Inactive");
                 b_abilityActive = false;
                 f_abilityActive = 0f;
             }
             divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = (1f - f_abilityActive / 1.5f);
         }
 
-        if (!b_abilityActive && absorbed > 0f) //if anyone shot while ability was active
-        {
-            if (divisionUI.transform.Find("Ability").gameObject.activeSelf) //Set green absorbed icon to true and off the purple one
-            {
-                divisionUI.transform.Find("Ability").gameObject.SetActive(false);
-                divisionUI.transform.Find("AfterAbility").gameObject.SetActive(true);
-            }
+        #region old code 1
+        //if (/*!b_abilityActive && */absorbed > 0f) //if anyone shot while ability was active
+        //{
+        //    //if (divisionUI.transform.Find("Ability").gameObject.activeSelf) //Set green absorbed icon to true and off the purple one
+        //    //{
+        //    //    divisionUI.transform.Find("Ability").gameObject.SetActive(false);
+        //    //    divisionUI.transform.Find("AfterAbility").gameObject.SetActive(true);
+        //    //}
 
-            if (currentTime <= timeToBurst) //2 seconds to reduce absorbed to 0
+        //    if (currentTime <= timeToBurst) //2 seconds to reduce absorbed to 0
+        //    {
+        //        currentTime += Time.deltaTime;
+        //        absorbed = Mathf.Lerp(0f, absorbed, currentTime / timeToBurst);
+        //        Debug.LogError("Resetting absorbed: " + absorbed);
+        //    }
+        //    else //after that hard reset absorbed and currentTime
+        //    {
+        //        Debug.LogError("Hard reset: " + absorbed);
+        //        absorbed = 0f;
+        //        currentTime = 0f;
+        //    }
+        //    //divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = currentTime / timeToBurst;
+        //}
+        #endregion
+        absorbed = Mathf.Lerp(0f, absorbed, Time.deltaTime * 3f);
+        if (absorbed * 0.2f > 1f)
+        {
+            if (!divisionUI.transform.Find("AfterAbility").gameObject.activeSelf)
             {
-                currentTime += Time.deltaTime;
-                absorbed = Mathf.Lerp(0f, absorbed, currentTime / timeToBurst);
-                Debug.LogError("Resetting absorbed: " + absorbed);
+                divisionUI.transform.Find("AfterAbility").gameObject.SetActive(true);
+                divisionUI.transform.Find("Ability").gameObject.SetActive(false);
             }
-            else //after that hard reset absorbed and currentTime
+        }
+        else
+        {
+            if (!divisionUI.transform.Find("Ability").gameObject.activeSelf)
             {
-                Debug.LogError("Hard reset: " + absorbed);
-                absorbed = 0f;
-                currentTime = 0f;
+                divisionUI.transform.Find("Ability").gameObject.SetActive(true);
+                divisionUI.transform.Find("AfterAbility").gameObject.SetActive(false);
             }
-            divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = currentTime / timeToBurst;
         }
 
         if (Input.GetMouseButton(0) && theLoadout.readyFire())
@@ -68,26 +85,28 @@ public class Tank : Division
             Shoot();
         }
 
-        if (abilityCooldown > 0f)
-        {
-            if (absorbed == 0f && f_abilityActive == 0f) //if anyone didnt shoot while ability was active
-            {
-                if (divisionUI.transform.Find("AfterAbility").gameObject.activeSelf) //Set green absorbed icon to true and off the purple one
-                {
-                    divisionUI.transform.Find("AfterAbility").gameObject.SetActive(false);
-                    divisionUI.transform.Find("Ability").gameObject.SetActive(true);
-                }
-                float cdTime = b_absorbed ? (i_abilityCooldown - timeToBurst - 1.5f) : (i_abilityCooldown - 1.5f);
-                if (abilityCooldown < 0f)
-                {
-                    b_absorbed = false;
-                    abilityCooldown = 0f;
-                }
-                divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = abilityCooldown / cdTime;
-            }
-            abilityCooldown -= Time.deltaTime;
-        }
-        //base.UpdateDivisionStats();
+        #region old code 2
+        //if (abilityCooldown > 0f)
+        //{
+        //    if (absorbed == 0f && f_abilityActive == 0f) //if anyone didnt shoot while ability was active
+        //    {
+        //        if (divisionUI.transform.Find("AfterAbility").gameObject.activeSelf) //Set green absorbed icon to true and off the purple one
+        //        {
+        //            divisionUI.transform.Find("AfterAbility").gameObject.SetActive(false);
+        //            divisionUI.transform.Find("Ability").gameObject.SetActive(true);
+        //        }
+        //        float cdTime = b_absorbed ? (i_abilityCooldown - timeToBurst - 1.5f) : (i_abilityCooldown - 1.5f);
+        //        if (abilityCooldown < 0f)
+        //        {
+        //            b_absorbed = false;
+        //            abilityCooldown = 0f;
+        //        }
+        //        divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = abilityCooldown / cdTime;
+        //    }
+        //    abilityCooldown -= Time.deltaTime;
+        //}
+        #endregion
+        base.UpdateDivisionStats();
     }
 
     public override void UseAbility()
