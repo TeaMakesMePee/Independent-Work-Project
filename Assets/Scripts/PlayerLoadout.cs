@@ -202,6 +202,10 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         newWeapon.transform.localEulerAngles = Vector3.zero;
 
         currWeapon = newWeapon;
+        if (photonView.IsMine)
+        {
+            GameObject.Find("WeaponScrollUI").GetComponent<WeaponUI>().Equip(weaponID);
+        }
         //currWeapID = weaponID;
     }
 
