@@ -173,6 +173,10 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 }
