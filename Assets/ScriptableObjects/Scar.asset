@@ -33,3 +33,5 @@ MonoBehaviour:
   walkBobY: 0.03
   sWalkBobX: 0.02
   sWalkBobY: 0.02
+  audioClip: {fileID: 8300000, guid: f4541a279ef965246abe8f85e74b47f8, type: 3}
+  audioPitch: 0.8

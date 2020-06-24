@@ -22,6 +22,9 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
 
     private bool isReloading;
     private float mouseScroll;
+
+    public AudioSource audioSource;
+
     private void Start()
     {
         foreach (Weapon w in weapons) w.InitGun();
@@ -255,6 +258,12 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         currWeapon.transform.position -= currWeapon.transform.forward * weapons[currWeapID].kickback * kbDamp;
 
         firerate = /*weapons[currWeapID].firerate*/_firerate;
+
+        //audioSource.Stop();
+        audioSource.clip = weapons[currWeapID].audioClip;
+        audioSource.pitch = weapons[currWeapID].audioPitch + Random.Range(-0.075f, 0.075f);
+        audioSource.volume = 1f;
+        audioSource.Play();
     }
 
     [PunRPC]

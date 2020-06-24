@@ -22,6 +22,11 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         Connect();
     }
 
+    private void Start()
+    {
+        FindObjectOfType<AudioManager>().Play("MenuTheme");
+    }
+
     public override void OnConnectedToMaster()
     {
         //Once connected, join
@@ -64,6 +69,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         options.MaxPlayers = 1;
 
         PhotonNetwork.CreateRoom(roomName.text, options);
+        FindObjectOfType<AudioManager>().Play("ButtonClick");
     }
 
     private void CloseAllTabs()
@@ -74,6 +80,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         RoomsTab.SetActive(false);
         DivisionsTab.SetActive(false);
         theTitle.SetActive(false);
+        FindObjectOfType<AudioManager>().Play("ButtonClick");
     }
 
     public void OpenRoomsTab()
@@ -142,7 +149,10 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public void JoinRoom()
     {
         if (selectedRoom != null)
+        {
             PhotonNetwork.JoinRoom(selectedRoom);
+            FindObjectOfType<AudioManager>().Play("ButtonClick");
+        }
     }
 
     public void StartGame()

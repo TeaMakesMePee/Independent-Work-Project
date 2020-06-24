@@ -24,6 +24,9 @@ public class Weapon : ScriptableObject
     public float walkBobX, walkBobY;
     public float sWalkBobX, sWalkBobY;
 
+    public AudioClip audioClip;
+    public float audioPitch;
+
     public void InitGun() //Init weapon if it hasnt yet been initted
     {
         ammo = staticAmmo;

@@ -1937,7 +1937,6 @@ GameObject:
   m_Component:
   - component: {fileID: 739519608}
   - component: {fileID: 739519607}
-  - component: {fileID: 739519606}
   m_Layer: 0
   m_Name: GameEnd
   m_TagString: Untagged
@@ -1945,14 +1944,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &739519606
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 739519605}
-  m_Enabled: 1
 --- !u!20 &739519607
 Camera:
   m_ObjectHideFlags: 0

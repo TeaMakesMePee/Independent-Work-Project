@@ -55,7 +55,7 @@ public class Damage : Division
     {
         if (theLoadout.GetWeapon().FireBullet())
         {
-            photonView.RPC("Shoot", RpcTarget.All, theLoadout.GetWeapon().damage, ((f_abilityActive > 0f) ? theLoadout.GetWeapon().firerate * 1.5f : theLoadout.GetWeapon().firerate));
+            photonView.RPC("Shoot", RpcTarget.All, theLoadout.GetWeapon().damage, ((f_abilityActive > 0f) ? theLoadout.GetWeapon().firerate * 0.75f : theLoadout.GetWeapon().firerate));
         }
         else
         {

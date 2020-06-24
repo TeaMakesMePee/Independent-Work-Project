@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee4aaee203c60994b9b1e21ed5571d97, type: 3}
   m_Name: Pistol
   m_EditorClassIdentifier: 
-  initDamage: 10
   damage: 10
   weapName: Pistol
   firerate: 0.15
@@ -34,3 +33,5 @@ MonoBehaviour:
   walkBobY: 0.05
   sWalkBobX: 0.035
   sWalkBobY: 0.035
+  audioClip: {fileID: 8300000, guid: f4541a279ef965246abe8f85e74b47f8, type: 3}
+  audioPitch: 0.6
