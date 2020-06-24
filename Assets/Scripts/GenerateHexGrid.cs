@@ -387,7 +387,8 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
     private void Update()
     {
         GameObject thePlayer = GameObject.FindGameObjectWithTag("LocalPlayer");
-        ChangeHexColor(thePlayer.transform.position);
+        if (thePlayer != null)
+            ChangeHexColor(thePlayer.transform.position);
     }
 
     private bool CheckIfOccupied(int index)

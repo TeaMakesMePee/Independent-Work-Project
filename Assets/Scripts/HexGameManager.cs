@@ -25,6 +25,8 @@ public struct PlayerInfo
 
 public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
+    [SerializeField]
+    public Camera gameEnd;
     public string playerPrefab;
     public Transform spawnPoint;
     public string mapPrefab;
@@ -51,7 +53,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         loadStartTime = gameStartTime = -1.0;
         loadTime = 1f;
-        matchTime = 120f;
+        matchTime = 90f;
         gameTimer.text = fToS(loadTime);
         myInd = -1;
         firstSpawn = true;
@@ -272,15 +274,27 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.DestroyAll();
+            //PhotonNetwork.DestroyAll();
             PhotonNetwork.CurrentRoom.IsVisible = false;
             PhotonNetwork.CurrentRoom.IsOpen = false;
         }
+        PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.LocalPlayer); //Destroy localplayer
+        GameObject.Find("HUD").SetActive(false); //Off the HUD
+        gameEnd.gameObject.SetActive(true); //On the camera
+        Vector2 results = CheckWinLose();
+        GameObject.Find("EndgameUI").GetComponent<EndgameUI>().StartAnim(results.x, results.y);
+        StartCoroutine(End(4f));
+    }
 
-        //mapcam.SetActive(true);
+    private IEnumerator End(float p_wait)
+    {
+        yield return new WaitForSeconds(p_wait);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.DestroyAll();
+        }
         PhotonNetwork.AutomaticallySyncScene = false;
         PhotonNetwork.LeaveRoom();
-        Debug.LogError("GameOver. " + CheckWinLose());
     }
 
     public string GetLocalPlayerTeam()
@@ -306,7 +320,6 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             pos.y = thePlayer.transform.localScale.y + 0.1f;
             thePlayer.transform.position = pos;
             firstSpawn = false;
-
         }
     }
 
@@ -347,7 +360,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         return Vector3.zero;
     }
 
-    private string CheckWinLose()
+    private Vector2 CheckWinLose()
     {
         int red, blue;
         red = blue = 0;
@@ -356,26 +369,27 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             Transform myMat = hexGrids[x].transform.GetChild(0);
             Material myMatMesh = myMat.GetComponent<MeshRenderer>().material;
             
-            if (myMatMesh.name != "Blue (Instance)")
+            if (myMatMesh.name == "Blue (Instance)")
             {
                 blue++;
             }
-            else if (myMatMesh.name != "Red (Instance)")
+            if (myMatMesh.name == "Red (Instance)")
             {
                 red++;
             }
         }
-        
-        if (red > blue)
-        {
-            return "Red";
-        }
-        else if (blue > red)
-        {
-            return "Blue";
-        }
 
-        return "Draw";
+        //if (red > blue)
+        //{
+        //    return "Red";
+        //}
+        //else if (blue > red)
+        //{
+        //    return "Blue";
+        //}
+
+        //return "Draw";
+        return new Vector2(red, blue);
     }
 
     public bool gameStart
@@ -386,8 +400,8 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     private string fToS(float time)
     {
-        int front = (int)time;
-        float back = time - front;
+        int front = (int)time / 60;
+        int back = (int)time % 60;
         string tempB = back.ToString("F2");
         string newB = "";
         for (int x = 0; x < tempB.Length; ++x)
@@ -395,6 +409,6 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             if (x > 1)
                 newB += tempB[x];
         }
-        return front + ":" + newB;
+        return front + ":" + (back < 10 ? "0" : "") + back;
     }
 }

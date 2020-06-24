@@ -105,7 +105,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     break;
             }
 
-            sceneCam = GameObject.Find("SceneCam");
+            sceneCam = GameObject.Find("Cameras").transform.Find("GameEnd").gameObject;
             if (sceneCam != null)
                 sceneCam.SetActive(false);
         }
