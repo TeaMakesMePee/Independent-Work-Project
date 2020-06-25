@@ -60,6 +60,7 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
         }
         manager = GameObject.Find("GameManager").GetComponent<HexGameManager>();
         UpdateGameManager();
+        //AddScript();
     }
 
     public void ChangeHexColor(Vector3 playerPos)
@@ -69,6 +70,15 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
         {
             Vec2ToHexGrid(tempPos);
         }
+    }
+
+    private void AddScript()
+    {
+        //for (int x = 0; x < hexGrids.Count; ++x)
+        //{
+        //    hexGrids[x].GetComponent<TileInfo>().SetIndex(x);
+        //}
+        //PrefabUtility.SaveAsPrefabAsset(gameObject, "Assets/Prefabs/Grids2New.prefab");
     }
 
     private Vector2 Vec3ToVec2(Vector3 playerPos)

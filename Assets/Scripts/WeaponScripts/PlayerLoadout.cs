@@ -24,6 +24,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     private float mouseScroll;
 
     public AudioSource audioSource;
+    public AudioClip reloadClip;
 
     private void Start()
     {
@@ -164,6 +165,13 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         isReloading = true;
         currWeapon.SetActive(false);
         yield return new WaitForSeconds(reloadTime);
+
+        //Play reload sound
+        audioSource.clip = reloadClip;
+        audioSource.pitch = 1.2f;
+        audioSource.volume = 1f;
+        audioSource.Play();
+
         weapons[currWeapID].Reload();
         currWeapon.SetActive(true);
         isReloading = false;
@@ -209,6 +217,11 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         {
             GameObject.Find("WeaponScrollUI").GetComponent<WeaponUI>().Equip(weaponID);
         }
+
+        audioSource.clip = reloadClip;
+        audioSource.pitch = 1.8f;
+        audioSource.volume = 0.5f;
+        audioSource.Play();
         //currWeapID = weaponID;
     }
 

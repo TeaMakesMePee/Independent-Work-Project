@@ -286,8 +286,8 @@ MonoBehaviour:
   player: {fileID: 6293200104841510698}
   cam: {fileID: 6293200105259471348}
   weapon: {fileID: 6293200105149640062}
-  xSens: 1000
-  ySens: 1000
+  xSens: 500
+  ySens: 500
   maxAngle: 90
 --- !u!114 &6293200104841510702
 MonoBehaviour:
@@ -311,6 +311,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2359
   audioSource: {fileID: 1714931396943916930}
+  reloadClip: {fileID: 8300000, guid: cd982acd79b105b4aba631bf1bff390b, type: 3}
 --- !u!114 &4681839410959351941
 MonoBehaviour:
   m_ObjectHideFlags: 0
