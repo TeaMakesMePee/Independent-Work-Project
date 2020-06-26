@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 20
   weapName: Scar
-  firerate: 0.15
+  firerate: 0.125
   adsSpeed: 30
   recoil: 0.8
   kickback: 0.05
