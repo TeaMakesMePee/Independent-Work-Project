@@ -5,11 +5,14 @@ using UnityEngine.UI;
 public class Flank : Division
 {
     private bool isDoubleJump;
+    private bool isDashing;
+    private float c_dashTime, t_dashTime;
     public Flank() { }
 
     public override void Init(float _jumpForce, float _abilityCooldown, float _moveSpeed)
     {
-        isDoubleJump = false;
+        isDoubleJump = isDashing = false;
+        t_dashTime = 0.1f;
         divisionUI = GameObject.Find("FlankUI");
         base.Init(_jumpForce, _abilityCooldown, _moveSpeed);
     }
@@ -20,6 +23,20 @@ public class Flank : Division
         {
             base.Shoot();
         }
+        if (isDashing)
+        {
+            c_dashTime += Time.deltaTime;
+            if (c_dashTime < t_dashTime)
+            {
+                Vector3 dir = transform.forward;
+                dir.y = 0f;
+                playerRig.AddForce(dir * 50f, ForceMode.VelocityChange);
+            }
+            else
+            {
+                isDashing = false;
+            }
+        }
         base.UpdateDivisionStats();
     }
 
@@ -27,11 +44,9 @@ public class Flank : Division
     {
         if (abilityCooldown <= 0f)
         {
-            Vector3 dir = transform.forward;
-            dir.y = 0f;
-            playerRig.AddForce(dir * 500f, ForceMode.Impulse);
             abilityCooldown = i_abilityCooldown;
-            divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = abilityCooldown / i_abilityCooldown;
+            isDashing = true;
+            c_dashTime = 0f;
         }
     }
 
