@@ -216,6 +216,8 @@ MonoBehaviour:
     m_Bits: 2359
   audioSource: {fileID: 1218638927257505932}
   reloadClip: {fileID: 8300000, guid: cd982acd79b105b4aba631bf1bff390b, type: 3}
+  damageIndicator: {fileID: 9147184042937428560, guid: 92f748e53be46dd48b59a84850227ecd,
+    type: 3}
 --- !u!114 &4681839410959351941
 MonoBehaviour:
   m_ObjectHideFlags: 0

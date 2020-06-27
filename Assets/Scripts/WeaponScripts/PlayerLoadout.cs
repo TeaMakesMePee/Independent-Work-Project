@@ -26,6 +26,9 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     public AudioSource audioSource;
     public AudioClip reloadClip;
 
+    [SerializeField]
+    public GameObject damageIndicator;
+
     private void Start()
     {
         foreach (Weapon w in weapons) w.InitGun();
@@ -268,7 +271,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                 GameObject theHit = hit.collider.gameObject;
                 if (theHit.layer == 11 && theHit.GetComponent<Player>().teamName != GetComponent<Player>().teamName)
                 {
-                    theHit.GetPhotonView().RPC("TakeDamage", RpcTarget.All, /*weapons[currWeapID].damage*/_damage);
+                    theHit.GetPhotonView().RPC("TakeDamage", RpcTarget.All, _damage, transform.position.x, transform.position.z);
                 }
             }    
         }
@@ -286,9 +289,14 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void TakeDamage(float damage)
+    private void TakeDamage(float damage, float x, float z)
     {
         GetComponent<Player>().TakeDamage(damage);
+        if (photonView.IsMine)
+        {
+            GameObject dI = Instantiate(damageIndicator, GameObject.Find("Indicators").transform);
+            dI.GetComponent<DamagedIndicator>().Init(new Vector3(x, 0f, z));
+        }
     }
 
     public void UpdateAmmoUI(TextMeshProUGUI theUI)

@@ -129,7 +129,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             photonView.RPC("SyncTeamName", RpcTarget.AllBuffered, teamName);
         }
 
-        hpBar = GameObject.Find("Bar").transform;
+        hpBar = GameObject.Find("HpBar").transform;
         ammoUI = GameObject.Find("AmmoCount").GetComponent<TextMeshProUGUI>();
         currHpScale = 1f;
 
@@ -185,7 +185,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         weaponParent.localPosition = Vector3.Lerp(weaponParent.localPosition, newWeaponBobPos, Time.deltaTime * bobLerp);
 
         //Lerp HP bar scale
-        currHpScale = Mathf.Lerp(currHpScale, (float)(currHealth) / (float)(maxHealth), Time.deltaTime * 10f);
+        currHpScale = Mathf.Lerp(currHpScale, currHealth / maxHealth, Time.deltaTime * 10f);
+        Debug.LogError(currHpScale);
         hpBar.localScale = new Vector3(currHpScale, 1f, 1f);
         loadout.UpdateAmmoUI(ammoUI);
 
