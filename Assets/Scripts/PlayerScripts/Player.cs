@@ -88,13 +88,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 case GameData.Division.P_Damage:
                     p_Division = gameObject.AddComponent<Damage>();
                     divisionUIParent.transform.Find("DamageUI").gameObject.SetActive(true);
-                    p_Division.Init(7.5f, 8.5f, 500f);
+                    p_Division.Init(7.5f, 8.5f, 450f);
                     GameObject.Find("WeaponScrollUI").GetComponent<WeaponUI>().SetRifleSprite("Damage");
                     break;
                 case GameData.Division.P_Flank:
                     p_Division = gameObject.AddComponent<Flank>();
                     divisionUIParent.transform.Find("FlankUI").gameObject.SetActive(true);
-                    p_Division.Init(10f, 5f, 600f);
+                    p_Division.Init(10f, 5f, 500f);
                     GameObject.Find("WeaponScrollUI").GetComponent<WeaponUI>().SetRifleSprite("Flank");
                     break;
                 case GameData.Division.P_Tank:

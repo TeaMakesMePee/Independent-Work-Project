@@ -28,7 +28,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     [SerializeField]
     public Camera gameEnd;
     public string playerPrefab;
-    public Transform spawnPoint;
+    //public Transform spawnPoint;
     public string mapPrefab;
     public bool isMapSpawned;
     //public Transform mapTransform;
@@ -129,7 +129,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             Vector3 spawn = GetRandomSpawn(myInfo.team);
             string stringValue = Enum.GetName(typeof(GameData.Division), GameData.GetDivision());
-            GameObject thePlayer = PhotonNetwork.Instantiate("PlayerDivisions/" + stringValue, spawn, spawnPoint.rotation);
+            GameObject thePlayer = PhotonNetwork.Instantiate("PlayerDivisions/" + stringValue, spawn, /*spawnPoint.rotation*/Quaternion.identity);
             Vector3 pos = thePlayer.transform.position;
             pos.y = thePlayer.transform.localScale.y + 0.1f;
             thePlayer.transform.position = pos;
@@ -315,7 +315,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
             Vector3 spawn = IndexToHexVec3(index);
             string stringValue = Enum.GetName(typeof(GameData.Division), GameData.GetDivision());
-            GameObject thePlayer = PhotonNetwork.Instantiate("PlayerDivisions/" + stringValue, spawn, spawnPoint.rotation);
+            GameObject thePlayer = PhotonNetwork.Instantiate("PlayerDivisions/" + stringValue, spawn, /*spawnPoint.rotation*/Quaternion.identity);
             Vector3 pos = thePlayer.transform.position;
             pos.y = thePlayer.transform.localScale.y + 0.1f;
             thePlayer.transform.position = pos;
