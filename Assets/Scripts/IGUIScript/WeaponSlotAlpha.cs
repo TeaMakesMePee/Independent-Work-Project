@@ -45,7 +45,7 @@ public class WeaponSlotAlpha : MonoBehaviour
 
     public void EquipOther()
     {
-        nextAlpha = 100f;
+        nextAlpha = 80f;
         offAlpha = 3f;
     }
 }

@@ -20,7 +20,7 @@ MonoBehaviour:
   kickback: 0.025
   reloadTime: 0.75
   prefab: {fileID: 2916913435495587277, guid: 1394f5b9d29480f43ac022d806ac3c2c, type: 3}
-  staticAmmo: 60
+  staticAmmo: 90
   maxMagSize: 30
   bloom: 0
   maxBloom: 0.125

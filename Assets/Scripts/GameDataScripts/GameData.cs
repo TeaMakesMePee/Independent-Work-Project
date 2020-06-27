@@ -7,7 +7,7 @@
         P_Flank
     }
 
-    private static Division theDivision = Division.P_Tank;
+    private static Division theDivision = Division.P_Damage;
 
     public static void SetDivision(Division theDiv)
     {

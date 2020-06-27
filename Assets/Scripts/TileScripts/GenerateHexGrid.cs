@@ -369,6 +369,9 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
     [PunRPC]
     private void ApplyMaterialToHex(int index, string teamColor)
     {
+        if (!hexGrids[index].GetComponent<TileInfo>().active) //if scene/level design is on tile
+            return; //dont color it
+
         string path = "Material/" + teamColor;
         Material theMat = Resources.Load(path, typeof(Material)) as Material;
         Transform theMesh = hexGrids[index].transform.GetChild(0);

@@ -127,18 +127,24 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                     {
                         if (weapons[currWeapID].bloom < weapons[currWeapID].maxBloom)
                         {
-                            float multiply = 0.03f;
+                            float multiply = 0.015f;
                             if (GetComponent<Player>().GetMoving()) //if moving, increase bloom even more
                             {
-                                multiply = 0.05f;
+                                multiply = 0.025f;
                             }
                             weapons[currWeapID].bloom += Time.deltaTime * multiply;
+                            if (weapons[currWeapID].bloom > weapons[currWeapID].maxBloom)
+                                weapons[currWeapID].bloom = weapons[currWeapID].maxBloom;
                         }
                     }
                     else
                     {
                         if (weapons[currWeapID].bloom > 0f)
-                            weapons[currWeapID].bloom -= Time.deltaTime * 0.1f;
+                        {
+                            weapons[currWeapID].bloom -= Time.deltaTime * 0.15f;
+                            if (weapons[currWeapID].bloom < 0f)
+                                weapons[currWeapID].bloom = 0f;
+                        }
                     }
 
                     //Clamp
@@ -298,7 +304,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
 
     public bool readyFire()
     {
-        return firerate <= 0f;
+        return firerate <= 0f && !isReloading;
     }
 
     public void CheckReload()

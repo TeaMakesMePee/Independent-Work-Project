@@ -34,8 +34,10 @@ public class Tank : Division
             {
                 b_abilityActive = false;
                 f_abilityActive = 0f;
+                abilityCooldown = i_abilityCooldown;
             }
             divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = (1f - f_abilityActive / 1.5f);
+            Debug.LogError((1f - f_abilityActive / 1.5f));
         }
 
         #region old code 1
@@ -117,7 +119,6 @@ public class Tank : Division
             b_abilityActive = true;
             f_abilityActive = 1.5f;
             currentTime = 0f;
-            abilityCooldown = i_abilityCooldown;
             Debug.LogError("Active");
         }
     }
