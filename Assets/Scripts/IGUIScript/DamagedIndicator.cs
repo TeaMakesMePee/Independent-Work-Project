@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,5 +30,7 @@ public class DamagedIndicator : MonoBehaviour
         GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, 0f, angle);
         currAlpha = Mathf.Lerp(currAlpha, 0f, Time.deltaTime * 2f);
         GetComponent<Image>().color = new Color(1f, 1f, 1f, currAlpha / 255f);
+        if (currAlpha < 0.01f)
+            Destroy(gameObject);
     }
 }
