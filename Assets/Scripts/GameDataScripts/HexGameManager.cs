@@ -131,7 +131,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             string stringValue = Enum.GetName(typeof(GameData.Division), GameData.GetDivision());
             GameObject thePlayer = PhotonNetwork.Instantiate("PlayerDivisions/" + stringValue, spawn, /*spawnPoint.rotation*/Quaternion.identity);
             Vector3 pos = thePlayer.transform.position;
-            pos.y = thePlayer.transform.localScale.y + 0.1f;
+            pos.y += thePlayer.transform.localScale.y;
             thePlayer.transform.position = pos;
         }
     }
@@ -335,6 +335,8 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             Transform myMat = hexGrids[x].transform.GetChild(0);
             Material myMatMesh = myMat.GetComponent<MeshRenderer>().material;
+            if (!hexGrids[x].GetComponent<TileInfo>().active)
+                continue;
             if (teamColor == "Red")
             {
                 if (myMatMesh.name != "Blue (Instance)")
@@ -354,7 +356,9 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         if (possInds.Count > 0)
         {
             int rand = UnityEngine.Random.Range(0, possInds.Count);
-            return hexGrids[possInds[rand]].transform.position;
+            Vector3 pos = hexGrids[possInds[rand]].transform.position;
+            pos.y = hexGrids[possInds[rand]].transform.localScale.y / 15f * 1.1f + 0.1f;
+            return pos;
         }
 
         return Vector3.zero;
