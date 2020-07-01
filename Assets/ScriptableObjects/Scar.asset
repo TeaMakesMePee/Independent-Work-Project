@@ -35,3 +35,4 @@ MonoBehaviour:
   sWalkBobY: 0.02
   audioClip: {fileID: 8300000, guid: f4541a279ef965246abe8f85e74b47f8, type: 3}
   audioPitch: 0.8
+  rotateDir: {x: 0, y: 0, z: 1}

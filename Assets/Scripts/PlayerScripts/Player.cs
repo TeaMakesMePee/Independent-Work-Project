@@ -186,7 +186,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         //Lerp HP bar scale
         currHpScale = Mathf.Lerp(currHpScale, currHealth / maxHealth, Time.deltaTime * 10f);
-        Debug.LogError(currHpScale);
         hpBar.localScale = new Vector3(currHpScale, 1f, 1f);
         loadout.UpdateAmmoUI(ammoUI);
 

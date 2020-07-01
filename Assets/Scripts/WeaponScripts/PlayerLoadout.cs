@@ -104,7 +104,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                 //AimDownSight(Input.GetMouseButton(1));
                 if (weapons[currWeapID].weapName == "Pistol") //Only pistols can ads
                 {
-                    photonView.RPC("AimDownSight", RpcTarget.All, Input.GetMouseButton(1));
+                    photonView.RPC("AimDownSight", RpcTarget.All, Input.GetMouseButton(1) && !isReloading);
                     //GetComponent<Player>().SetADS(Input.GetMouseButton(1));
                 }
 
@@ -162,6 +162,9 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
 
                 firerate -= Time.deltaTime;
             }
+
+            Transform theAnchor = currWeapon.transform.Find("Anchor");
+            GameObject theDesign = theAnchor.Find("Design").gameObject;
         }
         
         //Lerp weapon back to default position, resets kickback, for all players
@@ -172,8 +175,28 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     IEnumerator Reload(float reloadTime)
     {
         isReloading = true;
-        currWeapon.SetActive(false);
-        yield return new WaitForSeconds(reloadTime);
+        //currWeapon.SetActive(false);
+        Transform theAnchor = currWeapon.transform.Find("Anchor");
+        GameObject theDesign = theAnchor.Find("Design").gameObject;
+
+        float rotateAmount = 0f;
+        while (rotateAmount < 359f)
+        {
+            float start = rotateAmount;
+            rotateAmount = Mathf.Lerp(rotateAmount, 360f, Time.deltaTime * 5f);
+            for (int x = 0; x < theDesign.transform.childCount; ++x)
+            {
+                theDesign.transform.GetChild(x).Rotate(weapons[currWeapID].rotateDir, rotateAmount - start);
+            }
+            yield return null;
+        }
+
+        for (int x = 0; x < theDesign.transform.childCount; ++x)
+        {
+            theDesign.transform.GetChild(x).Rotate(weapons[currWeapID].rotateDir, 360f - rotateAmount);
+        }
+
+        //yield return new WaitForSeconds(reloadTime);
 
         //Play reload sound
         audioSource.clip = reloadClip;
@@ -182,7 +205,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         audioSource.Play();
 
         weapons[currWeapID].Reload();
-        currWeapon.SetActive(true);
+        //currWeapon.SetActive(true);
         isReloading = false;
     }
 

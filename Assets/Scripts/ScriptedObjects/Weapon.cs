@@ -27,6 +27,8 @@ public class Weapon : ScriptableObject
     public AudioClip audioClip;
     public float audioPitch;
 
+    public Vector3 rotateDir;
+
     public void InitGun() //Init weapon if it hasnt yet been initted
     {
         ammo = staticAmmo;
