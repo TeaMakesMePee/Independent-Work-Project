@@ -119,7 +119,7 @@ public class Tank : Division
             b_abilityActive = true;
             f_abilityActive = 1.5f;
             currentTime = 0f;
-            Debug.LogError("Active");
+            //Debug.LogError("Active");
         }
     }
 
