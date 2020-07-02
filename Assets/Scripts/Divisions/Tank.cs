@@ -37,7 +37,7 @@ public class Tank : Division
                 abilityCooldown = i_abilityCooldown;
             }
             divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = (1f - f_abilityActive / 1.5f);
-            Debug.LogError((1f - f_abilityActive / 1.5f));
+            //Debug.LogError((1f - f_abilityActive / 1.5f));
         }
 
         #region old code 1
