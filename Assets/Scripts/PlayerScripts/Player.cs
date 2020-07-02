@@ -127,6 +127,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             teamName = manager.GetLocalPlayerTeam();
             photonView.RPC("SyncTeamName", RpcTarget.AllBuffered, teamName);
+            TextMeshProUGUI teamText = GameObject.Find("Team").GetComponent<TextMeshProUGUI>();
+            teamText.text = teamName + " Team";
+            teamText.color = teamName == "Blue" ? new Color(0f, 1f, 1f) : new Color(1f, 0f, 0f);
+            GetComponent<MeshRenderer>().material.color = teamName == "Blue" ? new Color(0f, 1f, 1f) : new Color(1f, 0f, 0f);
         }
 
         hpBar = GameObject.Find("HpBar").transform;
