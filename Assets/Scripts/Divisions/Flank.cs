@@ -15,6 +15,7 @@ public class Flank : Division
         t_dashTime = 0.1f;
         divisionUI = GameObject.Find("FlankUI");
         base.Init(_jumpForce, _abilityCooldown, _moveSpeed);
+        ResetUI();
     }
 
     public override void UpdateDivisionStats()
@@ -48,6 +49,11 @@ public class Flank : Division
             isDashing = true;
             c_dashTime = 0f;
         }
+    }
+
+    public override void ResetUI()
+    {
+        divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = 0f;
     }
 
     public override void Jump(bool inAir)

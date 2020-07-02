@@ -23,6 +23,7 @@ public class Tank : Division
         divisionUI = GameObject.Find("TankUI");
         b_absorbed = false;
         base.Init(_jumpForce, _abilityCooldown, _moveSpeed);
+        ResetUI();
     }
 
     public override void UpdateDivisionStats()
@@ -36,7 +37,7 @@ public class Tank : Division
                 f_abilityActive = 0f;
                 abilityCooldown = i_abilityCooldown;
             }
-            divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = (1f - f_abilityActive / 1.5f);
+            divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = (1f - f_abilityActive / 3f);
             //Debug.LogError((1f - f_abilityActive / 1.5f));
         }
 
@@ -64,21 +65,22 @@ public class Tank : Division
         //    //divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = currentTime / timeToBurst;
         //}
         #endregion
-        absorbed = Mathf.Lerp(0f, absorbed, Time.deltaTime * 3f);
+        absorbed = Mathf.Lerp(absorbed, 0f, Time.deltaTime);
         if (absorbed * 0.2f > 1f)
         {
-            if (!divisionUI.transform.Find("AfterAbility").gameObject.activeSelf)
+            //Debug.LogError("Absorbed: " + absorbed);
+            if (!divisionUI.transform.GetChild(1).gameObject.activeSelf) //checking after ability
             {
-                divisionUI.transform.Find("AfterAbility").gameObject.SetActive(true);
-                divisionUI.transform.Find("Ability").gameObject.SetActive(false);
+                divisionUI.transform.GetChild(1).gameObject.SetActive(true);
+                divisionUI.transform.GetChild(0).gameObject.SetActive(false);
             }
         }
         else
         {
-            if (!divisionUI.transform.Find("Ability").gameObject.activeSelf)
+            if (!divisionUI.transform.GetChild(0).gameObject.activeSelf) //checking curr ability
             {
-                divisionUI.transform.Find("Ability").gameObject.SetActive(true);
-                divisionUI.transform.Find("AfterAbility").gameObject.SetActive(false);
+                divisionUI.transform.GetChild(0).gameObject.SetActive(true);
+                divisionUI.transform.GetChild(1).gameObject.SetActive(false);
             }
         }
 
@@ -117,10 +119,17 @@ public class Tank : Division
         {
             //Do ability
             b_abilityActive = true;
-            f_abilityActive = 1.5f;
+            f_abilityActive = 3f;
             currentTime = 0f;
             //Debug.LogError("Active");
         }
+    }
+
+    public override void ResetUI()
+    {
+        divisionUI.transform.GetChild(0).gameObject.SetActive(true);
+        divisionUI.transform.GetChild(1).gameObject.SetActive(false);
+        divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = 0f;
     }
 
     public override void Jump(bool inAir)
@@ -133,6 +142,7 @@ public class Tank : Division
         if (b_abilityActive)
         {
             absorbed += damage * 0.9f;
+            //Debug.LogError("Receiving: " + absorbed);
             b_absorbed = true;
             base.TakeDamage(damage * 0.1f); //Takes 10 percent damage when ability active
         }
@@ -146,6 +156,7 @@ public class Tank : Division
         if (theLoadout.GetWeapon().FireBullet())
         {
             photonView.RPC("Shoot", RpcTarget.All, theLoadout.GetWeapon().damage + absorbed * 0.2f, theLoadout.GetWeapon().firerate);
+            //Debug.LogError(absorbed * 0.2f);
         }
         else
         {

@@ -25,6 +25,8 @@ public class Division : MonoBehaviourPunCallbacks
 
     public virtual void UseAbility() { }
 
+    public virtual void ResetUI() { }
+
     public virtual void UpdateDivisionStats() 
     {
         if (abilityCooldown > 0f)

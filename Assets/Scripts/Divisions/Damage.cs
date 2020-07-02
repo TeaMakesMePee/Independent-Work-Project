@@ -12,6 +12,7 @@ public class Damage : Division
     {
         divisionUI = GameObject.Find("DamageUI");
         base.Init(_jumpForce, _abilityCooldown, _moveSpeed);
+        ResetUI();
     }
 
     public override void UpdateDivisionStats()
@@ -39,6 +40,11 @@ public class Damage : Division
         {
             f_abilityActive = 1.5f;
         }
+    }
+
+    public override void ResetUI()
+    {
+        divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = 0f;
     }
 
     public override void Jump(bool inAir)

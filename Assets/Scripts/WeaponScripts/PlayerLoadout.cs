@@ -184,19 +184,22 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         {
             float start = rotateAmount;
             rotateAmount = Mathf.Lerp(rotateAmount, 360f, Time.deltaTime * 5f);
+            //Debug.LogError(theDesign.transform.childCount);
             for (int x = 0; x < theDesign.transform.childCount; ++x)
             {
-                theDesign.transform.GetChild(x).Rotate(weapons[currWeapID].rotateDir, rotateAmount - start);
+                if (theDesign.transform.GetChild(x).gameObject.activeSelf)
+                    theDesign.transform.GetChild(x).Rotate(weapons[currWeapID].rotateDir, rotateAmount - start);
             }
             yield return null;
         }
 
         for (int x = 0; x < theDesign.transform.childCount; ++x)
         {
-            theDesign.transform.GetChild(x).Rotate(weapons[currWeapID].rotateDir, 360f - rotateAmount);
+            if (theDesign.transform.GetChild(x).gameObject.activeSelf)
+                theDesign.transform.GetChild(x).Rotate(weapons[currWeapID].rotateDir, 360f - rotateAmount);
         }
 
-        //yield return new WaitForSeconds(reloadTime);
+        yield return new WaitForSeconds(0f);
 
         //Play reload sound
         audioSource.clip = reloadClip;

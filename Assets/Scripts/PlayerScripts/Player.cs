@@ -54,6 +54,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     private Division p_Division;
 
+    private TextMeshProUGUI t_currHP;
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo message) //Sends data if your photonview, receives data if it isnt yours
     {
         //Example: 
@@ -108,6 +110,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             sceneCam = GameObject.Find("Cameras").transform.Find("GameEnd").gameObject;
             if (sceneCam != null)
                 sceneCam.SetActive(false);
+
+            t_currHP = GameObject.Find("CurrHP").GetComponent<TextMeshProUGUI>();
+            GameObject.Find("BaseHP").GetComponent<TextMeshProUGUI>().text = t_currHP.text = ((int)maxHealth).ToString();
         }
 
         //Set my player camera to true
@@ -130,7 +135,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             TextMeshProUGUI teamText = GameObject.Find("Team").GetComponent<TextMeshProUGUI>();
             teamText.text = teamName + " Team";
             teamText.color = teamName == "Blue" ? new Color(0f, 1f, 1f) : new Color(1f, 0f, 0f);
-            GetComponent<MeshRenderer>().material.color = teamName == "Blue" ? new Color(0f, 1f, 1f) : new Color(1f, 0f, 0f);
+            //GetComponent<MeshRenderer>().material.color = teamName == "Blue" ? new Color(0f, 1f, 1f) : new Color(1f, 0f, 0f);
         }
 
         hpBar = GameObject.Find("HpBar").transform;
@@ -193,6 +198,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         hpBar.localScale = new Vector3(currHpScale, 1f, 1f);
         loadout.UpdateAmmoUI(ammoUI);
 
+        t_currHP.text = ((int)currHealth).ToString();
+
         //Use division ability
         if (Input.GetKey(KeyCode.Q))
         {
@@ -200,6 +207,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         //Update division
         p_Division.UpdateDivisionStats();
+
+        if (transform.position.y <= -2.5f)
+            TakeDamage(9999f);
     }
 
     void FixedUpdate()
@@ -308,6 +318,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private void SyncTeamName(string tN)
     {
         teamName = tN;
+        GetComponent<MeshRenderer>().material.color = teamName == "Blue" ? new Color(0f, 1f, 1f) : new Color(1f, 0f, 0f);
     }
 
     //public void SetADS(bool adsState)
