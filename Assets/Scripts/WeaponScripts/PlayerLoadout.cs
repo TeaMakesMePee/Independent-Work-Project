@@ -31,6 +31,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        isReloading = false;
         foreach (Weapon w in weapons) w.InitGun();
         photonView.RPC("Equip", RpcTarget.AllBuffered, currWeapID);
         mouseScroll = 0f;
@@ -325,10 +326,14 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         }
     }
 
-    public void UpdateAmmoUI(TextMeshProUGUI theUI)
+    public void UpdateAmmoUI(TextMeshProUGUI currAmmo, TextMeshProUGUI baseAmmo)
     {
         if (currWeapID != -1)
-            theUI.text = weapons[currWeapID].GetMagAmmo().ToString() + "/" + weapons[currWeapID].GetAmmo().ToString();
+        {
+            currAmmo.text = weapons[currWeapID].GetMagAmmo().ToString();
+            baseAmmo.text = weapons[currWeapID].GetAmmo().ToString();
+        }
+        //theUI.text = weapons[currWeapID].GetMagAmmo().ToString() + "/" + weapons[currWeapID].GetAmmo().ToString();
     }
 
     public Weapon GetWeapon()

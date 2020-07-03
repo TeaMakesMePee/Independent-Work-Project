@@ -29,7 +29,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private Transform hpBar;
     private float currHpScale;
 
-    private TextMeshProUGUI ammoUI;
+    private TextMeshProUGUI ammoUI, currAmmo, baseAmmo;
 
     private GameObject divisionUIParent;
 
@@ -139,7 +139,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         hpBar = GameObject.Find("HpBar").transform;
-        ammoUI = GameObject.Find("AmmoCount").GetComponent<TextMeshProUGUI>();
+        //ammoUI = GameObject.Find("AmmoCount").GetComponent<TextMeshProUGUI>();
+        currAmmo = GameObject.Find("CurrAmmo").GetComponent<TextMeshProUGUI>();
+        baseAmmo = GameObject.Find("BaseAmmo").GetComponent<TextMeshProUGUI>();
         currHpScale = 1f;
 
         crosshair = GameObject.Find("Crosshair");
@@ -196,7 +198,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //Lerp HP bar scale
         currHpScale = Mathf.Lerp(currHpScale, currHealth / maxHealth, Time.deltaTime * 10f);
         hpBar.localScale = new Vector3(currHpScale, 1f, 1f);
-        loadout.UpdateAmmoUI(ammoUI);
+        loadout.UpdateAmmoUI(currAmmo, baseAmmo);
 
         t_currHP.text = ((int)currHealth).ToString();
 
