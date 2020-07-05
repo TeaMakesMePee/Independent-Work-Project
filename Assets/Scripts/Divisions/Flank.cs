@@ -22,6 +22,7 @@ public class Flank : Division
     {
         if (Input.GetMouseButton(0) && theLoadout.readyFire())
         {
+            //Debug.LogError("got ammo");
             base.Shoot();
         }
         if (isDashing)

@@ -299,6 +299,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             p_Division.TakeDamage(damage);
             if (currHealth <= 0f)
             {
+                GetComponent<PlayerLoadout>().StopReloading();
                 manager.Spawn();
                 PhotonNetwork.Destroy(gameObject);
                 playerDeaths++;

@@ -33,7 +33,8 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     {
         isReloading = false;
         foreach (Weapon w in weapons) w.InitGun();
-        photonView.RPC("Equip", RpcTarget.AllBuffered, currWeapID);
+        if (photonView.IsMine)
+            photonView.RPC("Equip", RpcTarget.AllBuffered, currWeapID);
         mouseScroll = 0f;
     }
 
@@ -172,13 +173,18 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         if (currWeapID != -1)
             currWeapon.transform.localPosition = Vector3.Lerp(currWeapon.transform.localPosition, Vector3.zero, Time.deltaTime * 4f);
     }
-
+    
     IEnumerator Reload(float reloadTime)
     {
+        //Debug.LogError("reloading");
         isReloading = true;
         //currWeapon.SetActive(false);
         Transform theAnchor = currWeapon.transform.Find("Anchor");
-        GameObject theDesign = theAnchor.Find("Design").gameObject;
+        GameObject theDesign = null;
+        if (theAnchor != null)
+        {
+            theDesign = theAnchor.Find("Design").gameObject;
+        }
 
         float rotateAmount = 0f;
         while (rotateAmount < 359f)
@@ -186,30 +192,40 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             float start = rotateAmount;
             rotateAmount = Mathf.Lerp(rotateAmount, 360f, Time.deltaTime * 5f);
             //Debug.LogError(theDesign.transform.childCount);
+            if (theDesign != null)
+            {
+                for (int x = 0; x < theDesign.transform.childCount; ++x)
+                {
+                    if (theDesign.transform.GetChild(x).gameObject.activeSelf)
+                        theDesign.transform.GetChild(x).Rotate(weapons[currWeapID].rotateDir, rotateAmount - start);
+                }
+                yield return null;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        if (theDesign != null)
+        {
             for (int x = 0; x < theDesign.transform.childCount; ++x)
             {
                 if (theDesign.transform.GetChild(x).gameObject.activeSelf)
-                    theDesign.transform.GetChild(x).Rotate(weapons[currWeapID].rotateDir, rotateAmount - start);
+                    theDesign.transform.GetChild(x).Rotate(weapons[currWeapID].rotateDir, 360f - rotateAmount);
             }
-            yield return null;
+
+            yield return new WaitForSeconds(0f);
+
+            //Play reload sound
+            audioSource.clip = reloadClip;
+            audioSource.pitch = 1.2f;
+            audioSource.volume = 1f;
+            audioSource.Play();
         }
 
-        for (int x = 0; x < theDesign.transform.childCount; ++x)
-        {
-            if (theDesign.transform.GetChild(x).gameObject.activeSelf)
-                theDesign.transform.GetChild(x).Rotate(weapons[currWeapID].rotateDir, 360f - rotateAmount);
-        }
-
-        yield return new WaitForSeconds(0f);
-
-        //Play reload sound
-        audioSource.clip = reloadClip;
-        audioSource.pitch = 1.2f;
-        audioSource.volume = 1f;
-        audioSource.Play();
-
-        weapons[currWeapID].Reload();
         //currWeapon.SetActive(true);
+        weapons[currWeapID].Reload();
         isReloading = false;
     }
 
@@ -326,6 +342,11 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         }
     }
 
+    public void StopReloading()
+    {
+        if (isReloading) StopCoroutine("Reload");
+    }
+
     public void UpdateAmmoUI(TextMeshProUGUI currAmmo, TextMeshProUGUI baseAmmo)
     {
         if (currWeapID != -1)
@@ -343,12 +364,17 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
 
     public bool readyFire()
     {
+        //Debug.LogError("firerate: " + firerate);
+        //Debug.LogError("Reloading: " + isReloading);
         return firerate <= 0f && !isReloading;
     }
 
     public void CheckReload()
     {
         if (weapons[currWeapID].ifReloadable() && !isReloading)
+        {
+            //Debug.LogError("reloadable");
             StartCoroutine(Reload(weapons[currWeapID].reloadTime));
+        }
     }
 }

@@ -47,6 +47,7 @@ public class Weapon : ScriptableObject
         }
         else
         {
+            //Debug.LogError("no ammo");
             return false;
         }
     }
