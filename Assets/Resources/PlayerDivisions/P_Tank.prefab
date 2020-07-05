@@ -191,8 +191,8 @@ MonoBehaviour:
   player: {fileID: 6293200104841510698}
   cam: {fileID: 6293200105259471348}
   weapon: {fileID: 6293200105149640062}
-  xSens: 500
-  ySens: 500
+  xSens: 250
+  ySens: 250
   maxAngle: 90
 --- !u!114 &6293200104841510702
 MonoBehaviour:
