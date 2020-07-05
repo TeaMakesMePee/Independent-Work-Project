@@ -65,7 +65,7 @@ public class Tank : Division
         //    //divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = currentTime / timeToBurst;
         //}
         #endregion
-        absorbed = Mathf.Lerp(absorbed, 0f, Time.deltaTime);
+        absorbed = Mathf.Lerp(absorbed, 0f, Time.deltaTime * 0.5f);
         if (absorbed * 0.2f > 1f)
         {
             //Debug.LogError("Absorbed: " + absorbed);
