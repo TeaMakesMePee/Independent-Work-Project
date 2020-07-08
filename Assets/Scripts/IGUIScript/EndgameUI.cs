@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,12 +17,16 @@ public class EndgameUI : MonoBehaviour
     private float bg_cTime, bg_mTime;
     private float fill_cTime, fill_mTime;
     private bool bgDone, barDone;
+    private int blueScore, redScore;
+    private TextMeshProUGUI bScoreText, rScoreText;
 
     private void Awake()
     {
         theBackground = transform.Find("Background").GetComponent<Image>();
         redBar = transform.Find("Bar").transform.Find("Red").GetComponent<Image>();
         blueBar = transform.Find("Bar").transform.Find("Blue").GetComponent<Image>();
+        bScoreText = transform.Find("Bar").transform.Find("BlueText").GetComponent<TextMeshProUGUI>();
+        rScoreText = transform.Find("Bar").transform.Find("RedText").GetComponent<TextMeshProUGUI>();
         barParent = transform.Find("Bar").gameObject;
         startEnd = false;
         bar_cY = barParent.GetComponent<RectTransform>().localPosition.y;
@@ -31,6 +36,7 @@ public class EndgameUI : MonoBehaviour
         fill_mTime = 8f;
         t_blueFill = t_redFill = 0f;
         bgDone = barDone = false;
+        blueScore = redScore = 0;
     }
 
     private void Update()
@@ -87,6 +93,31 @@ public class EndgameUI : MonoBehaviour
 
                 blueFill = Mathf.Lerp(blueFill, t_blueFill, fill_cTime / fill_mTime);
                 blueBar.fillAmount = blueFill;
+
+                if (redFill + blueFill >= 0.98f)
+                {
+                    if (redFill > blueFill)
+                    {
+                        redScore = (int)(redFill * 100f);
+                        blueScore = 100 - redScore;
+                    }
+                    else
+                    {
+                        blueScore = (int)(blueFill * 100f);
+                        redScore = 100 - blueScore;
+                    }
+
+                    rScoreText.text = redScore.ToString();
+                    bScoreText.text = blueScore.ToString();
+                }
+                else
+                {
+                    redScore = (int)(redFill * 100f);
+                    rScoreText.text = redScore.ToString();
+
+                    blueScore = (int)(blueFill * 100f);
+                    bScoreText.text = blueScore.ToString();
+                }
             }
             else
             {
@@ -95,6 +126,12 @@ public class EndgameUI : MonoBehaviour
 
                 redFill = t_redFill;
                 redBar.fillAmount = redFill;
+
+                redScore = (int)(redFill * 100f);
+                blueScore = 100 - redScore;
+
+                rScoreText.text = redScore.ToString();
+                bScoreText.text = blueScore.ToString();
 
                 blueFill = t_blueFill;
                 blueBar.fillAmount = blueFill;

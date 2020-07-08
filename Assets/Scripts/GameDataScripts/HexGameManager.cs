@@ -283,7 +283,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         gameEnd.gameObject.SetActive(true); //On the camera
         Vector2 results = CheckWinLose();
         GameObject.Find("EndgameUI").GetComponent<EndgameUI>().StartAnim(results.x, results.y);
-        StartCoroutine(End(4f));
+        StartCoroutine(End(5f));
     }
 
     private IEnumerator End(float p_wait)
