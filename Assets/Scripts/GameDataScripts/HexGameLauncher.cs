@@ -9,7 +9,8 @@ using TMPro;
 
 public class HexGameLauncher : MonoBehaviourPunCallbacks
 {
-    public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab, DivisionsTab, theTitle;
+    public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab, DivisionsTab, theTitle, videoTab;
+    public List<GameObject> divButtons;
     private List<RoomInfo> roomList;
 
     public TextMeshProUGUI roomName;
@@ -188,5 +189,46 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
+    }
+
+    public void ToggleVideo()
+    {
+        videoTab.SetActive(!videoTab.activeSelf);
+    }
+
+    public void ToggleDivisionButtons()
+    {
+        for (int d = 0; d < divButtons.Count; ++d)
+        {
+            divButtons[d].SetActive(!divButtons[d].activeSelf);
+        }
+    }
+
+    public void TankPreview()
+    {
+        ToggleDivisionButtons();
+        ToggleVideo();
+        videoTab.transform.Find("DivisionVideo").GetComponent<VideoScript>().PlayVideo(GameData.Division.P_Tank);
+    }
+
+    public void DamagePreview()
+    {
+        ToggleDivisionButtons();
+        ToggleVideo();
+        videoTab.transform.Find("DivisionVideo").GetComponent<VideoScript>().PlayVideo(GameData.Division.P_Damage);
+    }
+
+    public void FlankPreview()
+    {
+        ToggleDivisionButtons();
+        ToggleVideo();
+        videoTab.transform.Find("DivisionVideo").GetComponent<VideoScript>().PlayVideo(GameData.Division.P_Flank);
+    }
+
+    public void ClosePreview()
+    {
+        videoTab.transform.Find("DivisionVideo").GetComponent<VideoScript>().StopVideo();
+        ToggleVideo();
+        ToggleDivisionButtons();
     }
 }
