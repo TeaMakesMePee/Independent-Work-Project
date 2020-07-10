@@ -5,8 +5,8 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Pun.Demo.Cockpit;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 using TMPro;
+using System.Xml.Schema;
 
 public class PlayerLoadout : MonoBehaviourPunCallbacks
 {
@@ -29,12 +29,22 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     [SerializeField]
     public GameObject damageIndicator;
 
+    private Image hitmarker;
+    private Color teamColor;
+    private float hitmarkerCd;
+
     private void Start()
     {
         isReloading = false;
         foreach (Weapon w in weapons) w.InitGun();
         if (photonView.IsMine)
+        {
             photonView.RPC("Equip", RpcTarget.AllBuffered, currWeapID);
+            hitmarker = GameObject.Find("HUD/Crosshair/InnerRing").GetComponent<Image>();
+            hitmarker.color = GetComponent<Player>().teamName == "Red" ? new Color(1f, 0f, 0f, 0f) : new Color(0f, 1f, 1f, 0f);
+            teamColor = GetComponent<Player>().teamName == "Red" ? new Color(1f, 0f, 0f, 1f) : new Color(0f, 1f, 1f, 1f);
+            hitmarkerCd = 0f;
+        }
         mouseScroll = 0f;
     }
 
@@ -167,6 +177,16 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
 
             Transform theAnchor = currWeapon.transform.Find("Anchor");
             GameObject theDesign = theAnchor.Find("Design").gameObject;
+
+            if (hitmarkerCd > 0f)
+            {
+                hitmarkerCd -= Time.deltaTime;
+            }
+            else
+            {
+                float a = Mathf.Lerp(hitmarker.color.a, 0f, Time.deltaTime * 2f);
+                hitmarker.color = new Color(teamColor.r, teamColor.g, teamColor.b, a);
+            }
         }
         
         //Lerp weapon back to default position, resets kickback, for all players
@@ -265,6 +285,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         newWeapon.transform.localEulerAngles = Vector3.zero;
 
         currWeapon = newWeapon;
+        currWeapID = weaponID;
         if (photonView.IsMine)
         {
             GameObject.Find("WeaponScrollUI").GetComponent<WeaponUI>().Equip(weaponID);
@@ -315,6 +336,8 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                 if (theHit.layer == 11 && theHit.GetComponent<Player>().teamName != GetComponent<Player>().teamName)
                 {
                     theHit.GetPhotonView().RPC("TakeDamage", RpcTarget.All, _damage, transform.position.x, transform.position.z);
+                    hitmarker.color = teamColor;
+                    hitmarkerCd = 1f;
                 }
             }    
         }
@@ -329,6 +352,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         audioSource.pitch = weapons[currWeapID].audioPitch + Random.Range(-0.075f, 0.075f);
         audioSource.volume = 1f;
         audioSource.Play();
+        Debug.LogError(weapons[currWeapID].weapName);
     }
 
     [PunRPC]
