@@ -23,8 +23,9 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     private bool isReloading;
     private float mouseScroll;
 
-    public AudioSource audioSource;
+    public AudioSource audioSource3D, audioSource2D;
     public AudioClip reloadClip;
+    public AudioClip hitmarkerClip;
 
     [SerializeField]
     public GameObject damageIndicator;
@@ -238,10 +239,10 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             yield return new WaitForSeconds(0f);
 
             //Play reload sound
-            audioSource.clip = reloadClip;
-            audioSource.pitch = 1.2f;
-            audioSource.volume = 1f;
-            audioSource.Play();
+            audioSource3D.clip = reloadClip;
+            audioSource3D.pitch = 1.2f;
+            audioSource3D.volume = 1f;
+            audioSource3D.Play();
         }
 
         //currWeapon.SetActive(true);
@@ -291,10 +292,10 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             GameObject.Find("WeaponScrollUI").GetComponent<WeaponUI>().Equip(weaponID);
         }
 
-        audioSource.clip = reloadClip;
-        audioSource.pitch = 1.8f;
-        audioSource.volume = 0.5f;
-        audioSource.Play();
+        audioSource3D.clip = reloadClip;
+        audioSource3D.pitch = 1.8f;
+        audioSource3D.volume = 0.5f;
+        audioSource3D.Play();
         //currWeapID = weaponID;
     }
 
@@ -338,6 +339,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                     theHit.GetPhotonView().RPC("TakeDamage", RpcTarget.All, _damage, transform.position.x, transform.position.z);
                     hitmarker.color = teamColor;
                     hitmarkerCd = 1f;
+                    audioSource2D.PlayOneShot(hitmarkerClip);
                 }
             }    
         }
@@ -347,11 +349,11 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
 
         firerate = /*weapons[currWeapID].firerate*/_firerate;
 
-        //audioSource.Stop();
-        audioSource.clip = weapons[currWeapID].audioClip;
-        audioSource.pitch = weapons[currWeapID].audioPitch + Random.Range(-0.075f, 0.075f);
-        audioSource.volume = 1f;
-        audioSource.Play();
+        audioSource3D.Stop();
+        audioSource3D.clip = weapons[currWeapID].audioClip;
+        audioSource3D.pitch = weapons[currWeapID].audioPitch + Random.Range(-0.075f, 0.075f);
+        audioSource3D.volume = 1f;
+        audioSource3D.Play();
         Debug.LogError(weapons[currWeapID].weapName);
     }
 
