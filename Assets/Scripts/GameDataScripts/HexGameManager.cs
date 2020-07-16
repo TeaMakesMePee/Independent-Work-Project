@@ -488,4 +488,9 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
         return front + ":" + (back < 10 ? "0" : "") + back;
     }
+
+    public List<PlayerInfo> GetPlayers()
+    {
+        return playerInfo;
+    }
 }

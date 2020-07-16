@@ -5566,6 +5566,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreboard: {fileID: 317611500}
+  theStatBar: {fileID: 6717347574924776977, guid: b09b36b41e496774bbd9755b0589bed3,
+    type: 3}
+  emptyStatBar: {fileID: 6725588168124982655, guid: 52158b7546bc1dd4f8d2d5d28495e253,
+    type: 3}
 --- !u!1 &1753144745
 GameObject:
   m_ObjectHideFlags: 0
