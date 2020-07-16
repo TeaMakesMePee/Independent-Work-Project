@@ -67,7 +67,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public void Create()
     {
         RoomOptions options = new RoomOptions();
-        options.MaxPlayers = 2;
+        options.MaxPlayers = 1;
 
         PhotonNetwork.CreateRoom(roomName.text, options);
         FindObjectOfType<AudioManager>().Play("ButtonClick");

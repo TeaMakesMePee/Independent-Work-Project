@@ -113,6 +113,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             t_currHP = GameObject.Find("CurrHP").GetComponent<TextMeshProUGUI>();
             GameObject.Find("BaseHP").GetComponent<TextMeshProUGUI>().text = t_currHP.text = ((int)maxHealth).ToString();
+
+            //Debug.LogError(PhotonNetwork.LocalPlayer.UserId);
         }
 
         //Set my player camera to true
@@ -212,6 +214,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (transform.position.y <= -2.5f)
             TakeDamage(9999f);
+
+        if (Input.GetKeyDown(KeyCode.Return))
+            TakeDamage(999f);
     }
 
     void FixedUpdate()
