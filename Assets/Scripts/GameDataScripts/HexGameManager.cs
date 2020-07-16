@@ -11,15 +11,25 @@ using UnityEngine.UIElements;
 using System;
 using TMPro;
 
-public struct PlayerInfo
+public class PlayerInfo
 {
     public string team;
     public int actorNum;
+    public int kills;
+    public int deaths;
+    public int assists;
 
-    public PlayerInfo(string teamColor, int actorNo)
+    public PlayerInfo()
+    {
+    }
+
+    public PlayerInfo(string teamColor, int actorNo, int _kills, int _deaths, int _assists)
     {
         team = teamColor;
         actorNum = actorNo;
+        kills = _kills;
+        deaths = _deaths;
+        assists = _assists;
     }
 }
 
@@ -47,6 +57,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         NewPlayer,
         UpdatePlayers,
         StartMatch,
+        UpdateStats
     }
 
     public void Start()
@@ -166,6 +177,9 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             case EventCodes.StartMatch:
                 ReceiveStartMatch();
                 break;
+            case EventCodes.UpdateStats:
+                ReceiveUpdatedPlayerStats(obj);
+                break;
         }
     }
 
@@ -175,14 +189,17 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         SceneManager.LoadScene(0); //bring back to mainmenu
     }
 
-    public void SendNewPlayer()
+    public void SendNewPlayer() //Only sends the new player info to masterclient
     {
-        object[] package = new object[2];
+        object[] package = new object[5];
 
         myInfo = new PlayerInfo();
 
         package[0] = myInfo.team = AssignTeam();
         package[1] = myInfo.actorNum = PhotonNetwork.LocalPlayer.ActorNumber;
+        package[2] = myInfo.kills = 0;
+        package[3] = myInfo.deaths = 0;
+        package[4] = myInfo.assists = 0;
 
         PhotonNetwork.RaiseEvent(
             (byte)EventCodes.NewPlayer,
@@ -192,11 +209,14 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         );
     }
 
-    public void ReceiveNewPlayer(object[] data)
+    public void ReceiveNewPlayer(object[] data) //Only masterclient receives new player
     {
         PlayerInfo newPlayer = new PlayerInfo(
             (string)data[0],
-            (int)data[1]
+            (int)data[1],
+            (int)data[2],
+            (int)data[3],
+            (int)data[4]
         );
 
         playerInfo.Add(newPlayer);
@@ -204,16 +224,19 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         SendUpdatePlayers(playerInfo);
     }
 
-    public void SendUpdatePlayers(List<PlayerInfo> info)
+    public void SendUpdatePlayers(List<PlayerInfo> info) //Only masterclient updates everyone with the new info
     {
         object[] package = new object[info.Count];
 
         for (int i = 0; i < info.Count; i++)
         {
-            object[] packet = new object[2];
+            object[] packet = new object[5];
 
             packet[0] = info[i].team;
             packet[1] = info[i].actorNum;
+            packet[2] = info[i].kills;
+            packet[3] = info[i].deaths;
+            packet[4] = info[i].assists;
 
             package[i] = packet;
         }
@@ -236,7 +259,10 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
             PlayerInfo p = new PlayerInfo(
                 (string)packet[0],
-                (int)packet[1]
+                (int)packet[1],
+                (int)packet[2],
+                (int)packet[3],
+                (int)packet[4]
             );
 
             playerInfo.Add(p);
@@ -268,6 +294,53 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     public void ReceiveStartMatch()
     {
         countdownStart = true;
+    }
+
+    public void SendUpdatedPlayerStats(int actorNum, int stat, int count)
+    {
+        object[] package = new object[] { actorNum, stat, count };
+
+        PhotonNetwork.RaiseEvent(
+                (byte)EventCodes.UpdateStats,
+                package,
+                new RaiseEventOptions { Receivers = ReceiverGroup.All },
+                new SendOptions { Reliability = true }
+            );
+    }
+
+    public void ReceiveUpdatedPlayerStats(object[] data)
+    {
+        int actor = (int)data[0];
+        int stat = (int)data[1];
+        int count = (int)data[2];
+
+        for (int i = 0; i < playerInfo.Count; i++)
+        {
+            if (playerInfo[i].actorNum == actor)
+            {
+                switch (stat)
+                {
+                    case 0:
+                        playerInfo[i].kills += count;
+                        break;
+                    case 1:
+                        playerInfo[i].deaths += count;
+                        break;
+                    case 2:
+                        playerInfo[i].assists += count;
+                        break;
+                }
+
+                if (actor == myInfo.actorNum)
+                {
+                    myInfo.kills = playerInfo[i].kills;
+                    myInfo.deaths = playerInfo[i].deaths;
+                    myInfo.assists = playerInfo[i].assists;
+                }
+
+                break;
+            }
+        }
     }
 
     private void EndGame()

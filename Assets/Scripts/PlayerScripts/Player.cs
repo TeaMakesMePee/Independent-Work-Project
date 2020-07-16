@@ -56,6 +56,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     private TextMeshProUGUI t_currHP;
 
+    private List<int> assistList;
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo message) //Sends data if your photonview, receives data if it isnt yours
     {
         //Example: 
@@ -151,6 +153,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //isADS = false;
         //adsDamp = 1f;
         isMoving = false;
+        assistList = new List<int>();
     }
 
     private void Update()
@@ -212,11 +215,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //Update division
         p_Division.UpdateDivisionStats();
 
-        if (transform.position.y <= -2.5f)
-            TakeDamage(9999f);
+        //if (transform.position.y <= -2.5f)
+        //    TakeDamage(9999f, Photon.);
 
-        if (Input.GetKeyDown(KeyCode.Return))
-            TakeDamage(999f);
+        //if (Input.GetKeyDown(KeyCode.Return))
+        //    TakeDamage(999f);
     }
 
     void FixedUpdate()
@@ -296,18 +299,27 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         newWeaponBobPos = new Vector3(Mathf.Cos(timeFrame) * xIntens, Mathf.Sin(timeFrame * 2f) * yIntens, 0) + weaponOrigin;
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, int actor)
     {
         if (photonView.IsMine)
         {
             //currHealth -= damage;
             p_Division.TakeDamage(damage);
+            AddToAssists(actor);
             if (currHealth <= 0f)
             {
                 GetComponent<PlayerLoadout>().StopReloading();
                 manager.Spawn();
+                manager.SendUpdatedPlayerStats(PhotonNetwork.LocalPlayer.ActorNumber, 1, 1); //add death to myself
+                manager.SendUpdatedPlayerStats(actor, 0, 1); //add kill to killer
+                for (int x = 0; x < assistList.Count; ++x)
+                {
+                    if (assistList[x] != actor)
+                    {
+                        manager.SendUpdatedPlayerStats(assistList[x], 2, 1); //add assists to assistant
+                    }
+                }
                 PhotonNetwork.Destroy(gameObject);
-                playerDeaths++;
             }
         }
     }
@@ -349,5 +361,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         get;
         set;
+    }
+
+    private void AddToAssists(int actor)
+    {
+        bool exists = false;
+
+        for (int x = 0; x < assistList.Count; ++x)
+        {
+            if (assistList[x] == actor)
+                exists = true;
+        }
+
+        if (!exists)
+            assistList.Add(actor);
     }
 }
