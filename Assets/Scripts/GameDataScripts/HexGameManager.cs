@@ -57,7 +57,8 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         NewPlayer,
         UpdatePlayers,
         StartMatch,
-        UpdateStats
+        UpdateStats,
+        UpdateKillfeed
     }
 
     public void Start()
@@ -179,6 +180,9 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
                 break;
             case EventCodes.UpdateStats:
                 ReceiveUpdatedPlayerStats(obj);
+                break;
+            case EventCodes.UpdateKillfeed:
+                ReceiveKillfeedInfo(obj);
                 break;
         }
     }
@@ -341,6 +345,48 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
                 break;
             }
         }
+    }
+
+    public void SendKillfeedInfo(int killerActor, int killedActor)
+    {
+        object[] package = new object[] { killerActor, killedActor };
+
+        PhotonNetwork.RaiseEvent(
+                (byte)EventCodes.UpdateKillfeed,
+                package,
+                new RaiseEventOptions { Receivers = ReceiverGroup.All },
+                new SendOptions { Reliability = true }
+            );
+    }
+
+    public void ReceiveKillfeedInfo(object[] data)
+    {
+        int killerActor = (int)data[0];
+        int killedActor = (int)data[1];
+
+        //string killer, killed;
+        //killer = killed = "";
+        //for (int i = 0; i < playerInfo.Count; i++)
+        //{
+        //    if (playerInfo[i].actorNum == killerActor)
+        //    {
+        //        killer = playerInfo[i].name;
+        //    }
+
+        //    if (playerInfo[i].actorNum == killedActor)
+        //    {
+        //        killed = playerInfo[i].name;
+        //    }
+
+        //    if (killed != "" && killer != "")
+        //    {
+        //        break;
+        //    }
+        //}
+
+        GameObject killfeed = GameObject.Find("Killfeed");
+        Transform content = killfeed.transform.Find("Scroll View/Viewport/Content");
+        content.GetComponent<KillfeedEdit>().AddtoKillfeed(killerActor.ToString(), killedActor.ToString());
     }
 
     private void EndGame()

@@ -312,6 +312,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 manager.Spawn();
                 manager.SendUpdatedPlayerStats(PhotonNetwork.LocalPlayer.ActorNumber, 1, 1); //add death to myself
                 manager.SendUpdatedPlayerStats(actor, 0, 1); //add kill to killer
+                manager.SendKillfeedInfo(actor, PhotonNetwork.LocalPlayer.ActorNumber); //add killfeed info
                 for (int x = 0; x < assistList.Count; ++x)
                 {
                     if (assistList[x] != actor)
