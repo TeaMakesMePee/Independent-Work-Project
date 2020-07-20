@@ -7340,6 +7340,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   username: {fileID: 221684081}
   password: {fileID: 1541135851}
+  authTab: {fileID: 1635686513}
+  menuTab: {fileID: 1820509713}
 --- !u!1 &1237099761
 GameObject:
   m_ObjectHideFlags: 0
@@ -10099,7 +10101,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1635686514
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10773,7 +10775,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1820509714
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13134,8 +13136,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: Create
+      - m_Target: {fileID: 1231449641}
+        m_MethodName: OnClickLogin
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13401,8 +13403,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OpenMainMenuTab
+      - m_Target: {fileID: 1231449641}
+        m_MethodName: OnSignUpClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

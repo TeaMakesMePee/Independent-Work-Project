@@ -8,6 +8,8 @@ public class PlayfabHandler : MonoBehaviour
 {
     //Auth
     public TMP_InputField username, password;
+    private string user, pass;
+    public GameObject authTab, menuTab;
 
     public void Start()
     {
@@ -15,19 +17,40 @@ public class PlayfabHandler : MonoBehaviour
         {
             PlayFabSettings.staticSettings.TitleId = "88AA3";
         }
+
+        if (PlayerPrefs.GetString("username").Length > 0)
+        {
+            AutoLogin();
+        }
     }
 
     #region Login
+
+    public void AutoLogin()
+    {
+        var request = new LoginWithPlayFabRequest { Username = PlayerPrefs.GetString("username"), Password = PlayerPrefs.GetString("password"), TitleId = PlayFabSettings.TitleId };
+        PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnFailure);
+    }
 
     public void OnClickLogin()
     {
         var request = new LoginWithPlayFabRequest { Username = username.text, Password = password.text, TitleId = PlayFabSettings.TitleId };
         PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnFailure);
+
+        user = username.text;
+        pass = password.text;
     }
 
     private void OnLoginSuccess(LoginResult result)
     {
-        Debug.Log("You logged in successfully!");
+        if (PlayerPrefs.GetString("username").Length < 1)
+        {
+            PlayerPrefs.SetString("username", user);
+            PlayerPrefs.SetString("password", pass);
+        }
+
+        authTab.SetActive(false);
+        menuTab.SetActive(true);
     }
 
     private void OnFailure(PlayFabError error)
@@ -50,7 +73,7 @@ public class PlayfabHandler : MonoBehaviour
     void OnRegistSucees(RegisterPlayFabUserResult result)
     {
         PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest { DisplayName = username.text }, OnDisplayName, OnDisplayNameFail);
-        OnSignUpLogin();
+        OnClickLogin();
     }
 
     void OnDisplayName(UpdateUserTitleDisplayNameResult result)
@@ -61,12 +84,6 @@ public class PlayfabHandler : MonoBehaviour
     void OnDisplayNameFail(PlayFabError result)
     {
         Debug.LogError(result.GenerateErrorReport());
-    }
-
-    private void OnSignUpLogin()
-    {
-        var request = new LoginWithPlayFabRequest { Username = username.text, Password = password.text, TitleId = PlayFabSettings.TitleId, };
-        PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnFailure);
     }
 
     #endregion
@@ -105,7 +122,6 @@ public class PlayfabHandler : MonoBehaviour
     {
         foreach (var eachStat in result.Statistics)
         {
-            Debug.Log("Statistic (" + eachStat.StatisticName + "): " + eachStat.Value);
             switch (eachStat.StatisticName)
             {
                 case "Kills":
