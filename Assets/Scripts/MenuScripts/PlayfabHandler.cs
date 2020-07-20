@@ -18,7 +18,7 @@ public class PlayfabHandler : MonoBehaviour
             PlayFabSettings.staticSettings.TitleId = "88AA3";
         }
 
-        if (PlayerPrefs.GetString("username").Length > 0)
+        if (PlayerPrefs.HasKey("username"))
         {
             AutoLogin();
         }
@@ -49,7 +49,7 @@ public class PlayfabHandler : MonoBehaviour
 
     private void OnLoginSuccess(LoginResult result)
     {
-        if (PlayerPrefs.GetString("username").Length < 1)
+        if (!PlayerPrefs.HasKey("username"))
         {
             PlayerPrefs.SetString("username", user);
             PlayerPrefs.SetString("password", pass);
