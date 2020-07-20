@@ -24,9 +24,15 @@ public class PlayfabHandler : MonoBehaviour
         }
     }
 
-    #region Login
+    #region Auth
 
-    public void AutoLogin()
+    public void Logout()
+    {
+        PlayerPrefs.SetString("username", "");
+        PlayerPrefs.SetString("password", "");
+    }
+
+    private void AutoLogin()
     {
         var request = new LoginWithPlayFabRequest { Username = PlayerPrefs.GetString("username"), Password = PlayerPrefs.GetString("password"), TitleId = PlayFabSettings.TitleId };
         PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnFailure);
