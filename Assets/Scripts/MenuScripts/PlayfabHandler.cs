@@ -6,10 +6,28 @@ using UnityEngine;
 
 public class PlayfabHandler : MonoBehaviour
 {
+    public static PlayfabHandler pf;
+
     //Auth
     public TMP_InputField username, password;
     private string user, pass;
     public GameObject authTab, menuTab;
+
+    private void OnEnable()
+    {
+        if (pf == null)
+        {
+            pf = this;
+        }
+        else
+        {
+            if (pf != this)
+            {
+                Destroy(gameObject);
+            }
+        }
+        DontDestroyOnLoad(gameObject);
+    }
 
     public void Start()
     {
