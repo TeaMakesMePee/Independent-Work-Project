@@ -72,7 +72,12 @@ public class PlayfabHandler : MonoBehaviour
             PlayerPrefs.SetString("username", user);
             PlayerPrefs.SetString("password", pass);
         }
+        CloseTabs();
+        GameData.SetAuth(true);
+    }
 
+    public void CloseTabs()
+    {
         authTab.SetActive(false);
         menuTab.SetActive(true);
     }
@@ -114,7 +119,7 @@ public class PlayfabHandler : MonoBehaviour
 
     #region Stats
 
-    public void SetStats(int kills, int deaths, int assists, int wins, int losses, int hits, int misses, int exp)
+    public void SetStats(int kills, int deaths, int assists, int wins, int losses, int hits, int misses, int damage, int playtime, int exp)
     {
         PlayFabClientAPI.UpdatePlayerStatistics(new UpdatePlayerStatisticsRequest
         {
@@ -127,6 +132,8 @@ public class PlayfabHandler : MonoBehaviour
                 new StatisticUpdate { StatisticName = "Losses", Value = losses},
                 new StatisticUpdate { StatisticName = "Hits", Value = hits},
                 new StatisticUpdate { StatisticName = "Misses", Value = misses},
+                new StatisticUpdate { StatisticName = "Damage", Value = damage},
+                new StatisticUpdate { StatisticName = "Playtime", Value = playtime}, //in seconds
                 new StatisticUpdate { StatisticName = "Exp", Value = exp}
             }
         },
@@ -167,6 +174,12 @@ public class PlayfabHandler : MonoBehaviour
                     //Set the score
                     break;
                 case "Misses":
+                    //Set the score
+                    break;
+                case "Damage":
+                    //Set the score
+                    break;
+                case "Playtime":
                     //Set the score
                     break;
                 case "Exp":

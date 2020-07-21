@@ -18,4 +18,16 @@
     {
         return theDivision;
     }
+
+    private static bool isAuth = false;
+
+    public static void SetAuth(bool auth)
+    {
+        isAuth = auth;
+    }
+
+    public static bool GetAuth()
+    {
+        return isAuth;
+    }
 }
