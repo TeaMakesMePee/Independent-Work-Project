@@ -201,6 +201,7 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
         {
             if (!CheckIfOccupied(index))
             {
+                manager.GetStatTracker().captures += 1;
                 photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index, manager.GetLocalPlayerTeam());
             }
             prevIndex = index;
@@ -210,6 +211,7 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
             prevIndex = index;
             if (!CheckIfOccupied(index))
             {
+                manager.GetStatTracker().captures += 1;
                 photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index, manager.GetLocalPlayerTeam());
             }
             if (row >= 0 && row < gridWidth)
@@ -288,6 +290,7 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
                         {
                             if (!CheckIfOccupied(tempIntList[xx]))
                             {
+                                manager.GetStatTracker().captures += 1;
                                 photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, tempIntList[xx], manager.GetLocalPlayerTeam());
                             }
                         }

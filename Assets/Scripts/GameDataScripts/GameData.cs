@@ -30,4 +30,17 @@
     {
         return isAuth;
     }
+
+    public struct Database
+    {
+        public int totalKills, totalDeaths, totalAssists, totalWins, totalLosses, totalDraws, totalHits, totalMisses
+            , totalDamage, mostKills, mostDamage, totalCaptures, mostCaptures, playtime, experience;
+
+        public void Init()
+        {
+            totalKills = totalDeaths = totalAssists = totalWins = totalLosses = totalDraws = totalHits = totalMisses = totalDamage = mostKills = mostDamage = totalCaptures = mostCaptures = playtime = experience = 0;
+        }
+    }
+
+    public static Database pStat = new Database();
 }

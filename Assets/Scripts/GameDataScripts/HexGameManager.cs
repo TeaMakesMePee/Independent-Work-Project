@@ -10,9 +10,11 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using System;
 using TMPro;
+using System.Text.RegularExpressions;
 
-public class PlayerInfo
+public class PlayerInfo //Stats for in match
 {
+    public string name;
     public string team;
     public int actorNum;
     public int kills;
@@ -23,13 +25,23 @@ public class PlayerInfo
     {
     }
 
-    public PlayerInfo(string teamColor, int actorNo, int _kills, int _deaths, int _assists)
+    public PlayerInfo(string teamColor, int actorNo, int _kills, int _deaths, int _assists, string _name)
     {
         team = teamColor;
         actorNum = actorNo;
         kills = _kills;
         deaths = _deaths;
         assists = _assists;
+        name = _name;
+    }
+}
+
+public class MatchStats //track stats
+{
+    public int wins, losses, draw, hits, misses, damage, captures, playtime;
+    public MatchStats()
+    {
+        wins = losses = draw = hits = misses = damage = captures = playtime = 0;
     }
 }
 
@@ -51,6 +63,8 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     public TextMeshProUGUI gameTimer;
     private bool countdownStart, gameOver;
     private double loadStartTime, gameStartTime;
+    private MatchStats matchStats = new MatchStats();
+    private PlayfabHandler pf;
 
     public enum EventCodes : byte
     {
@@ -73,6 +87,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         gameStart = countdownStart = gameOver = false;
         SendNewPlayer();
         Spawn();
+        pf = GameObject.Find("Authentication").GetComponent<PlayfabHandler>();
     }
 
     public void Update()
@@ -195,7 +210,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void SendNewPlayer() //Only sends the new player info to masterclient
     {
-        object[] package = new object[5];
+        object[] package = new object[6];
 
         myInfo = new PlayerInfo();
 
@@ -204,6 +219,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         package[2] = myInfo.kills = 0;
         package[3] = myInfo.deaths = 0;
         package[4] = myInfo.assists = 0;
+        package[5] = myInfo.name = PlayerPrefs.GetString("username");
 
         PhotonNetwork.RaiseEvent(
             (byte)EventCodes.NewPlayer,
@@ -220,7 +236,8 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             (int)data[1],
             (int)data[2],
             (int)data[3],
-            (int)data[4]
+            (int)data[4],
+            (string)data[5]
         );
 
         playerInfo.Add(newPlayer);
@@ -234,13 +251,14 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
         for (int i = 0; i < info.Count; i++)
         {
-            object[] packet = new object[5];
+            object[] packet = new object[6];
 
             packet[0] = info[i].team;
             packet[1] = info[i].actorNum;
             packet[2] = info[i].kills;
             packet[3] = info[i].deaths;
             packet[4] = info[i].assists;
+            packet[5] = info[i].name;
 
             package[i] = packet;
         }
@@ -266,7 +284,8 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
                 (int)packet[1],
                 (int)packet[2],
                 (int)packet[3],
-                (int)packet[4]
+                (int)packet[4],
+                (string)packet[5]
             );
 
             playerInfo.Add(p);
@@ -364,29 +383,29 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         int killerActor = (int)data[0];
         int killedActor = (int)data[1];
 
-        //string killer, killed;
-        //killer = killed = "";
-        //for (int i = 0; i < playerInfo.Count; i++)
-        //{
-        //    if (playerInfo[i].actorNum == killerActor)
-        //    {
-        //        killer = playerInfo[i].name;
-        //    }
+        string killer, killed;
+        killer = killed = "";
+        for (int i = 0; i < playerInfo.Count; i++)
+        {
+            if (playerInfo[i].actorNum == killerActor)
+            {
+                killer = playerInfo[i].name;
+            }
 
-        //    if (playerInfo[i].actorNum == killedActor)
-        //    {
-        //        killed = playerInfo[i].name;
-        //    }
+            if (playerInfo[i].actorNum == killedActor)
+            {
+                killed = playerInfo[i].name;
+            }
 
-        //    if (killed != "" && killer != "")
-        //    {
-        //        break;
-        //    }
-        //}
+            if (killed != "" && killer != "")
+            {
+                break;
+            }
+        }
 
         GameObject killfeed = GameObject.Find("Killfeed");
         Transform content = killfeed.transform.Find("Scroll View/Viewport/Content");
-        content.GetComponent<KillfeedEdit>().AddtoKillfeed(killerActor.ToString(), killedActor.ToString());
+        content.GetComponent<KillfeedEdit>().AddtoKillfeed(killer, killed);
     }
 
     private void EndGame()
@@ -401,8 +420,20 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         GameObject.Find("HUD").SetActive(false); //Off the HUD
         gameEnd.gameObject.SetActive(true); //On the camera
         Vector2 results = CheckWinLose();
+        AddStats();
         GameObject.Find("EndgameUI").GetComponent<EndgameUI>().StartAnim(results.x, results.y);
         StartCoroutine(End(5f));
+    }
+
+    public MatchStats GetStatTracker()
+    {
+        return matchStats;
+    }
+
+    private void AddStats()
+    {
+        matchStats.playtime = 120;
+        pf.SetStats(myInfo.kills, myInfo.deaths, myInfo.assists, matchStats.wins, matchStats.losses, matchStats.draw, matchStats.hits, matchStats.misses, matchStats.damage, matchStats.captures, matchStats.playtime);
     }
 
     private IEnumerator End(float p_wait)
@@ -510,6 +541,33 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         //{
         //    return "Blue";
         //}
+
+        if (red > blue)
+        {
+            if (myInfo.team == "Red")
+            {
+                matchStats.wins = 1;
+            }
+            else
+            {
+                matchStats.losses = 1;
+            }
+        }
+        else if (red == blue)
+        {
+            matchStats.draw = 1;
+        }
+        else if (blue > red)
+        {
+            if (myInfo.team == "Blue")
+            {
+                matchStats.wins = 1;
+            }
+            else
+            {
+                matchStats.losses = 1;
+            }
+        }
 
         //return "Draw";
         return new Vector2(red, blue);

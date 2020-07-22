@@ -322,7 +322,8 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         bloom.Normalize();
 
         //Debug.LogError("player eye pos: " + playerEye.position + ", forward: " + playerEye.forward
-            //+ ", rand: " + rand + ", up: " + playerEye.up + ", rand2: " + rand2 + ", rigt: " + playerEye.right);
+        //+ ", rand: " + rand + ", up: " + playerEye.up + ", rand2: " + rand2 + ", rigt: " + playerEye.right);
+        bool hitSomething = false;
 
         RaycastHit hit = new RaycastHit();
         if (Physics.Raycast(playerEye.position, bloom, out hit, 1000f, bulletCollidable))
@@ -340,8 +341,16 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                     hitmarker.color = teamColor;
                     hitmarkerCd = 1f;
                     audioSource2D.PlayOneShot(hitmarkerClip);
+                    GetComponent<Player>().GetMatchStats().hits += 1;
+                    GetComponent<Player>().GetMatchStats().damage += (int)_damage;
+                    hitSomething = true;
                 }
             }    
+        }
+
+        if (photonView.IsMine && !hitSomething)
+        {
+            GetComponent<Player>().GetMatchStats().misses += 1;
         }
 
         currWeapon.transform.Rotate(-weapons[currWeapID].recoil * recDamp, 0, 0);

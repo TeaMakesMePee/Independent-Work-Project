@@ -31,6 +31,8 @@ public class PlayfabHandler : MonoBehaviour
 
     public void Start()
     {
+        GameData.pStat.Init();
+
         if (string.IsNullOrEmpty(PlayFabSettings.staticSettings.TitleId))
         {
             PlayFabSettings.staticSettings.TitleId = "88AA3";
@@ -74,6 +76,8 @@ public class PlayfabHandler : MonoBehaviour
         }
         CloseTabs();
         GameData.SetAuth(true);
+
+        GetStats();
     }
 
     public void CloseTabs()
@@ -119,26 +123,29 @@ public class PlayfabHandler : MonoBehaviour
 
     #region Stats
 
-    public void SetStats(int kills, int deaths, int assists, int mostkills, int wins, int losses, int hits, int misses, int damage, int mostdamage, int captured, int mostcaptured, int playtime, int exp)
+    public void SetStats(int kills, int deaths, int assists, int wins, int losses, int draws, int hits, int misses, int damage, int captured, int playtime)
     {
+        int exp = kills * 100 + assists * 50 + wins * 500 + draws * 250 + damage + captured * 10 + playtime;
+        Debug.LogError("Exp: " + exp);
         PlayFabClientAPI.UpdatePlayerStatistics(new UpdatePlayerStatisticsRequest
         {
             Statistics = new List<StatisticUpdate>
             {
-                new StatisticUpdate { StatisticName = "Kills", Value = kills},
-                new StatisticUpdate { StatisticName = "Deaths", Value = deaths},
-                new StatisticUpdate { StatisticName = "Assists", Value = assists},
-                new StatisticUpdate { StatisticName = "MostKills", Value = mostkills},
-                new StatisticUpdate { StatisticName = "Wins", Value = wins},
-                new StatisticUpdate { StatisticName = "Losses", Value = losses},
-                new StatisticUpdate { StatisticName = "Hits", Value = hits},
-                new StatisticUpdate { StatisticName = "Misses", Value = misses},
-                new StatisticUpdate { StatisticName = "Damage", Value = damage},
-                new StatisticUpdate { StatisticName = "MostDamage", Value = mostdamage},
-                new StatisticUpdate { StatisticName = "Captures", Value = captured},
-                new StatisticUpdate { StatisticName = "MostCaptures", Value = mostcaptured},
-                new StatisticUpdate { StatisticName = "Playtime", Value = playtime}, //in seconds
-                new StatisticUpdate { StatisticName = "Exp", Value = exp}
+                new StatisticUpdate { StatisticName = "Kills", Value = GameData.pStat.totalKills + kills},
+                new StatisticUpdate { StatisticName = "Deaths", Value = GameData.pStat.totalDeaths + deaths},
+                new StatisticUpdate { StatisticName = "Assists", Value = GameData.pStat.totalAssists + assists},
+                new StatisticUpdate { StatisticName = "MostKills", Value = (kills >= GameData.pStat.mostKills ? kills : GameData.pStat.mostKills)},
+                new StatisticUpdate { StatisticName = "Wins", Value = GameData.pStat.totalWins + wins},
+                new StatisticUpdate { StatisticName = "Losses", Value = GameData.pStat.totalLosses + losses},
+                new StatisticUpdate { StatisticName = "Draws", Value = GameData.pStat.totalDraws + draws},
+                new StatisticUpdate { StatisticName = "Hits", Value = GameData.pStat.totalHits + hits},
+                new StatisticUpdate { StatisticName = "Misses", Value = GameData.pStat.totalMisses +misses},
+                new StatisticUpdate { StatisticName = "Damage", Value = GameData.pStat.totalDamage + damage},
+                new StatisticUpdate { StatisticName = "MostDamage", Value = (damage >= GameData.pStat.mostDamage ? damage : GameData.pStat.mostDamage)},
+                new StatisticUpdate { StatisticName = "Captures", Value = GameData.pStat.totalCaptures + captured},
+                new StatisticUpdate { StatisticName = "MostCaptures", Value = (captured >= GameData.pStat.mostCaptures ? captured : GameData.pStat.mostCaptures)},
+                new StatisticUpdate { StatisticName = "Playtime", Value = GameData.pStat.playtime + playtime}, //in seconds
+                new StatisticUpdate { StatisticName = "Exp", Value = exp} //calculate the experience required
             }
         },
         result => { Debug.Log("User statistics updated"); },
@@ -161,45 +168,63 @@ public class PlayfabHandler : MonoBehaviour
             {
                 case "Kills":
                     //Set the score
+                    GameData.pStat.totalKills = eachStat.Value;
                     break;
                 case "Deaths":
                     //Set the score
+                    GameData.pStat.totalDeaths = eachStat.Value;
                     break;
                 case "Assists":
                     //Set the score
+                    GameData.pStat.totalAssists = eachStat.Value;
                     break;
                 case "MostKills":
                     //Set the score
+                    GameData.pStat.mostKills = eachStat.Value;
                     break;
                 case "Wins":
                     //Set the score
+                    GameData.pStat.totalWins = eachStat.Value;
                     break;
                 case "Losses":
                     //Set the score
+                    GameData.pStat.totalLosses = eachStat.Value;
+                    break;
+                case "Draws":
+                    //Set the score
+                    GameData.pStat.totalLosses = eachStat.Value;
                     break;
                 case "Hits":
                     //Set the score
+                    GameData.pStat.totalHits = eachStat.Value;
                     break;
                 case "Misses":
                     //Set the score
+                    GameData.pStat.totalMisses = eachStat.Value;
                     break;
                 case "Damage":
                     //Set the score
+                    GameData.pStat.totalDamage = eachStat.Value;
                     break;
                 case "MostDamage":
                     //Set the score
+                    GameData.pStat.mostDamage = eachStat.Value;
                     break;
                 case "Captures":
                     //Set the score
+                    GameData.pStat.totalCaptures = eachStat.Value;
                     break;
                 case "MostCaptures":
                     //Set the score
+                    GameData.pStat.mostCaptures = eachStat.Value;
                     break;
                 case "Playtime":
                     //Set the score
+                    GameData.pStat.playtime = eachStat.Value;
                     break;
                 case "Exp":
                     //Set the score
+                    GameData.pStat.experience = eachStat.Value;
                     break;
             }
         }

@@ -358,6 +358,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         return manager.gameStart;
     }
 
+    public MatchStats GetMatchStats()
+    {
+        return manager.GetStatTracker();
+    }
+
     public string teamName
     {
         get;
