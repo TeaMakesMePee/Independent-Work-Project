@@ -119,7 +119,7 @@ public class PlayfabHandler : MonoBehaviour
 
     #region Stats
 
-    public void SetStats(int kills, int deaths, int assists, int wins, int losses, int hits, int misses, int damage, int playtime, int exp)
+    public void SetStats(int kills, int deaths, int assists, int mostkills, int wins, int losses, int hits, int misses, int damage, int mostdamage, int captured, int mostcaptured, int playtime, int exp)
     {
         PlayFabClientAPI.UpdatePlayerStatistics(new UpdatePlayerStatisticsRequest
         {
@@ -128,11 +128,15 @@ public class PlayfabHandler : MonoBehaviour
                 new StatisticUpdate { StatisticName = "Kills", Value = kills},
                 new StatisticUpdate { StatisticName = "Deaths", Value = deaths},
                 new StatisticUpdate { StatisticName = "Assists", Value = assists},
+                new StatisticUpdate { StatisticName = "MostKills", Value = mostkills},
                 new StatisticUpdate { StatisticName = "Wins", Value = wins},
                 new StatisticUpdate { StatisticName = "Losses", Value = losses},
                 new StatisticUpdate { StatisticName = "Hits", Value = hits},
                 new StatisticUpdate { StatisticName = "Misses", Value = misses},
                 new StatisticUpdate { StatisticName = "Damage", Value = damage},
+                new StatisticUpdate { StatisticName = "MostDamage", Value = mostdamage},
+                new StatisticUpdate { StatisticName = "Captures", Value = captured},
+                new StatisticUpdate { StatisticName = "MostCaptures", Value = mostcaptured},
                 new StatisticUpdate { StatisticName = "Playtime", Value = playtime}, //in seconds
                 new StatisticUpdate { StatisticName = "Exp", Value = exp}
             }
@@ -164,6 +168,9 @@ public class PlayfabHandler : MonoBehaviour
                 case "Assists":
                     //Set the score
                     break;
+                case "MostKills":
+                    //Set the score
+                    break;
                 case "Wins":
                     //Set the score
                     break;
@@ -177,6 +184,15 @@ public class PlayfabHandler : MonoBehaviour
                     //Set the score
                     break;
                 case "Damage":
+                    //Set the score
+                    break;
+                case "MostDamage":
+                    //Set the score
+                    break;
+                case "Captures":
+                    //Set the score
+                    break;
+                case "MostCaptures":
                     //Set the score
                     break;
                 case "Playtime":
