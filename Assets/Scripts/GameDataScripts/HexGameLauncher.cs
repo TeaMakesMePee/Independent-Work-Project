@@ -28,7 +28,8 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     private void Start()
     {
         FindObjectOfType<AudioManager>().Play("MenuTheme");
-        MainMenuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("username");
+        if (PlayerPrefs.HasKey("username"))
+            MainMenuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("username");
     }
 
     public override void OnConnectedToMaster()
@@ -70,7 +71,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public void Create()
     {
         RoomOptions options = new RoomOptions();
-        options.MaxPlayers = 2;
+        options.MaxPlayers = 1;
 
         PhotonNetwork.CreateRoom(roomName.text, options);
         FindObjectOfType<AudioManager>().Play("ButtonClick");
@@ -243,7 +244,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         ToggleDivisionButtons();
     }
 
-    private void UpdateStats()
+    public void UpdateStats()
     {
         Transform generalStat = statTab.transform.Find("TopContainer/GeneralStat");
         Transform levelStat = statTab.transform.Find("TopContainer/LevelStat");

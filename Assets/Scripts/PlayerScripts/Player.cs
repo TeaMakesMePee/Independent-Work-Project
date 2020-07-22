@@ -320,6 +320,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                         manager.SendUpdatedPlayerStats(assistList[x], 2, 1); //add assists to assistant
                     }
                 }
+                crosshair.SetActive(true);
                 PhotonNetwork.Destroy(gameObject);
             }
         }

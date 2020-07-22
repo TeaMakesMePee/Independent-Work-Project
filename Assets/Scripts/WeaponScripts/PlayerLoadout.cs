@@ -363,7 +363,6 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         audioSource3D.pitch = weapons[currWeapID].audioPitch + Random.Range(-0.075f, 0.075f);
         audioSource3D.volume = 1f;
         audioSource3D.Play();
-        Debug.LogError(weapons[currWeapID].weapName);
     }
 
     [PunRPC]

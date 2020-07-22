@@ -75,6 +75,7 @@ public class PlayfabHandler : MonoBehaviour
             PlayerPrefs.SetString("username", user);
             PlayerPrefs.SetString("password", pass);
         }
+        menuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("username");
         CloseTabs();
         GameData.SetAuth(true);
 
@@ -140,16 +141,19 @@ public class PlayfabHandler : MonoBehaviour
                 new StatisticUpdate { StatisticName = "Losses", Value = GameData.pStat.totalLosses + losses},
                 new StatisticUpdate { StatisticName = "Draws", Value = GameData.pStat.totalDraws + draws},
                 new StatisticUpdate { StatisticName = "Hits", Value = GameData.pStat.totalHits + hits},
-                new StatisticUpdate { StatisticName = "Misses", Value = GameData.pStat.totalMisses +misses},
+                new StatisticUpdate { StatisticName = "Misses", Value = GameData.pStat.totalMisses + misses},
                 new StatisticUpdate { StatisticName = "Damage", Value = GameData.pStat.totalDamage + damage},
                 new StatisticUpdate { StatisticName = "MostDamage", Value = (damage >= GameData.pStat.mostDamage ? damage : GameData.pStat.mostDamage)},
                 new StatisticUpdate { StatisticName = "Captures", Value = GameData.pStat.totalCaptures + captured},
                 new StatisticUpdate { StatisticName = "MostCaptures", Value = (captured >= GameData.pStat.mostCaptures ? captured : GameData.pStat.mostCaptures)},
-                new StatisticUpdate { StatisticName = "Playtime", Value = GameData.pStat.playtime + playtime}, //in seconds
-                new StatisticUpdate { StatisticName = "Exp", Value = exp} //calculate the experience required
+                new StatisticUpdate { StatisticName = "Playtime", Value = GameData.pStat.playtime + playtime},
+                new StatisticUpdate { StatisticName = "Exp", Value = exp}
             }
         },
-        result => { Debug.Log("User statistics updated"); },
+        result => { 
+            Debug.Log("User statistics updated"); 
+            GetStats(); 
+        },
         error => { Debug.LogError(error.GenerateErrorReport()); });
     }
 
@@ -230,7 +234,7 @@ public class PlayfabHandler : MonoBehaviour
             }
         }
         //if (result.Statistics.Count == 0)
-            //cookieGame.SetScore(0);
+        //cookieGame.SetScore(0);
         //EnterGame();
     }
 
