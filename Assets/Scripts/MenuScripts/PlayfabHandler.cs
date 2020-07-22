@@ -50,6 +50,7 @@ public class PlayfabHandler : MonoBehaviour
     {
         PlayerPrefs.SetString("username", "");
         PlayerPrefs.SetString("password", "");
+        Application.Quit();
     }
 
     private void AutoLogin()
