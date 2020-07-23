@@ -7,10 +7,8 @@ using Photon.Realtime;
 using System.Threading;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 using System;
 using TMPro;
-using System.Text.RegularExpressions;
 
 public class PlayerInfo //Stats for in match
 {
@@ -65,6 +63,9 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     private double loadStartTime, gameStartTime;
     private MatchStats matchStats = new MatchStats();
     private PlayfabHandler pf;
+
+    [SerializeField]
+    public GameObject killIcon;
 
     public enum EventCodes : byte
     {
@@ -359,6 +360,11 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
                     myInfo.kills = playerInfo[i].kills;
                     myInfo.deaths = playerInfo[i].deaths;
                     myInfo.assists = playerInfo[i].assists;
+
+                    if (stat == 0)
+                    {
+                        killIcon.GetComponent<KillIcon>().TriggerKillIcon();
+                    }
                 }
 
                 break;
