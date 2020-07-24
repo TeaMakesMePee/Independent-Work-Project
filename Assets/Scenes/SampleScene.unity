@@ -8105,6 +8105,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   killBar: {fileID: 2640100435565518986, guid: b25b5b15cb9c8334abbc04101d6a9a5d, type: 3}
+  weapImages:
+  - {fileID: 21300000, guid: f8cf1f97bb6dcad4eacf17f6c9daaeec, type: 3}
+  - {fileID: 21300000, guid: 660e01b92f260c4419f0540e3895cf4c, type: 3}
+  - {fileID: 21300000, guid: 179a53dc48c5fae4b9ba9c5473b22c22, type: 3}
+  - {fileID: 21300000, guid: 61180ab394775b64b90dd74f10fa62e1, type: 3}
 --- !u!1 &9130960616911169344
 GameObject:
   m_ObjectHideFlags: 0

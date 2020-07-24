@@ -299,7 +299,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         newWeaponBobPos = new Vector3(Mathf.Cos(timeFrame) * xIntens, Mathf.Sin(timeFrame * 2f) * yIntens, 0) + weaponOrigin;
     }
 
-    public void TakeDamage(float damage, int actor)
+    public void TakeDamage(float damage, int actor, string weapName)
     {
         if (photonView.IsMine)
         {
@@ -312,7 +312,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 manager.Spawn();
                 manager.SendUpdatedPlayerStats(PhotonNetwork.LocalPlayer.ActorNumber, 1, 1); //add death to myself
                 manager.SendUpdatedPlayerStats(actor, 0, 1); //add kill to killer
-                manager.SendKillfeedInfo(actor, PhotonNetwork.LocalPlayer.ActorNumber); //add killfeed info
+                manager.SendKillfeedInfo(actor, PhotonNetwork.LocalPlayer.ActorNumber, weapName); //add killfeed info
                 for (int x = 0; x < assistList.Count; ++x)
                 {
                     if (assistList[x] != actor)

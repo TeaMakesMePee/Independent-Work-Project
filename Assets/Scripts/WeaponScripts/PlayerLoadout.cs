@@ -337,7 +337,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
                 GameObject theHit = hit.collider.gameObject;
                 if (theHit.layer == 11 && theHit.GetComponent<Player>().teamName != GetComponent<Player>().teamName)
                 {
-                    theHit.GetPhotonView().RPC("TakeDamage", RpcTarget.All, _damage, transform.position.x, transform.position.z, PhotonNetwork.LocalPlayer.ActorNumber);
+                    theHit.GetPhotonView().RPC("TakeDamage", RpcTarget.All, _damage, transform.position.x, transform.position.z, PhotonNetwork.LocalPlayer.ActorNumber, weapons[currWeapID].weapName);
                     hitmarker.color = teamColor;
                     hitmarkerCd = 1f;
                     audioSource2D.PlayOneShot(hitmarkerClip);
@@ -366,9 +366,9 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void TakeDamage(float damage, float x, float z, int actor)
+    private void TakeDamage(float damage, float x, float z, int actor, string weapname)
     {
-        GetComponent<Player>().TakeDamage(damage, actor);
+        GetComponent<Player>().TakeDamage(damage, actor, weapname);
         if (photonView.IsMine)
         {
             GameObject dI = Instantiate(damageIndicator, GameObject.Find("Indicators").transform);

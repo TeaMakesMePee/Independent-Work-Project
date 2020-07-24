@@ -372,9 +372,9 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
     }
 
-    public void SendKillfeedInfo(int killerActor, int killedActor)
+    public void SendKillfeedInfo(int killerActor, int killedActor, string weapName)
     {
-        object[] package = new object[] { killerActor, killedActor };
+        object[] package = new object[] { killerActor, killedActor, weapName };
 
         PhotonNetwork.RaiseEvent(
                 (byte)EventCodes.UpdateKillfeed,
@@ -388,6 +388,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         int killerActor = (int)data[0];
         int killedActor = (int)data[1];
+        string weapName = (string)data[2];
 
         string killer, killed;
         killer = killed = "";
@@ -411,7 +412,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 
         GameObject killfeed = GameObject.Find("Killfeed");
         Transform content = killfeed.transform.Find("Scroll View/Viewport/Content");
-        content.GetComponent<KillfeedEdit>().AddtoKillfeed(killer, killed);
+        content.GetComponent<KillfeedEdit>().AddtoKillfeed(killer, killed, weapName);
     }
 
     private void EndGame()
