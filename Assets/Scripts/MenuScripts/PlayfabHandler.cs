@@ -38,10 +38,10 @@ public class PlayfabHandler : MonoBehaviour
             PlayFabSettings.staticSettings.TitleId = "88AA3";
         }
 
-        if (PlayerPrefs.HasKey("username"))
-        {
-            AutoLogin();
-        }
+        //if (PlayerPrefs.HasKey("username"))
+        //{
+        //    AutoLogin();
+        //}
     }
 
     #region Auth
@@ -75,7 +75,11 @@ public class PlayfabHandler : MonoBehaviour
             PlayerPrefs.SetString("username", user);
             PlayerPrefs.SetString("password", pass);
         }
-        menuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("username");
+        //menuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("username");
+
+        GameData.playerName = user;
+        menuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = GameData.playerName;
+
         CloseTabs();
         GameData.SetAuth(true);
 
@@ -147,7 +151,7 @@ public class PlayfabHandler : MonoBehaviour
                 new StatisticUpdate { StatisticName = "Captures", Value = GameData.pStat.totalCaptures + captured},
                 new StatisticUpdate { StatisticName = "MostCaptures", Value = (captured >= GameData.pStat.mostCaptures ? captured : GameData.pStat.mostCaptures)},
                 new StatisticUpdate { StatisticName = "Playtime", Value = GameData.pStat.playtime + playtime},
-                new StatisticUpdate { StatisticName = "Exp", Value = exp}
+                new StatisticUpdate { StatisticName = "Exp", Value = GameData.pStat.experience + exp}
             }
         },
         result => { 

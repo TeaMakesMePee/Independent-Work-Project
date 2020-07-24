@@ -74,7 +74,7 @@ public class ToggleScore : MonoBehaviour
             GameObject pStat = Instantiate(theStatBar, content) as GameObject;
             pStat.GetComponent<Image>().color = new Color(0f, 1f, 1f, 130f / 255f);
 
-            pStat.transform.Find("PlayerName").GetComponent<TextMeshProUGUI>().text = (pB.actorNum).ToString();
+            pStat.transform.Find("PlayerName").GetComponent<TextMeshProUGUI>().text = pB.name;
             pStat.transform.Find("Kills").GetComponent<TextMeshProUGUI>().text = (pB.kills).ToString();
             pStat.transform.Find("Deaths").GetComponent<TextMeshProUGUI>().text = (pB.deaths).ToString();
             pStat.transform.Find("Assists").GetComponent<TextMeshProUGUI>().text = (pB.assists).ToString();
@@ -93,7 +93,7 @@ public class ToggleScore : MonoBehaviour
             GameObject pStat = Instantiate(theStatBar, content) as GameObject;
             pStat.GetComponent<Image>().color = new Color(1f, 0f, 0f, 130f / 255f);
 
-            pStat.transform.Find("PlayerName").GetComponent<TextMeshProUGUI>().text = (pR.actorNum).ToString();
+            pStat.transform.Find("PlayerName").GetComponent<TextMeshProUGUI>().text = pR.name;
             pStat.transform.Find("Kills").GetComponent<TextMeshProUGUI>().text = (pR.kills).ToString();
             pStat.transform.Find("Deaths").GetComponent<TextMeshProUGUI>().text = (pR.deaths).ToString();
             pStat.transform.Find("Assists").GetComponent<TextMeshProUGUI>().text = (pR.assists).ToString();

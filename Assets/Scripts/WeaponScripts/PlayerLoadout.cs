@@ -37,9 +37,9 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     private void Start()
     {
         isReloading = false;
-        foreach (Weapon w in weapons) w.InitGun();
         if (photonView.IsMine)
         {
+            foreach (Weapon w in weapons) w.InitGun();
             photonView.RPC("Equip", RpcTarget.AllBuffered, currWeapID);
             hitmarker = GameObject.Find("HUD/Crosshair/InnerRing").GetComponent<Image>();
             hitmarker.color = GetComponent<Player>().teamName == "Red" ? new Color(1f, 0f, 0f, 0f) : new Color(0f, 1f, 1f, 0f);

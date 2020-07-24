@@ -28,8 +28,9 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     private void Start()
     {
         FindObjectOfType<AudioManager>().Play("MenuTheme");
-        if (PlayerPrefs.HasKey("username"))
-            MainMenuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("username");
+        //if (PlayerPrefs.HasKey("username"))
+        //MainMenuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("username");
+        MainMenuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = GameData.playerName;
     }
 
     public override void OnConnectedToMaster()
@@ -71,7 +72,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public void Create()
     {
         RoomOptions options = new RoomOptions();
-        options.MaxPlayers = 1;
+        options.MaxPlayers = 2;
 
         PhotonNetwork.CreateRoom(roomName.text, options);
         FindObjectOfType<AudioManager>().Play("ButtonClick");
@@ -259,11 +260,15 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
         generalStat.transform.Find("TotalWins/Wins").GetComponent<TextMeshProUGUI>().text = string.Format("{0:n0}", GameData.pStat.totalWins);
 
-        levelStat.transform.Find("DisplayName").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("username");
+        levelStat.transform.Find("DisplayName").GetComponent<TextMeshProUGUI>().text = /*PlayerPrefs.GetString("username")*/GameData.playerName;
 
         statTab.transform.Find("BottomContainer/theStats/Kills/MostKills").GetComponent<TextMeshProUGUI>().text = string.Format("{0:n0}", GameData.pStat.mostKills);
 
-        float avgKills = (GameData.pStat.totalKills > 0 ? GameData.pStat.totalKills / (GameData.pStat.totalWins + GameData.pStat.totalLosses + GameData.pStat.totalDraws) : 0f);
+        float atKills = GameData.pStat.totalKills;
+        float atWins = GameData.pStat.totalWins;
+        float atLosses = GameData.pStat.totalLosses;
+        float atDraws = GameData.pStat.totalDraws;
+        float avgKills = (atKills > 0 ? atKills / (atWins + atLosses + atDraws) : 0f);
         statTab.transform.Find("BottomContainer/theStats/Kills/AverageKills").GetComponent<TextMeshProUGUI>().text = "average: " + string.Format("{0:#,##0.##}", avgKills);
 
         statTab.transform.Find("BottomContainer/theStats/Kills/TotalKills").GetComponent<TextMeshProUGUI>().text = "total: " + string.Format("{0:n0}", GameData.pStat.totalKills);
@@ -282,14 +287,17 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
         statTab.transform.Find("BottomContainer/theStats/Captured/TotalCapture").GetComponent<TextMeshProUGUI>().text = "total: " + string.Format("{0:n0}", GameData.pStat.totalCaptures);
 
-        float pAcc = (GameData.pStat.totalHits > 0 ? GameData.pStat.totalHits / (GameData.pStat.totalHits + GameData.pStat.totalMisses) : 0f);
+        float tHits = GameData.pStat.totalHits;
+        float tMisses = GameData.pStat.totalMisses;
+        float pAcc = tHits > 0f ? (tHits / (tHits + tMisses)) : 0f;
         int acc = (int)(pAcc * 100f);
         statTab.transform.Find("BottomContainer/theStats/Accuracy/AccuracyPercent").GetComponent<TextMeshProUGUI>().text = acc.ToString() + "%";
 
-        float kda = (GameData.pStat.totalKills > 0 ? GameData.pStat.totalKills / GameData.pStat.totalDeaths : 0f);
-        statTab.transform.Find("BottomContainer/theStats/KDA/KillDeathRatio").GetComponent<TextMeshProUGUI>().text = string.Format("{0:n0}", kda);
+        float tDeaths = GameData.pStat.totalDeaths;
+        float kda = (atKills > 0 ? atKills / tDeaths : 0f);
+        statTab.transform.Find("BottomContainer/theStats/KDA/KillDeathRatio").GetComponent<TextMeshProUGUI>().text = kda.ToString("0.0");
 
-        float pWinr = (GameData.pStat.totalWins > 0 ? GameData.pStat.totalWins / (GameData.pStat.totalWins + GameData.pStat.totalLosses + GameData.pStat.totalDraws) : 0f);
+        float pWinr = (atWins > 0 ? atWins / (atWins + atLosses + atDraws) : 0f);
         int winr = (int)(pWinr * 100f);
         statTab.transform.Find("BottomContainer/theStats/Winrate/WinratePercent").GetComponent<TextMeshProUGUI>().text = winr.ToString() + "%";
     }

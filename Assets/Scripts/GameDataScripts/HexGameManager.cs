@@ -79,8 +79,8 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     public void Start()
     {
         loadStartTime = gameStartTime = -1.0;
-        loadTime = 1f;
-        matchTime = 1f;
+        loadTime = 5f;
+        matchTime = 120f;
         gameTimer.text = fToS(loadTime);
         myInd = -1;
         firstSpawn = true;
@@ -220,7 +220,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         package[2] = myInfo.kills = 0;
         package[3] = myInfo.deaths = 0;
         package[4] = myInfo.assists = 0;
-        package[5] = myInfo.name = PlayerPrefs.GetString("username");
+        package[5] = myInfo.name = /*PlayerPrefs.GetString("username")*/GameData.playerName;
 
         PhotonNetwork.RaiseEvent(
             (byte)EventCodes.NewPlayer,

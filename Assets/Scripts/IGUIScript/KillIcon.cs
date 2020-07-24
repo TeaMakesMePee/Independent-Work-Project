@@ -18,7 +18,12 @@ public class KillIcon : MonoBehaviour
     {
         if (coolDown <= 0f)
         {
-            alpha = Mathf.Lerp(alpha, 0f, Time.deltaTime * 4f);
+            alpha = Mathf.Lerp(alpha, 0f, Time.deltaTime * 8f);
+            GetComponent<Image>().color = new Color(1f, 1f, 1f, alpha);
+        }
+        else
+        {
+            alpha = Mathf.Lerp(alpha, 1f, Time.deltaTime * 16f);
             GetComponent<Image>().color = new Color(1f, 1f, 1f, alpha);
         }
 
