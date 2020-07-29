@@ -21,4 +21,13 @@ public class MainMenu : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void SignOutExit()
+    {
+        if (PlayerPrefs.HasKey("username"))
+            PlayerPrefs.DeleteKey("username");
+        if (PlayerPrefs.HasKey("password"))
+            PlayerPrefs.DeleteKey("password");
+        Application.Quit();
+    }
 }

@@ -48,9 +48,9 @@ public class PlayfabHandler : MonoBehaviour
 
     public void Logout()
     {
-        PlayerPrefs.SetString("username", "");
-        PlayerPrefs.SetString("password", "");
-        Application.Quit();
+        //PlayerPrefs.SetString("username", "");
+        //PlayerPrefs.SetString("password", "");
+        //Application.Quit();
     }
 
     private void AutoLogin()

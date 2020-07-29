@@ -11,7 +11,7 @@ using System;
 
 public class HexGameLauncher : MonoBehaviourPunCallbacks
 {
-    public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab, DivisionsTab, theTitle, videoTab, statTab;
+    public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab, DivisionsTab, theTitle, videoTab, statTab, quitTab;
     public List<GameObject> divButtons;
     private List<RoomInfo> roomList;
 
@@ -87,7 +87,14 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         DivisionsTab.SetActive(false);
         theTitle.SetActive(false);
         statTab.SetActive(false);
+        quitTab.SetActive(false);
         FindObjectOfType<AudioManager>().Play("ButtonClick");
+    }
+
+    public void OpenQuitTab()
+    {
+        CloseAllTabs();
+        quitTab.SetActive(true);
     }
 
     public void OpenStatsTab()
