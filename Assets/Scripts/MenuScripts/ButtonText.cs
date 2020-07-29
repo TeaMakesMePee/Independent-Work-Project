@@ -7,6 +7,7 @@ using TMPro;
 public class ButtonText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     float startPos, targetPos, currPos;
+    public bool left;
 
     private void Awake()
     {
@@ -15,12 +16,18 @@ public class ButtonText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        targetPos = 0f;
+        if (left)
+            targetPos = 0f;
+        else
+            targetPos = -500f;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        targetPos = -350f;
+        if (left)
+            targetPos = -350f;
+        else
+            targetPos = -150f;
     }
 
     private void Update()
@@ -32,6 +39,9 @@ public class ButtonText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void ResetButton()
     {
-        targetPos = -350f;
+        if (left)
+            targetPos = -350f;
+        else
+            targetPos = -150f;
     }
 }
