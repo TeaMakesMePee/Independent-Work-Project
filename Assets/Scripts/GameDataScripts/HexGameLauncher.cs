@@ -134,6 +134,9 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         GameObject theAnchor = MainMenuTab.transform.GetChild(0).gameObject;
         for (int x = 0; x < theAnchor.transform.childCount; ++x)
             theAnchor.transform.GetChild(x).GetComponent<ButtonText>().ResetButton();
+        GameObject theAnchor2 = MainMenuTab.transform.GetChild(1).gameObject;
+        for (int x = 0; x < theAnchor2.transform.childCount; ++x)
+            theAnchor2.transform.GetChild(x).GetComponent<ButtonText>().ResetButton();
     }
 
     private void ClearRoomList() //Clears all the room list in prep for updating the list
