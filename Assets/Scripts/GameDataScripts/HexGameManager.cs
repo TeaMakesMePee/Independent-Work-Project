@@ -135,6 +135,30 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             gameOver = true;
             EndGame();
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePauseMenu();
+        }
+    }
+
+    public void TogglePauseMenu()
+    {
+        GameObject pauseMenu = GameObject.Find("PauseMenu").transform.GetChild(1).gameObject;
+        pauseMenu.SetActive(!pauseMenu.activeSelf);
+
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            GameData.pauseGame = true;
+        }
+        else if (Cursor.lockState == CursorLockMode.None)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            GameData.pauseGame = false;
+        }
     }
 
     private void OnEnable()

@@ -19,6 +19,9 @@ public class PlayerView : MonoBehaviourPunCallbacks
     void Start()
     {
         initCamRot = cam.localRotation;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
@@ -26,8 +29,10 @@ public class PlayerView : MonoBehaviourPunCallbacks
     {
         if (!photonView.IsMine) return;
 
+        if (GameData.pauseGame) return;
+
         LookAt();
-        UpdateCursor();
+        //UpdateCursor();
     }
 
     void LookAt()

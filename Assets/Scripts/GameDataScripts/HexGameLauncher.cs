@@ -21,6 +21,8 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public TextMeshProUGUI roomName;
     private string selectedRoom = null;
 
+    //public Animator anim;
+
     public void Awake()
     {
         //On awake, connects
@@ -52,7 +54,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         //Start game once joined
         StartGame();
-
+        //anim.SetTrigger("FadeOut");
         base.OnJoinedRoom();
     }
 
@@ -79,7 +81,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public void Create()
     {
         RoomOptions options = new RoomOptions();
-        options.MaxPlayers = 2;
+        options.MaxPlayers = 1;
 
         PhotonNetwork.CreateRoom(roomName.text, options);
         FindObjectOfType<AudioManager>().Play("ButtonClick");

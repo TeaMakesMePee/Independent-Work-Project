@@ -46,4 +46,6 @@
     public static Database pStat = new Database();
 
     public static string playerName = "";
+
+    public static bool pauseGame = false;
 }

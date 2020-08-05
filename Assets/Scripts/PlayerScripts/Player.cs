@@ -161,11 +161,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //Debug.LogError(photonView.ViewID);
         if (!manager.gameStart) return;
 
+
         if (!photonView.IsMine) 
         {
             UpdateNonClientPlayers();
             return; 
         }
+
+        if (GameData.pauseGame) return;
 
         //Get player weapon in that frame
         thePlayerWeap = GetComponent<PlayerLoadout>().GetWeapon();
@@ -227,6 +230,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (!photonView.IsMine) return;
 
         if (!manager.gameStart) return;
+
+        if (GameData.pauseGame) return;
 
         float horiMove = Input.GetAxisRaw("Horizontal");
         float vertMove = Input.GetAxisRaw("Vertical");

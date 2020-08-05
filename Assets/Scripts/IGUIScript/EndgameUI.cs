@@ -94,21 +94,35 @@ public class EndgameUI : MonoBehaviour
                 blueFill = Mathf.Lerp(blueFill, t_blueFill, fill_cTime / fill_mTime);
                 blueBar.fillAmount = blueFill;
 
-                if (redFill + blueFill >= 0.98f)
+                if (redFill + blueFill >= 0.99f)
                 {
-                    if (redFill > blueFill)
-                    {
-                        redScore = (int)(redFill * 100f);
-                        blueScore = 100 - redScore;
-                    }
-                    else
-                    {
-                        blueScore = (int)(blueFill * 100f);
-                        redScore = 100 - blueScore;
-                    }
+                    //if (redFill > blueFill)
+                    //{
+                    //    redScore = (int)(redFill * 100f);
+                    //    blueScore = 100 - redScore;
+                    //}
+                    //else
+                    //{
+                    //    blueScore = (int)(blueFill * 100f);
+                    //    redScore = 100 - blueScore;
+                    //}
+
+                    //rScoreText.text = redScore.ToString();
+                    //bScoreText.text = blueScore.ToString();
+                    bgDone = true;
+                    fill_cTime = 0f;
+
+                    redFill = t_redFill;
+                    redBar.fillAmount = redFill;
+
+                    redScore = (int)(redFill * 100f);
+                    blueScore = 100 - redScore;
 
                     rScoreText.text = redScore.ToString();
                     bScoreText.text = blueScore.ToString();
+
+                    blueFill = t_blueFill;
+                    blueBar.fillAmount = blueFill;
                 }
                 else
                 {

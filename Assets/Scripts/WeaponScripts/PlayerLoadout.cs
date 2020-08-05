@@ -52,6 +52,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
+        if (GameData.pauseGame) return;
         //if (!photonView.IsMine) return;
         if (photonView.IsMine)
         {

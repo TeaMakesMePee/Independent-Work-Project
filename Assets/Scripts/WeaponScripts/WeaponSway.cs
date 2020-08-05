@@ -18,7 +18,8 @@ public class WeaponSway : MonoBehaviourPunCallbacks
     // Update is called once per frame
     private void Update()
     {
-        Sway();
+        if (GameData.pauseGame) return;
+            Sway();
     }
 
     private void Sway()
