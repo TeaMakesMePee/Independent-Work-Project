@@ -16,6 +16,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public List<GameObject> divButtons;
     private List<RoomInfo> roomList;
     public AudioMixer am;
+    public Sprite tank, dmg, flank;
 
     public TextMeshProUGUI roomName;
     private string selectedRoom = null;
@@ -122,6 +123,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         CloseAllTabs();
         RoomsTab.SetActive(true);
+        RoomsTab.transform.Find("SelectBackground/ErrorMessage").gameObject.SetActive(GameData.GetDivision() == GameData.Division.P_None ? true : false);
     }
 
     public void OpenMainMenuTab()
@@ -143,6 +145,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         CloseAllTabs();
         CreateTab.SetActive(true);
+        CreateTab.transform.Find("ErrorMessage").gameObject.SetActive(GameData.GetDivision() == GameData.Division.P_None ? true : false);
     }
 
     public void OpenDivisionsTab()
@@ -212,18 +215,21 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public void SetTank()
     {
         GameData.SetDivision(GameData.Division.P_Tank);
+        MainMenuTab.transform.Find("Profile/ProfIcon").GetComponent<Image>().sprite = tank;
         OpenMainMenuTab();
     }
 
     public void SetDamage()
     {
         GameData.SetDivision(GameData.Division.P_Damage);
+        MainMenuTab.transform.Find("Profile/ProfIcon").GetComponent<Image>().sprite = dmg;
         OpenMainMenuTab();
     }
 
     public void SetFlank()
     {
         GameData.SetDivision(GameData.Division.P_Flank);
+        MainMenuTab.transform.Find("Profile/ProfIcon").GetComponent<Image>().sprite = flank;
         OpenMainMenuTab();
     }
 

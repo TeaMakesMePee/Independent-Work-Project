@@ -4,10 +4,11 @@
     {
         P_Tank,
         P_Damage,
-        P_Flank
+        P_Flank,
+        P_None
     }
 
-    private static Division theDivision = Division.P_Damage;
+    private static Division theDivision = Division.P_None;
 
     public static void SetDivision(Division theDiv)
     {
