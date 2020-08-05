@@ -310,5 +310,13 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         float pWinr = (atWins > 0 ? atWins / (atWins + atLosses + atDraws) : 0f);
         int winr = (int)(pWinr * 100f);
         statTab.transform.Find("BottomContainer/theStats/Winrate/WinratePercent").GetComponent<TextMeshProUGUI>().text = winr.ToString() + "%";
+
+        int level = 1;
+        int currExp = 10000;
+        for (int x = GameData.pStat.experience; x > currExp; x -= currExp)
+        {
+            level++;
+            currExp += 10000;
+        }
     }
 }
