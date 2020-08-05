@@ -102,6 +102,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         CloseAllTabs();
         UpdateStats();
         statTab.SetActive(true);
+        TriggerExpBar();
     }
 
     public void OpenRoomsTab()
@@ -113,6 +114,14 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public void OpenMainMenuTab()
     {
         CloseAllTabs();
+        theTitle.SetActive(true);
+        MainMenuTab.SetActive(true);
+    }
+
+    public void CloseStatsTab()
+    {
+        CloseAllTabs();
+        statTab.transform.Find("TopContainer/Experience/ExperienceBar").GetComponent<ExpBarScript>().ResetExpStat();
         theTitle.SetActive(true);
         MainMenuTab.SetActive(true);
     }
@@ -259,6 +268,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         Transform generalStat = statTab.transform.Find("TopContainer/GeneralStat");
         Transform levelStat = statTab.transform.Find("TopContainer/LevelStat");
+        Transform expStat = statTab.transform.Find("TopContainer/Experience");
 
         string timeText = ((float)(GameData.pStat.playtime / (60 * 60)) >= 1f ? "hours" : "mins");
         int minutes = GameData.pStat.playtime / 60;
@@ -266,11 +276,26 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         if (minutes > 999)
             timeCount = minutes / 60;
 
+        int level = 1;
+        int currExp = 10000;
+        int remainingExp = GameData.pStat.experience;
+        for (int x = GameData.pStat.experience - currExp; x > currExp; x -= currExp)
+        {
+            level++;
+            if (currExp < 100000)
+                currExp += 10000;
+            remainingExp = x;
+        }
+
+        expStat.transform.Find("ExpToLevel").GetComponent<TextMeshProUGUI>().text = remainingExp.ToString() + "/" + currExp.ToString();
+
+        levelStat.transform.Find("LevelImg").transform.Find("TheLevel").GetComponent<TextMeshProUGUI>().text = level.ToString();
+
+        levelStat.transform.Find("DisplayName").GetComponent<TextMeshProUGUI>().text = /*PlayerPrefs.GetString("username")*/GameData.playerName;
+
         generalStat.transform.Find("TimePlayed/Time").GetComponent<TextMeshProUGUI>().text = string.Format("{0:n0}", timeCount) + " " + timeText;
 
         generalStat.transform.Find("TotalWins/Wins").GetComponent<TextMeshProUGUI>().text = string.Format("{0:n0}", GameData.pStat.totalWins);
-
-        levelStat.transform.Find("DisplayName").GetComponent<TextMeshProUGUI>().text = /*PlayerPrefs.GetString("username")*/GameData.playerName;
 
         statTab.transform.Find("BottomContainer/theStats/Kills/MostKills").GetComponent<TextMeshProUGUI>().text = string.Format("{0:n0}", GameData.pStat.mostKills);
 
@@ -309,14 +334,19 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
         float pWinr = (atWins > 0 ? atWins / (atWins + atLosses + atDraws) : 0f);
         int winr = (int)(pWinr * 100f);
-        statTab.transform.Find("BottomContainer/theStats/Winrate/WinratePercent").GetComponent<TextMeshProUGUI>().text = winr.ToString() + "%";
+        statTab.transform.Find("BottomContainer/theStats/Winrate/WinratePercent").GetComponent<TextMeshProUGUI>().text = winr.ToString() + "%";        
+    }
 
-        int level = 1;
+    private void TriggerExpBar()
+    {
         int currExp = 10000;
-        for (int x = GameData.pStat.experience; x > currExp; x -= currExp)
+        int remainingExp = GameData.pStat.experience;
+        for (int x = GameData.pStat.experience - currExp; x > currExp; x -= currExp)
         {
-            level++;
-            currExp += 10000;
+            if (currExp < 100000)
+                currExp += 10000;
+            remainingExp = x;
         }
+        statTab.transform.Find("TopContainer/Experience/ExperienceBar").GetComponent<ExpBarScript>().SetExpStat(remainingExp, currExp);
     }
 }
