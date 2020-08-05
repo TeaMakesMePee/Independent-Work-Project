@@ -8,12 +8,14 @@ using UnityEngine.UI;
 using TMPro;
 using System.Linq;
 using System;
+using UnityEngine.Audio;
 
 public class HexGameLauncher : MonoBehaviourPunCallbacks
 {
-    public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab, DivisionsTab, theTitle, videoTab, statTab, quitTab;
+    public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab, DivisionsTab, theTitle, videoTab, statTab, quitTab, settingsTab;
     public List<GameObject> divButtons;
     private List<RoomInfo> roomList;
+    public AudioMixer am;
 
     public TextMeshProUGUI roomName;
     private string selectedRoom = null;
@@ -27,6 +29,10 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
     private void Start()
     {
+        if (PlayerPrefs.HasKey("Sfx"))
+        {
+            am.SetFloat("volume", PlayerPrefs.GetFloat("Sfx"));
+        }
         FindObjectOfType<AudioManager>().Play("MenuTheme");
         //if (PlayerPrefs.HasKey("username"))
         //MainMenuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("username");
@@ -88,6 +94,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         theTitle.SetActive(false);
         statTab.SetActive(false);
         quitTab.SetActive(false);
+        settingsTab.SetActive(false);
         FindObjectOfType<AudioManager>().Play("ButtonClick");
     }
 
@@ -95,6 +102,12 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         CloseAllTabs();
         quitTab.SetActive(true);
+    }
+
+    public void OpenSettingsTab()
+    {
+        CloseAllTabs();
+        settingsTab.SetActive(true);
     }
 
     public void OpenStatsTab()

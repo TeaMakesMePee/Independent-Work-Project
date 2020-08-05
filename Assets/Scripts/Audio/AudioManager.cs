@@ -6,12 +6,14 @@ using System.Linq;
 public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
+    public AudioMixerGroup am;
     // Start is called before the first frame update
     void Awake()
     {
         foreach(Sound s in sounds)
         {
             s.source = gameObject.AddComponent<AudioSource>();
+            s.source.outputAudioMixerGroup = am;
             s.source.clip = s.clip;
             s.source.volume = s.volume;
             s.source.pitch = s.pitch;

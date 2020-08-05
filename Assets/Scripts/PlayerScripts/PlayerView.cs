@@ -33,7 +33,12 @@ public class PlayerView : MonoBehaviourPunCallbacks
     void LookAt()
     {
         //Y axis 
-        float mouseInputY = Input.GetAxis("Mouse Y") * ySens * Time.deltaTime;
+        float sens = 250f;
+        if (PlayerPrefs.HasKey("Sens"))
+        {
+            sens = PlayerPrefs.GetFloat("Sens");
+        }
+        float mouseInputY = Input.GetAxis("Mouse Y") * sens * Time.deltaTime;
         Quaternion offset = Quaternion.AngleAxis(mouseInputY, -Vector3.right);
         Quaternion newCamRot = cam.localRotation * offset; //Add the offset to the current rotation
 
@@ -46,7 +51,7 @@ public class PlayerView : MonoBehaviourPunCallbacks
         weapon.rotation = cam.rotation;
 
         //X axis
-        float mouseInputX = Input.GetAxis("Mouse X") * xSens * Time.deltaTime;
+        float mouseInputX = Input.GetAxis("Mouse X") * sens * Time.deltaTime;
         offset = Quaternion.AngleAxis(mouseInputX, Vector3.up);
         player.localRotation *= offset; //Rotate player body instead, cam will follow
     }
