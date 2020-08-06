@@ -218,8 +218,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         //Update division
         p_Division.UpdateDivisionStats();
 
-        //if (transform.position.y <= -2.5f)
-        //    TakeDamage(9999f, Photon.);
+        if (transform.position.y <= -2.5f)
+            InstantDeath();
 
         //if (Input.GetKeyDown(KeyCode.Return))
         //    TakeDamage(999f);
@@ -329,6 +329,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 PhotonNetwork.Destroy(gameObject);
             }
         }
+    }
+
+    private void InstantDeath()
+    {
+        GetComponent<PlayerLoadout>().StopReloading();
+        manager.Spawn();
+        manager.SendUpdatedPlayerStats(PhotonNetwork.LocalPlayer.ActorNumber, 1, 1);
+        for (int x = 0; x < assistList.Count; ++x)
+        {
+            manager.SendUpdatedPlayerStats(assistList[x], 2, 1); //add assists to assistant
+        }
+        crosshair.SetActive(true);
+        PhotonNetwork.Destroy(gameObject);
     }
 
     public float GetHealth()
