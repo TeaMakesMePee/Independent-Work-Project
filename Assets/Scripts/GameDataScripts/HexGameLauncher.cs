@@ -300,9 +300,10 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         int level = 1;
         int currExp = 10000;
         int remainingExp = GameData.pStat.experience;
-        for (int x = GameData.pStat.experience - currExp; x > currExp; x -= currExp)
+        for (int x = GameData.pStat.experience; x > currExp;)
         {
             level++;
+            x -= currExp;
             if (currExp < 100000)
                 currExp += 10000;
             remainingExp = x;
@@ -362,8 +363,9 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         int currExp = 10000;
         int remainingExp = GameData.pStat.experience;
-        for (int x = GameData.pStat.experience - currExp; x > currExp; x -= currExp)
+        for (int x = GameData.pStat.experience; x > currExp;)
         {
+            x -= currExp;
             if (currExp < 100000)
                 currExp += 10000;
             remainingExp = x;
