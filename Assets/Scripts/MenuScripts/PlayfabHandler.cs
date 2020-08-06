@@ -201,7 +201,7 @@ public class PlayfabHandler : MonoBehaviour
                     break;
                 case "Draws":
                     //Set the score
-                    GameData.pStat.totalLosses = eachStat.Value;
+                    GameData.pStat.totalDraws = eachStat.Value;
                     break;
                 case "Hits":
                     //Set the score
