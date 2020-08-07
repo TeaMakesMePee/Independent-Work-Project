@@ -21,6 +21,11 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public TextMeshProUGUI roomName;
     private string selectedRoom = null;
 
+    public GameObject errorBox, authBox;
+    public GameObject joinError, roomBox;
+    public GameObject createError, createBox;
+    public Slider teamSizeSlider;
+
     //public Animator anim;
 
     public void Awake()
@@ -80,11 +85,19 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
     public void Create()
     {
-        RoomOptions options = new RoomOptions();
-        options.MaxPlayers = 2;
+        if (GameData.GetDivision() == GameData.Division.P_None)
+        {
+            createBox.SetActive(false);
+            createError.SetActive(true);
+        }
+        else
+        {
+            RoomOptions options = new RoomOptions();
+            options.MaxPlayers = (byte)((int)teamSizeSlider.value * 2);
 
-        PhotonNetwork.CreateRoom(roomName.text, options);
-        FindObjectOfType<AudioManager>().Play("ButtonClick");
+            PhotonNetwork.CreateRoom(roomName.text, options);
+            FindObjectOfType<AudioManager>().Play("ButtonClick");
+        }
     }
 
     private void CloseAllTabs()
@@ -125,7 +138,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         CloseAllTabs();
         RoomsTab.SetActive(true);
-        RoomsTab.transform.Find("SelectBackground/ErrorMessage").gameObject.SetActive(GameData.GetDivision() == GameData.Division.P_None ? true : false);
+        //RoomsTab.transform.Find("SelectBackground/ErrorMessage").gameObject.SetActive(GameData.GetDivision() == GameData.Division.P_None ? true : false);
     }
 
     public void OpenMainMenuTab()
@@ -147,7 +160,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         CloseAllTabs();
         CreateTab.SetActive(true);
-        CreateTab.transform.Find("ErrorMessage").gameObject.SetActive(GameData.GetDivision() == GameData.Division.P_None ? true : false);
+        //CreateTab.transform.Find("ErrorMessage").gameObject.SetActive(GameData.GetDivision() == GameData.Division.P_None ? true : false);
     }
 
     public void OpenDivisionsTab()
@@ -168,7 +181,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
     private void ClearRoomList() //Clears all the room list in prep for updating the list
     {
-        Transform content = RoomsTab.transform.Find("Scroll View/Viewport/Content");
+        Transform content = RoomsTab.transform.Find("List/Scroll View/Viewport/Content");
         foreach (Transform roomButt in content) Destroy(roomButt.gameObject);
     }
 
@@ -177,7 +190,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         roomList = list;
         ClearRoomList();
 
-        Transform content = RoomsTab.transform.Find("Scroll View/Viewport/Content");
+        Transform content = RoomsTab.transform.Find("List/Scroll View/Viewport/Content");
 
         foreach (RoomInfo room in roomList)
         {
@@ -199,11 +212,31 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
 
     public void JoinRoom()
     {
-        if (selectedRoom != null)
+        if (GameData.GetDivision() == GameData.Division.P_None)
         {
-            PhotonNetwork.JoinRoom(selectedRoom);
-            FindObjectOfType<AudioManager>().Play("ButtonClick");
+            roomBox.SetActive(false);
+            joinError.SetActive(true);
         }
+        else
+        {
+            if (selectedRoom != null)
+            {
+                PhotonNetwork.JoinRoom(selectedRoom);
+                FindObjectOfType<AudioManager>().Play("ButtonClick");
+            }
+        }
+    }
+
+    public void CloseJoinError()
+    {
+        roomBox.SetActive(true);
+        joinError.SetActive(false);
+    }
+
+    public void CloseCreateError()
+    {
+        createBox.SetActive(true);
+        createError.SetActive(false);
     }
 
     public void StartGame()
@@ -233,6 +266,21 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         GameData.SetDivision(GameData.Division.P_Flank);
         MainMenuTab.transform.Find("Profile/ProfIcon").GetComponent<Image>().sprite = flank;
         OpenMainMenuTab();
+    }
+
+    public void ToggleAuthError(string error)
+    {
+        authBox.SetActive(false);
+        errorBox.SetActive(true);
+        errorBox.transform.Find("ErrorMessage").GetComponent<TextMeshProUGUI>().text = error;
+    }
+
+    public void ToggleAuthBox()
+    {
+        authBox.SetActive(true);
+        authBox.transform.Find("Auth_User").GetComponent<TMP_InputField>().text = "";
+        authBox.transform.Find("Auth_Pass").GetComponent<TMP_InputField>().text = "";
+        errorBox.SetActive(false);
     }
 
     private void Update()

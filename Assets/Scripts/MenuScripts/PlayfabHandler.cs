@@ -12,6 +12,7 @@ public class PlayfabHandler : MonoBehaviour
     public TMP_InputField username, password;
     private string user, pass;
     public GameObject authTab, menuTab;
+    public HexGameLauncher launcher;
 
     private void OnEnable()
     {
@@ -95,6 +96,7 @@ public class PlayfabHandler : MonoBehaviour
     private void OnFailure(PlayFabError error)
     {
         Debug.LogError(error.GenerateErrorReport());
+        launcher.ToggleAuthError(error.GenerateErrorReport());
     }
 
     public void OnSignUpClick()
