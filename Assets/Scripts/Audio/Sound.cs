@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
 [System.Serializable]
-public class Sound
+public class Sound //A class that stores the information of the sounds
 {
     public AudioClip clip;
     public string name;
