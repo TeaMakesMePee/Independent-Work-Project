@@ -4,6 +4,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * This class manages the endgame UI
+ * Upon the end of the match, a bar slides up to show who won the match
+ * The % won is also shown here
+*/
+
 public class EndgameUI : MonoBehaviour
 {
     private Image theBackground, redBar, blueBar;
@@ -96,19 +102,6 @@ public class EndgameUI : MonoBehaviour
 
                 if (redFill + blueFill >= 0.99f)
                 {
-                    //if (redFill > blueFill)
-                    //{
-                    //    redScore = (int)(redFill * 100f);
-                    //    blueScore = 100 - redScore;
-                    //}
-                    //else
-                    //{
-                    //    blueScore = (int)(blueFill * 100f);
-                    //    redScore = 100 - blueScore;
-                    //}
-
-                    //rScoreText.text = redScore.ToString();
-                    //bScoreText.text = blueScore.ToString();
                     bgDone = true;
                     fill_cTime = 0f;
 

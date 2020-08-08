@@ -22,6 +22,7 @@ public class MainMenu : MonoBehaviour
         Application.Quit();
     }
 
+    //Removes username and password information to prevent auto login the next time the player tries to login
     public void SignOutExit()
     {
         if (PlayerPrefs.HasKey("username"))

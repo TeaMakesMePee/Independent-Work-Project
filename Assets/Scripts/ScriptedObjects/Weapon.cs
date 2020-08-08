@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * This script is the weapon scriptable object class
+ * Handles all the information and functionalities for every weapon
+*/
+
 [CreateAssetMenu(fileName = "New Weapon", menuName = "Weapon")]
 public class Weapon : ScriptableObject
 {
@@ -47,7 +52,6 @@ public class Weapon : ScriptableObject
         }
         else
         {
-            //Debug.LogError("no ammo");
             return false;
         }
     }

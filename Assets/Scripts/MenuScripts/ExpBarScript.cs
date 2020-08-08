@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * This scripts handles the animation of the experience bar in the player statistics page in main menu
+ * Lerps the % exp acquired for the level
+*/
+
 public class ExpBarScript : MonoBehaviour
 {
     // Start is called before the first frame update

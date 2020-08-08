@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * This script fades the killfeed UI away overtime
+*/
+
 public class KillfeedFade : MonoBehaviour
 {
     // Start is called before the first frame update

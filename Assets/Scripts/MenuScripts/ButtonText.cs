@@ -4,6 +4,10 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
+/*
+ * This script manages the lerping of the buttons in the main menu (play, custom match, divisions, settings, quit buttons)
+*/
+
 public class ButtonText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     float startPos, targetPos, currPos;

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+/*
+ * This scripts handles the lighting applied on the title in the main menu
+ * It gives a cool effect
+*/
+
 public class TitleAnimation : MonoBehaviour
 {
     private TextMeshProUGUI gameTitle;

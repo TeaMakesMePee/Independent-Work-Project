@@ -5,6 +5,11 @@ using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * This class updates the position of the damage indicator
+ * The damage indicator shows the direction of the enemy who shot you
+*/
+
 public class DamagedIndicator : MonoBehaviour
 {
     Vector3 enemyPos;

@@ -10,6 +10,11 @@ using System.Linq;
 using System;
 using UnityEngine.Audio;
 
+/*
+ * This script manages all the tabs within the main menu and the transition to the game scene
+ * It also handles the connection to server and lobby here
+*/
+
 public class HexGameLauncher : MonoBehaviourPunCallbacks
 {
     public GameObject MainMenuTab, RoomsTab, RoomsButton, CreateTab, DivisionsTab, theTitle, videoTab, statTab, quitTab, settingsTab;
@@ -50,7 +55,6 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         //Once connected, join
-        //Join();
         PhotonNetwork.JoinLobby();
         base.OnConnectedToMaster();
     }
@@ -59,7 +63,6 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         //Start game once joined
         StartGame();
-        //anim.SetTrigger("FadeOut");
         base.OnJoinedRoom();
     }
 
@@ -93,7 +96,7 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
         else
         {
             RoomOptions options = new RoomOptions();
-            options.MaxPlayers = /*1*/(byte)((int)teamSizeSlider.value * 2);
+            options.MaxPlayers = 1/*(byte)((int)teamSizeSlider.value * 2)*/;
 
             PhotonNetwork.CreateRoom(roomName.text, options);
             FindObjectOfType<AudioManager>().Play("ButtonClick");

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
+/*
+ * This scripts handles the look (mouse) control of the player
+*/
+
 public class PlayerView : MonoBehaviourPunCallbacks
 {
     #region vars
@@ -32,7 +36,6 @@ public class PlayerView : MonoBehaviourPunCallbacks
         if (GameData.pauseGame) return;
 
         LookAt();
-        //UpdateCursor();
     }
 
     void LookAt()

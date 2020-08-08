@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
+/*
+ * This script handles weapon sway
+ * Gives the effect that the weapon has some sort of weight to it
+*/
+
 public class WeaponSway : MonoBehaviourPunCallbacks
 {
     public float intensity, smooth;

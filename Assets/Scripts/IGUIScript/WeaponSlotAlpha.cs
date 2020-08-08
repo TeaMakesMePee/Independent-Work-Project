@@ -4,6 +4,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * This class manages the visibility of the weapon UI in game (bottom right of screen when you equip a weapon)
+ * Mainly affects the alpha values to show the weapon equipped and fades to 0 overtime to not obstruct the view
+*/
+
 public class WeaponSlotAlpha : MonoBehaviour
 {
     // Start is called before the first frame update

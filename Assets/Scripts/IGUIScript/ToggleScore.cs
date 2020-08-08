@@ -5,6 +5,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * This class manages the scoreboard
+ * The scoreboard is updated on a function call
+ * It lists all the information of players
+ * Sorted by kills then by assists in descending order
+ * Player has to press Tab to bring the scoreboard up
+*/
+
 public class ToggleScore : MonoBehaviour
 {
     public GameObject scoreboard;

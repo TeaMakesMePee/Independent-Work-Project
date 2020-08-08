@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * This scripts handled the main menu background animation (used before prototype presentation)
+*/
+
 public class MainMenuAnim : MonoBehaviour
 {
     public float interval = 0.01f;
-    //private void OnValidate()
-    //{
-    //    foreach (Transform child in transform)
-    //    {
-    //        GameObject mesh = child.GetChild(0).gameObject;
-    //        mesh.GetComponent<MeshRenderer>().material.color = Color.HSVToRGB(Random.Range(0.5f, 0.5f), Random.Range(0f, s), Random.Range(0f, v));
-    //    }
-    //}
+
     private void Start()
     {
         float hue = Random.Range(0f, 1f);

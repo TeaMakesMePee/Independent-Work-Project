@@ -3,6 +3,12 @@ using System.Collections;
 using Photon.Pun;
 using UnityEngine.UI;
 
+/*
+ * This is the Tank division child class
+ * Certain parent (division.cs) functions here are overriden to fit the design of this division
+ * TakeDamage is overriden because the tank division has the ability to absorb damage and convert it into more damage
+*/
+
 public class Tank : Division
 {
     private bool b_abilityActive;
@@ -38,37 +44,11 @@ public class Tank : Division
                 abilityCooldown = i_abilityCooldown;
             }
             divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = (1f - f_abilityActive / 3f);
-            //Debug.LogError((1f - f_abilityActive / 1.5f));
         }
 
-        #region old code 1
-        //if (/*!b_abilityActive && */absorbed > 0f) //if anyone shot while ability was active
-        //{
-        //    //if (divisionUI.transform.Find("Ability").gameObject.activeSelf) //Set green absorbed icon to true and off the purple one
-        //    //{
-        //    //    divisionUI.transform.Find("Ability").gameObject.SetActive(false);
-        //    //    divisionUI.transform.Find("AfterAbility").gameObject.SetActive(true);
-        //    //}
-
-        //    if (currentTime <= timeToBurst) //2 seconds to reduce absorbed to 0
-        //    {
-        //        currentTime += Time.deltaTime;
-        //        absorbed = Mathf.Lerp(0f, absorbed, currentTime / timeToBurst);
-        //        Debug.LogError("Resetting absorbed: " + absorbed);
-        //    }
-        //    else //after that hard reset absorbed and currentTime
-        //    {
-        //        Debug.LogError("Hard reset: " + absorbed);
-        //        absorbed = 0f;
-        //        currentTime = 0f;
-        //    }
-        //    //divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = currentTime / timeToBurst;
-        //}
-        #endregion
         absorbed = Mathf.Lerp(absorbed, 0f, Time.deltaTime * 0.5f);
         if (absorbed * 0.2f > 1f)
         {
-            //Debug.LogError("Absorbed: " + absorbed);
             if (!divisionUI.transform.GetChild(1).gameObject.activeSelf) //checking after ability
             {
                 divisionUI.transform.GetChild(1).gameObject.SetActive(true);
@@ -89,27 +69,6 @@ public class Tank : Division
             Shoot();
         }
 
-        #region old code 2
-        //if (abilityCooldown > 0f)
-        //{
-        //    if (absorbed == 0f && f_abilityActive == 0f) //if anyone didnt shoot while ability was active
-        //    {
-        //        if (divisionUI.transform.Find("AfterAbility").gameObject.activeSelf) //Set green absorbed icon to true and off the purple one
-        //        {
-        //            divisionUI.transform.Find("AfterAbility").gameObject.SetActive(false);
-        //            divisionUI.transform.Find("Ability").gameObject.SetActive(true);
-        //        }
-        //        float cdTime = b_absorbed ? (i_abilityCooldown - timeToBurst - 1.5f) : (i_abilityCooldown - 1.5f);
-        //        if (abilityCooldown < 0f)
-        //        {
-        //            b_absorbed = false;
-        //            abilityCooldown = 0f;
-        //        }
-        //        divisionUI.transform.Find("AbilityDisabled").GetComponent<Image>().fillAmount = abilityCooldown / cdTime;
-        //    }
-        //    abilityCooldown -= Time.deltaTime;
-        //}
-        #endregion
         base.UpdateDivisionStats();
     }
 
@@ -117,11 +76,9 @@ public class Tank : Division
     {
         if (abilityCooldown <= 0f)
         {
-            //Do ability
             b_abilityActive = true;
             f_abilityActive = 3f;
             currentTime = 0f;
-            //Debug.LogError("Active");
         }
     }
 
@@ -142,7 +99,6 @@ public class Tank : Division
         if (b_abilityActive)
         {
             absorbed += damage * 0.9f;
-            //Debug.LogError("Receiving: " + absorbed);
             b_absorbed = true;
             base.TakeDamage(damage * 0.1f); //Takes 10 percent damage when ability active
         }
@@ -156,7 +112,6 @@ public class Tank : Division
         if (theLoadout.GetWeapon().FireBullet())
         {
             photonView.RPC("Shoot", RpcTarget.All, theLoadout.GetWeapon().damage + absorbed * 0.2f, theLoadout.GetWeapon().firerate);
-            //Debug.LogError(absorbed * 0.2f);
         }
         else
         {

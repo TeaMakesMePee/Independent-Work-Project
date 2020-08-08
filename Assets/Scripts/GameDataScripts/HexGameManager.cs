@@ -10,7 +10,13 @@ using UnityEngine.SceneManagement;
 using System;
 using TMPro;
 
-public class PlayerInfo //Stats for in match
+/*
+ * This script manages all the match info regarding the overall match and player
+ * This script also handles gamestates and information of the other players in the lobby
+ * Spawning server side and ending match server side is handled here as well
+*/
+
+public class PlayerInfo //Stats of player that other players need to know (public)
 {
     public string name;
     public string team;
@@ -34,7 +40,7 @@ public class PlayerInfo //Stats for in match
     }
 }
 
-public class MatchStats //track stats
+public class MatchStats //Stats of player thats relevant to player (private)
 {
     public int wins, losses, draw, hits, misses, damage, captures, playtime;
     public MatchStats()
@@ -48,10 +54,8 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     [SerializeField]
     public Camera gameEnd;
     public string playerPrefab;
-    //public Transform spawnPoint;
     public string mapPrefab;
     public bool isMapSpawned;
-    //public Transform mapTransform;
     public int myInd;
     public List<PlayerInfo> playerInfo = new List<PlayerInfo>();
     public PlayerInfo myInfo;
@@ -181,7 +185,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             Vector3 spawn = GetRandomSpawn(myInfo.team);
             string stringValue = Enum.GetName(typeof(GameData.Division), GameData.GetDivision());
-            GameObject thePlayer = PhotonNetwork.Instantiate("PlayerDivisions/" + stringValue, spawn, /*spawnPoint.rotation*/Quaternion.identity);
+            GameObject thePlayer = PhotonNetwork.Instantiate("PlayerDivisions/" + stringValue, spawn, Quaternion.identity);
             Vector3 pos = thePlayer.transform.position;
             pos.y += thePlayer.transform.localScale.y;
             thePlayer.transform.position = pos;
@@ -244,7 +248,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         package[2] = myInfo.kills = 0;
         package[3] = myInfo.deaths = 0;
         package[4] = myInfo.assists = 0;
-        package[5] = myInfo.name = /*PlayerPrefs.GetString("username")*/GameData.playerName;
+        package[5] = myInfo.name = GameData.playerName;
 
         PhotonNetwork.RaiseEvent(
             (byte)EventCodes.NewPlayer,
@@ -443,7 +447,6 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            //PhotonNetwork.DestroyAll();
             PhotonNetwork.CurrentRoom.IsVisible = false;
             PhotonNetwork.CurrentRoom.IsOpen = false;
         }
@@ -564,15 +567,6 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             }
         }
 
-        //if (red > blue)
-        //{
-        //    return "Red";
-        //}
-        //else if (blue > red)
-        //{
-        //    return "Blue";
-        //}
-
         if (red > blue)
         {
             if (myInfo.team == "Red")
@@ -600,7 +594,6 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             }
         }
 
-        //return "Draw";
         return new Vector2(red, blue);
     }
 

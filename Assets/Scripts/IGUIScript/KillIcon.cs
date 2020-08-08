@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * This class manages the kill pop up when a player gets a kill
+ * A kill icon is visible and it fades over time
+*/
+
 public class KillIcon : MonoBehaviour
 {
     private float coolDown;

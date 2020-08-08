@@ -3,6 +3,12 @@ using System.Collections;
 using Photon.Pun;
 using UnityEngine.UI;
 
+/*
+ * This is the damage division child class
+ * Certain parent (division.cs) functions here are overriden to fit the design of this division
+ * Shoot is overriden because the damage division increases fire rate when ability is active
+*/
+
 public class Damage : Division
 {
     private float f_abilityActive;

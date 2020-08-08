@@ -3,6 +3,11 @@ using Photon.Pun;
 using System.Collections;
 using UnityEngine.UI;
 
+/*
+ * This is the damage division parent class
+ * Functionalities that are common among divisions are defined in here
+*/
+
 public class Division : MonoBehaviourPunCallbacks
 {
     protected float moveSpeed;
@@ -58,7 +63,6 @@ public class Division : MonoBehaviourPunCallbacks
     {
         if (theLoadout.GetWeapon().FireBullet())
         {
-            //Debug.LogError("got ammo");
             photonView.RPC("Shoot", RpcTarget.All, theLoadout.GetWeapon().damage, theLoadout.GetWeapon().firerate);
         }
         else

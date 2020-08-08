@@ -8,7 +8,7 @@ public class AuthTrigger : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (GameData.GetAuth())
+        if (GameData.GetAuth()) //if authenticated, close authenticate menu
         {
             playfab.CloseTabs();
         }

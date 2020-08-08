@@ -10,6 +10,13 @@ using UnityEngine.Events;
 using System.Linq;
 using UnityEngine.SocialPlatforms;
 
+/*
+ * This script handles everything related to the tiles
+ * The updating of the tile colors happen here
+ * Flood fill algorithm is also called in here
+ * There is also a generation code commented out, it was used to generate the level
+*/
+
 public class GenerateHexGrid : MonoBehaviourPunCallbacks
 {
     public GameObject theTilePrefab;
@@ -60,7 +67,6 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
         }
         manager = GameObject.Find("GameManager").GetComponent<HexGameManager>();
         UpdateGameManager();
-        //AddScript();
     }
 
     public void ChangeHexColor(Vector3 playerPos)
@@ -70,15 +76,6 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
         {
             Vec2ToHexGrid(tempPos);
         }
-    }
-
-    private void AddScript()
-    {
-        //for (int x = 0; x < hexGrids.Count; ++x)
-        //{
-        //    hexGrids[x].GetComponent<TileInfo>().SetIndex(x);
-        //}
-        //PrefabUtility.SaveAsPrefabAsset(gameObject, "Assets/Prefabs/Grids2New.prefab");
     }
 
     private Vector2 Vec3ToVec2(Vector3 playerPos)
@@ -143,55 +140,6 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
 
     private void Vec2ToHexGrid(Vector2 playerPos)
     {
-        #region not in use
-        //float height = 2f * tileScale;
-        //float gHeight = height * .75f;
-        //float width = Mathf.Sqrt(3f) * tileScale;
-        //float halfWidth = width * .5f;
-        //Vector3 centerOffset = new Vector3((gridWidth - 1) * height - (gridWidth - 1) * height * .25f, 0f, (gridHeight - 1) * width + width / 2f);
-        ////This makes sure the top left of the grid is set to 0,0,0.
-        //Vector3 newPlayerPos = playerPos + centerOffset * 0.5f + new Vector3(height * .5f, 0f, width * .5f); //Added the offset to the player position that i initially subtracted from the grids
-        //int row = (int)(newPlayerPos.x / gHeight);
-        //int column;
-
-        //if (row % 2 == 1)
-        //{
-        //    column = (int)((newPlayerPos.z - halfWidth) / width);
-        //}
-        //else
-        //{
-        //    column = (int)(newPlayerPos.z / width);
-        //}
-
-        //double relVertBox = newPlayerPos.x - (row * gHeight);
-
-        //double relHoriBox;
-
-        //if (row % 2 == 1)
-        //    relHoriBox = (newPlayerPos.z - (column * width)) - halfWidth;
-        //else
-        //    relHoriBox = newPlayerPos.z - (column * width);
-
-        //float c = height * .25f;
-        //float m = c / halfWidth;
-
-        //if (relVertBox < (-m * relHoriBox) + c)
-        //{
-        //    if (row % 2 == 0)
-        //    { 
-        //        column--;
-        //    }
-        //    row--;
-        //}
-        //else if (relVertBox < (m * relHoriBox) - c)
-        //{
-        //    if (row % 2 == 1)
-        //    {
-        //        column++;
-        //    }
-        //    row--;
-        //}
-        #endregion
         int row = (int)playerPos.x;
         int column = (int)playerPos.y;
         int index = row * gridHeight + column;
@@ -275,13 +223,10 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
                     {
                         if (counts[abc] < temp)
                         {
-                            //Debug.LogError("lesser: " + counts[abc]);
                             temp = counts[abc];
                             tempind = abc;
                         }
                     }
-                    //Debug.LogError("here");
-                    //Debug.LogError(counts.Count);
 
                     if (counts.Count > 0)
                     {
@@ -294,22 +239,7 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
                                 photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, tempIntList[xx], manager.GetLocalPlayerTeam());
                             }
                         }
-                        //photonView.RPC("ApplyFloodFill", RpcTarget.AllBuffered, tempIntList);
                     }
-
-                    #region not in use 2
-                    //for (int f = 0; f < toColorList[tempind].Count; ++f)
-                    //{
-                    //    Debug.LogError("filling..: " + toColorList[tempind][f]);
-                    //}
-                    //List<int> tempIntList = toColorList[tempind];
-                    //for (int xx = 0; xx < tempIntList.Count; ++xx)
-                    //{
-                    //    Debug.LogError("list ind: " + tempIntList[xx]);
-                    //}
-                    //photonView.RPC("ApplyFloodFill", RpcTarget.AllBuffered, index, toColorList[tempind]);
-                    //photonView.RPC("ApplyMaterialToHex", RpcTarget.AllBuffered, index);
-                    #endregion
                 }
             }
             
@@ -341,11 +271,6 @@ public class GenerateHexGrid : MonoBehaviourPunCallbacks
 
         for (int x = 0; x < adjTiles.Count; ++x)
         {
-            if (stepCounter > gridWidth * gridHeight / 2 - Math.Min(gridWidth, gridHeight))
-            {
-                overShot = true;
-                return;
-            }
             if ((int)(adjTiles[x].x) >= 0 && (int)(adjTiles[x].x) < gridWidth)
             {
                 if ((int)(adjTiles[x].y) >= 0 && (int)(adjTiles[x].y) < gridHeight)

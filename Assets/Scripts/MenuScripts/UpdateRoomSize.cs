@@ -4,6 +4,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * This script edits the room size text when the slider changes value in the create room page
+*/
+
 public class UpdateRoomSize : MonoBehaviour
 {
     // Start is called before the first frame update

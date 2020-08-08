@@ -2,6 +2,12 @@
 using System.Collections;
 using UnityEngine.UI;
 
+/*
+ * This is the Flank division child class
+ * Certain parent (division.cs) functions here are overriden to fit the design of this division
+ * Jump is overriden because the flank division has the ability to double jump
+*/
+
 public class Flank : Division
 {
     private bool isDoubleJump;
@@ -22,7 +28,6 @@ public class Flank : Division
     {
         if (Input.GetMouseButton(0) && theLoadout.readyFire())
         {
-            //Debug.LogError("got ammo");
             base.Shoot();
         }
         if (isDashing)

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class FPSCounter : MonoBehaviour
 { 
-    void Update()
+    void Update() //Fps counter, used for frame rate check
     {
         float fps = 1f / Time.deltaTime;
         gameObject.GetComponent<TextMeshProUGUI>().text = ((int)fps).ToString();

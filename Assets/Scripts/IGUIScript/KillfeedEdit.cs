@@ -4,6 +4,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+ * This script instantiates the UI for the killfeed when a kill occurs
+*/
+
 public class KillfeedEdit : MonoBehaviour
 {
     public GameObject killBar;

@@ -6,6 +6,11 @@ using UnityEngine.UI;
 using Photon.Pun;
 using TMPro;
 
+/*
+ * This scripts handles the information and functions of the player in terms of movement, kills, taking damage, etc.
+ * Also handles UI related to player
+*/
+
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
     public float speed, sprintMultiplier;
@@ -86,7 +91,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
-            divisionUIParent = GameObject.Find("DivisionUI");
+            divisionUIParent = GameObject.Find("DivisionUI"); //Set the division script to the player GameObject
             switch (GameData.GetDivision())
             {
                 case GameData.Division.P_Damage:
@@ -115,8 +120,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             t_currHP = GameObject.Find("CurrHP").GetComponent<TextMeshProUGUI>();
             GameObject.Find("BaseHP").GetComponent<TextMeshProUGUI>().text = t_currHP.text = ((int)maxHealth).ToString();
-
-            //Debug.LogError(PhotonNetwork.LocalPlayer.UserId);
         }
 
         //Set my player camera to true
@@ -139,26 +142,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             TextMeshProUGUI teamText = GameObject.Find("Team").GetComponent<TextMeshProUGUI>();
             teamText.text = teamName + " Team";
             teamText.color = teamName == "Blue" ? new Color(0f, 1f, 1f) : new Color(1f, 0f, 0f);
-            //GetComponent<MeshRenderer>().material.color = teamName == "Blue" ? new Color(0f, 1f, 1f) : new Color(1f, 0f, 0f);
         }
 
         hpBar = GameObject.Find("HpBar").transform;
-        //ammoUI = GameObject.Find("AmmoCount").GetComponent<TextMeshProUGUI>();
         currAmmo = GameObject.Find("CurrAmmo").GetComponent<TextMeshProUGUI>();
         baseAmmo = GameObject.Find("BaseAmmo").GetComponent<TextMeshProUGUI>();
         currHpScale = 1f;
 
         crosshair = GameObject.Find("Crosshair");
 
-        //isADS = false;
-        //adsDamp = 1f;
         isMoving = false;
         assistList = new List<int>();
     }
 
     private void Update()
     {
-        //Debug.LogError(photonView.ViewID);
         if (!manager.gameStart) return;
 
 
@@ -175,8 +173,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         //Set active of crosshair
         crosshair.SetActive(!thePlayerWeap.isAds);
-
-        //Debug.LogError(PhotonNetwork.LocalPlayer.ActorNumber);
 
         float horiMove = Input.GetAxisRaw("Horizontal");
         float vertMove = Input.GetAxisRaw("Vertical");
@@ -220,9 +216,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (transform.position.y <= -2.5f)
             InstantDeath();
-
-        //if (Input.GetKeyDown(KeyCode.Return))
-        //    TakeDamage(999f);
     }
 
     void FixedUpdate()
@@ -245,14 +238,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             inAir = false;
         }
-
-        #region old jump check
-        //Jump check
-        //if (Input.GetKey(KeyCode.Space) && !inAir)
-        //{
-        //    playerRig.AddForce(Vector3.up * jumpForce);
-        //}
-        #endregion
 
         if (Input.GetKey(KeyCode.Space))
         {
@@ -280,12 +265,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         Vector3 newVel = transform.TransformDirection(dir) * newSpeed * Time.deltaTime;
         newVel.y = playerRig.velocity.y;
         playerRig.velocity = newVel;
-
-        //TEMP
-        if (!inAir)
-        {
-            //theHexGrids.ChangeHexColor(transform.position);
-        }
     }
 
     private void UpdateNonClientPlayers()
@@ -308,7 +287,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonView.IsMine)
         {
-            //currHealth -= damage;
             p_Division.TakeDamage(damage);
             AddToAssists(actor);
             if (currHealth <= 0f)
@@ -361,11 +339,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         GetComponent<MeshRenderer>().material.color = teamName == "Blue" ? new Color(0f, 1f, 1f) : new Color(1f, 0f, 0f);
     }
 
-    //public void SetADS(bool adsState)
-    //{
-    //    isADS = adsState;
-    //}
-
     public bool GetMoving()
     {
         return isMoving;
@@ -388,7 +361,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         set;
     }
 
-    private void AddToAssists(int actor)
+    private void AddToAssists(int actor) //adds to the list of people who shot the player in current life
     {
         bool exists = false;
 

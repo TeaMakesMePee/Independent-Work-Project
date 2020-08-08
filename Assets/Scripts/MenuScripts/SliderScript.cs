@@ -5,6 +5,11 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
+/*
+ * This scripts manages the settings and values
+ * Updates the player preferences
+*/
+
 public class SliderScript : MonoBehaviour
 {
     public bool Sens, Sfx;

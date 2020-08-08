@@ -8,6 +8,11 @@ using UnityEngine.UI;
 using TMPro;
 using System.Xml.Schema;
 
+/*
+ * This script handles all the functionalities of the player's loadout
+ * Equip, shoot, reload, aim down sight is handled here
+*/
+
 public class PlayerLoadout : MonoBehaviourPunCallbacks
 {
     // Start is called before the first frame update
@@ -17,7 +22,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     public LayerMask bulletCollidable;
 
     private GameObject currWeapon;
-    private int currWeapID = 0;
+    private int currWeapID = 1;
     private float firerate;
 
     private bool isReloading;
@@ -53,7 +58,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     void Update()
     {
         if (GameData.pauseGame) return;
-        //if (!photonView.IsMine) return;
+
         if (photonView.IsMine)
         {
             #region weapon wheel
@@ -103,11 +108,10 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             {
                 if (Input.GetKeyDown((KeyCode)(49 + x)))
                 {
-                    if (x != currWeapID/* && x < weapons.Length*/)
+                    if (x != currWeapID)
                     {
                         currWeapID = x;
                         photonView.RPC("Equip", RpcTarget.AllBuffered, currWeapID);
-                        //Equip(x);
                     }
                 }
             }
@@ -115,27 +119,10 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
 
             if (currWeapID != -1 && GetComponent<Player>().GetGameStart())
             {
-                //AimDownSight(Input.GetMouseButton(1));
                 if (weapons[currWeapID].weapName == "Pistol") //Only pistols can ads
                 {
                     photonView.RPC("AimDownSight", RpcTarget.All, Input.GetMouseButton(1) && !isReloading);
-                    //GetComponent<Player>().SetADS(Input.GetMouseButton(1));
                 }
-
-                #region old shoot call
-                //if (Input.GetMouseButton(0) && firerate <= 0f)
-                //{
-                //    if (weapons[currWeapID].FireBullet())
-                //    { 
-                //        photonView.RPC("Shoot", RpcTarget.All);
-                //    }
-                //    else
-                //    {
-                //        if (weapons[currWeapID].ifReloadable() && !isReloading)
-                //            StartCoroutine(Reload(weapons[currWeapID].reloadTime));
-                //    }
-                //}
-                #endregion
 
                 //Apply increasing bloom to all weapons except pistol
                 if (weapons[currWeapID].weapName != "Pistol")
@@ -198,9 +185,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     
     IEnumerator Reload(float reloadTime)
     {
-        //Debug.LogError("reloading");
         isReloading = true;
-        //currWeapon.SetActive(false);
         Transform theAnchor = currWeapon.transform.Find("Anchor");
         GameObject theDesign = null;
         if (theAnchor != null)
@@ -213,7 +198,6 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         {
             float start = rotateAmount;
             rotateAmount = Mathf.Lerp(rotateAmount, 360f, Time.deltaTime * 5f);
-            //Debug.LogError(theDesign.transform.childCount);
             if (theDesign != null)
             {
                 for (int x = 0; x < theDesign.transform.childCount; ++x)
@@ -246,7 +230,6 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             audioSource3D.Play();
         }
 
-        //currWeapon.SetActive(true);
         weapons[currWeapID].Reload();
         isReloading = false;
     }
@@ -297,7 +280,6 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         audioSource3D.pitch = 1.8f;
         audioSource3D.volume = 0.5f;
         audioSource3D.Play();
-        //currWeapID = weaponID;
     }
 
     [PunRPC]
@@ -322,8 +304,6 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             + rand2 * playerEye.right;
         bloom.Normalize();
 
-        //Debug.LogError("player eye pos: " + playerEye.position + ", forward: " + playerEye.forward
-        //+ ", rand: " + rand + ", up: " + playerEye.up + ", rand2: " + rand2 + ", rigt: " + playerEye.right);
         bool hitSomething = false;
 
         RaycastHit hit = new RaycastHit();
@@ -357,7 +337,7 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
         currWeapon.transform.Rotate(-weapons[currWeapID].recoil * recDamp, 0, 0);
         currWeapon.transform.position -= currWeapon.transform.forward * weapons[currWeapID].kickback * kbDamp;
 
-        firerate = /*weapons[currWeapID].firerate*/_firerate;
+        firerate = _firerate;
 
         audioSource3D.Stop();
         audioSource3D.clip = weapons[currWeapID].audioClip;
@@ -389,7 +369,6 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
             currAmmo.text = weapons[currWeapID].GetMagAmmo().ToString();
             baseAmmo.text = weapons[currWeapID].GetAmmo().ToString();
         }
-        //theUI.text = weapons[currWeapID].GetMagAmmo().ToString() + "/" + weapons[currWeapID].GetAmmo().ToString();
     }
 
     public Weapon GetWeapon()
@@ -399,8 +378,6 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
 
     public bool readyFire()
     {
-        //Debug.LogError("firerate: " + firerate);
-        //Debug.LogError("Reloading: " + isReloading);
         return firerate <= 0f && !isReloading;
     }
 
@@ -408,7 +385,6 @@ public class PlayerLoadout : MonoBehaviourPunCallbacks
     {
         if (weapons[currWeapID].ifReloadable() && !isReloading)
         {
-            //Debug.LogError("reloadable");
             StartCoroutine(Reload(weapons[currWeapID].reloadTime));
         }
     }

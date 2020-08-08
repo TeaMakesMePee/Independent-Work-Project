@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
 
+/*
+ * This script plays the different preview videos for each division in the menus
+*/
+
 public class VideoScript : MonoBehaviour
 {
     public List<VideoClip> vClips;

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngineInternal;
 
+/*
+ * This scripts handled the main menu background animation (used before prototype presentation)
+*/
+
 public class TileAnim : MonoBehaviour
 {
     private float nextAngle,currAngle;
@@ -26,7 +30,6 @@ public class TileAnim : MonoBehaviour
 
     private void Update()
     {
-        //transform.Rotate(Vector3.forward * Time.deltaTime * 36f);
         if (coolDown < 0f)
         {
             camtohex.y = 0;

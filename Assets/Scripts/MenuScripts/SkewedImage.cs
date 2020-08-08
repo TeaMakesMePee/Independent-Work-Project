@@ -1,5 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+
+/*
+ * This scripts skews images based on an angle to give a slant effect
+ * Used for the bars in the experience bars in statistic page in menu
+*/
+
 public class SkewedImage : Image
 {
     protected override void OnPopulateMesh(VertexHelper vh)

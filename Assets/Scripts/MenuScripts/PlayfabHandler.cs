@@ -4,6 +4,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/*
+ * This scripts handles everything related to playfab
+ * This includes authentication, statistic updates
+ * Leaderboards (to be implemented later)
+*/
+
 public class PlayfabHandler : MonoBehaviour
 {
     public static PlayfabHandler pf;
@@ -76,7 +82,6 @@ public class PlayfabHandler : MonoBehaviour
             PlayerPrefs.SetString("username", user);
             PlayerPrefs.SetString("password", pass);
         }
-        //menuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("username");
 
         GameData.playerName = user;
         menuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = GameData.playerName;
@@ -239,9 +244,6 @@ public class PlayfabHandler : MonoBehaviour
                     break;
             }
         }
-        //if (result.Statistics.Count == 0)
-        //cookieGame.SetScore(0);
-        //EnterGame();
     }
 
     #endregion

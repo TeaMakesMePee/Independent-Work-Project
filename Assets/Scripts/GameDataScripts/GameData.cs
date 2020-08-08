@@ -1,4 +1,8 @@
-﻿public static class GameData
+﻿/*
+ * A static class to manage temporary game data across scenes
+*/
+
+public static class GameData
 {
     public enum Division
     {

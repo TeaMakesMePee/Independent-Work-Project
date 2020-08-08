@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * This class manages the division information in game
+ * When the F1 key is pressed, the player will be able to see the information of the selection division
+*/
+
 public class DivisionInfoTab : MonoBehaviour
 {
     [SerializeField]
