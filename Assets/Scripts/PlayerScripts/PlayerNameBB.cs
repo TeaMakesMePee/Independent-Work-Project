@@ -15,7 +15,8 @@ public class PlayerNameBB : MonoBehaviour
     void Start()
     {
         thePlayer = GameObject.FindGameObjectWithTag("LocalPlayer");
-        initForward = thePlayer.transform.forward;
+        initForward = transform.root.forward;
+        initForward.y = 0f;
         initForward.Normalize();
     }
 
