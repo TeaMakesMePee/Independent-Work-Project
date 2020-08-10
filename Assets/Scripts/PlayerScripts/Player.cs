@@ -138,7 +138,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (photonView.IsMine)
         {
             teamName = manager.GetLocalPlayerTeam();
-            photonView.RPC("SyncTeamName", RpcTarget.AllBuffered, teamName);
+            photonView.RPC("SyncTeamName", RpcTarget.AllBuffered, teamName, GameData.playerName);
             TextMeshProUGUI teamText = GameObject.Find("Team").GetComponent<TextMeshProUGUI>();
             teamText.text = teamName + " Team";
             teamText.color = teamName == "Blue" ? new Color(0f, 1f, 1f) : new Color(1f, 0f, 0f);
@@ -333,10 +333,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     [PunRPC]
-    private void SyncTeamName(string tN)
+    private void SyncTeamName(string tN, string playerName)
     {
         teamName = tN;
         GetComponent<MeshRenderer>().material.color = teamName == "Blue" ? new Color(0f, 1f, 1f) : new Color(1f, 0f, 0f);
+        transform.Find("PlayerCanvas/Name").GetComponent<TextMeshProUGUI>().text = playerName;
     }
 
     public bool GetMoving()
