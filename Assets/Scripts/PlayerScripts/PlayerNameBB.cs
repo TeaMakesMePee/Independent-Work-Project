@@ -38,7 +38,6 @@ public class PlayerNameBB : MonoBehaviour
         if (Vector3.Cross(initForward, look).y > 0f)
             offsetAngle *= -1f;
 
-        Debug.LogError(angle);
         GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, angle + 180f - offsetAngle, 0f);
     }
 }
