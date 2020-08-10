@@ -9,16 +9,19 @@ using UnityEngine;
 
 public class PlayerNameBB : MonoBehaviour
 {
+    GameObject thePlayer;
+    Vector3 initForward;
     // Start is called before the first frame update
     void Start()
     {
-        
+        thePlayer = GameObject.FindGameObjectWithTag("LocalPlayer");
+        initForward = thePlayer.transform.forward;
+        initForward.Normalize();
     }
 
     // Update is called once per frame
     void Update()
     {
-        GameObject thePlayer = GameObject.FindGameObjectWithTag("LocalPlayer");
         if (thePlayer.transform == transform.root)
             return;
         Vector3 look = transform.root.forward;
@@ -30,7 +33,12 @@ public class PlayerNameBB : MonoBehaviour
         float angle = Vector3.Angle(dir, look);
         if (Vector3.Cross(dir, look).y > 0f)
             angle *= -1f;
+
+        float offsetAngle = Vector3.Angle(initForward, look);
+        if (Vector3.Cross(initForward, look).y > 0f)
+            offsetAngle *= -1f;
+
         Debug.LogError(angle);
-        GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, angle + 180f, 0f);
+        GetComponent<RectTransform>().rotation = Quaternion.Euler(0f, angle + 180f - offsetAngle, 0f);
     }
 }
