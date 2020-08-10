@@ -47,8 +47,6 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
             am.SetFloat("volume", PlayerPrefs.GetFloat("Sfx"));
         }
         FindObjectOfType<AudioManager>().Play("MenuTheme");
-        //if (PlayerPrefs.HasKey("username"))
-        //MainMenuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = PlayerPrefs.GetString("username");
         MainMenuTab.transform.Find("Profile/DisplayName").GetComponent<TextMeshProUGUI>().text = GameData.playerName;
     }
 
@@ -141,7 +139,6 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         CloseAllTabs();
         RoomsTab.SetActive(true);
-        //RoomsTab.transform.Find("SelectBackground/ErrorMessage").gameObject.SetActive(GameData.GetDivision() == GameData.Division.P_None ? true : false);
     }
 
     public void OpenMainMenuTab()
@@ -163,7 +160,6 @@ public class HexGameLauncher : MonoBehaviourPunCallbacks
     {
         CloseAllTabs();
         CreateTab.SetActive(true);
-        //CreateTab.transform.Find("ErrorMessage").gameObject.SetActive(GameData.GetDivision() == GameData.Division.P_None ? true : false);
     }
 
     public void OpenDivisionsTab()
