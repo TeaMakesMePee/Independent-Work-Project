@@ -84,7 +84,7 @@ public class HexGameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         loadStartTime = gameStartTime = -1.0;
         loadTime = 5f;
-        matchTime = 60f;
+        matchTime = 90f;
         gameTimer.text = fToS(loadTime);
         myInd = -1;
         firstSpawn = true;
